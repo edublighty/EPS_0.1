@@ -1,0 +1,73 @@
+
+zdg.png
+size: 2048,2048
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+GALBUTTON
+  rotate: false
+  xy: 2, 2
+  size: 1200, 300
+  orig: 1200, 300
+  offset: 0, 0
+  index: -1
+MAPSTILE
+  rotate: false
+  xy: 2, 908
+  size: 1300, 1100
+  orig: 1300, 1100
+  offset: 0, 0
+  index: -1
+PLANETBUTTON
+  rotate: false
+  xy: 2, 606
+  size: 1200, 300
+  orig: 1200, 300
+  offset: 0, 0
+  index: -1
+SYSTEMBUTTON
+  rotate: false
+  xy: 2, 304
+  size: 1200, 300
+  orig: 1200, 300
+  offset: 0, 0
+  index: -1
+
+zdg2.png
+size: 2048,2048
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+thrust handle2
+  rotate: false
+  xy: 2, 2
+  size: 1200, 1200
+  orig: 1200, 1200
+  offset: 0, 0
+  index: -1
+
+zdg3.png
+size: 2048,2048
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+thrustNoHandle2
+  rotate: false
+  xy: 2, 2
+  size: 1200, 1200
+  orig: 1200, 1200
+  offset: 0, 0
+  index: -1
+
+zdg4.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+engine3
+  rotate: false
+  xy: 2, 2
+  size: 1000, 1000
+  orig: 1000, 1000
+  offset: 0, 0
+  index: -1

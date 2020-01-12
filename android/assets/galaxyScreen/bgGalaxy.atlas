@@ -1,0 +1,13 @@
+
+bgGalaxy.png
+size: 4096,4096
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+galaxy_v0.1Small
+  rotate: false
+  xy: 2, 2
+  size: 3000, 3000
+  orig: 3000, 3000
+  offset: 0, 0
+  index: -1

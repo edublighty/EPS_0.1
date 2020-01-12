@@ -1,0 +1,41 @@
+
+starSprites.png
+size: 1024,512
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+star3
+  rotate: false
+  xy: 2, 2
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+starBlue
+  rotate: false
+  xy: 504, 400
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+starYellow
+  rotate: false
+  xy: 556, 452
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+starYellowBright
+  rotate: false
+  xy: 504, 452
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+starYellowBright2
+  rotate: false
+  xy: 504, 348
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1

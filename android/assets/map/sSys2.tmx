@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="90" height="90" tilewidth="50" tileheight="50" infinite="0" nextobjectid="7">
+ <tileset firstgid="1" source="StellarObjs.tsx"/>
+ <imagelayer name="bg">
+  <image source="high-resolution-space-12.jpg" width="4500" height="4500"/>
+ </imagelayer>
+ <imagelayer name="Orb1">
+  <image source="orbL.png" width="4500" height="4500"/>
+ </imagelayer>
+ <imagelayer name="Orb2">
+  <image source="orbS.png" width="4500" height="4500"/>
+ </imagelayer>
+ <layer name="1S1" width="90" height="90">
+  <data encoding="base64" compression="zlib">
+   eJztziEBAAAIA7AL+mcmwTWCLcESAAAAAAAAAAAAAAAAAAAAAIDf5joAAAAAAAAAAAAAAAAAAFAsYr8ABQ==
+  </data>
+ </layer>
+ <layer name="1S2" width="90" height="90">
+  <data encoding="base64" compression="zlib">
+   eJztzjENAAAIA7Al+PeMgt0ctAqaAAAAAAAAAAAAAAAAAAAAAAD8NtcBAAAAAAAAAAAAAAAAAIBiASm3AAQ=
+  </data>
+ </layer>
+ <objectgroup name="sObj">
+  <object id="3" x="2004" y="2008" width="504" height="488"/>
+ </objectgroup>
+ <objectgroup name="sDest">
+  <object id="6" x="2000" y="2008" width="508" height="492"/>
+ </objectgroup>
+ <layer name="1P1" width="90" height="90">
+  <data encoding="base64" compression="zlib">
+   eJztzjEBAAAMAiDXv/Ri6AEJSAAAAAAAAIBl1w4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQ8+FMAAI=
+  </data>
+ </layer>
+ <layer name="1P2" width="90" height="90">
+  <data encoding="base64" compression="zlib">
+   eJztzkERAAAMAiBv/UMvhj4gAQkAAAAAAACw7NoBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAah5EFwAD
+  </data>
+ </layer>
+ <objectgroup name="pObj">
+  <object id="5" x="3544" y="748" width="256" height="256"/>
+ </objectgroup>
+</map>

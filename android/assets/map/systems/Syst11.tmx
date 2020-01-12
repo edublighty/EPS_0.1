@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="100" tileheight="100" infinite="0" nextobjectid="1">
+ <imagelayer name="backImg">
+  <image source="../orbBacks/back11.png" width="10000" height="10000"/>
+ </imagelayer>
+ <imagelayer name="orbImg">
+  <image source="../orbs/orb11/11orbsMergedPNG.png" width="10000" height="10000"/>
+ </imagelayer>
+ <layer name="Tile Layer 1" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJztwTEBAAAAwqD1T+1lC6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAbnEAAAQ==
+  </data>
+ </layer>
+</map>

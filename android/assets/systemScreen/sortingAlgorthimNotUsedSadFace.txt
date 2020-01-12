@@ -1,0 +1,302 @@
+
+        boundaryGraph = new Graph();
+        boundaryVertices = new Vertex[numROoms*5];  // 1 vertex for room info and max 4 vertices for each room tile
+
+        // initialise array with 0s
+        // room blanks boundary has additional 1 tile border compared to roomShipMap to account for rooms on the edge
+        for(int i=0;i<roomBlanksBoundary.length;i++) {
+            for (int j = 0; j < roomBlanksBoundary[0].length; j++) {
+                roomBlanksBoundary[i][j] = 0;
+            }
+        }
+
+        int boundCount = 0;
+
+        for(int i=0;i<roomShipMap.length;i++) {
+            for (int j = 0; j < roomShipMap[0].length; j++) {
+                if(roomShipMap[i][j]>0) {
+                    // found a room
+                    // look left
+                    try {
+                        if (roomShipMap[i - 1][j] == 0) {
+                            // blank to left
+                            roomBlanksBoundary[i - 1 + 1][j + 1] = 1;
+                            boundCount++;
+                        }
+                    } catch (Exception e) {
+                        // out of bounds or array so treat as if a blank space
+                        roomBlanksBoundary[i - 1 + 1][j + 1] = 1;
+                        boundCount++;
+                    }
+                    // look top left
+                    try {
+                        if (roomShipMap[i - 1][j + 1] == 0) {
+                            // blank to left
+                            roomBlanksBoundary[i - 1 + 1][j + 1 + 1] = 1;
+                            boundCount++;
+                        }
+                    } catch (Exception e) {
+                        // out of bounds or array so treat as if a blank space
+                        roomBlanksBoundary[i - 1 + 1][j + 1 + 1] = 1;
+                        boundCount++;
+                    }
+                    // look bottom left
+                    try {
+                        if (roomShipMap[i - 1][j - 1] == 0) {
+                            // blank to left
+                            roomBlanksBoundary[i - 1 + 1][j + 1 - 1] = 1;
+                            boundCount++;
+                        }
+                    } catch (Exception e) {
+                        // out of bounds or array so treat as if a blank space
+                        roomBlanksBoundary[i - 1 + 1][j + 1 - 1] = 1;
+                        boundCount++;
+                    }
+                    // everybody look right
+                    try {
+                        if (roomShipMap[i + 1][j] == 0) {
+                            // blank to right
+                            roomBlanksBoundary[i + 1 + 1][j + 1] = 1;
+                            boundCount++;
+                        }
+                    } catch (Exception e) {
+                        // out of bounds or array so treat as if a blank space
+                        roomBlanksBoundary[i + 1 + 1][j + 1] = 1;
+                        boundCount++;
+                    }
+                    // everybody look top right
+                    try {
+                        if (roomShipMap[i + 1][j + 1] == 0) {
+                            // blank to right
+                            roomBlanksBoundary[i + 1 + 1][j + 1 + 1] = 1;
+                            boundCount++;
+                        }
+                    } catch (Exception e) {
+                        // out of bounds or array so treat as if a blank space
+                        roomBlanksBoundary[i + 1 + 1][j + 1 + 1] = 1;
+                        boundCount++;
+                    }
+                    // everybody look bottom right
+                    try {
+                        if (roomShipMap[i + 1][j - 1] == 0) {
+                            // blank to right
+                            roomBlanksBoundary[i + 1 + 1][j + 1 - 1] = 1;
+                            boundCount++;
+                        }
+                    } catch (Exception e) {
+                        // out of bounds or array so treat as if a blank space
+                        roomBlanksBoundary[i + 1 + 1][j + 1 - 1] = 1;
+                        boundCount++;
+                    }
+                    // nobody sayign stop that
+                    // but seriously look up
+                    try {
+                        if (roomShipMap[i][j + 1] == 0) {
+                            // blank above
+                            roomBlanksBoundary[i + 1][j + 1 + 1] = 1;
+                            boundCount++;
+                        }
+                    } catch (Exception e) {
+                        // out of bounds or array so treat as if a blank space
+                        roomBlanksBoundary[i + 1][j + 1 + 1] = 1;
+                        boundCount++;
+                    }
+                    // look down
+                    try {
+                        if (roomShipMap[i][j - 1] == 0) {
+                            // room below
+                            roomBlanksBoundary[i + 1][j - 1 + 1] = 1;
+                            boundCount++;
+                        }
+                    } catch (Exception e) {
+                        // out of bounds or array so treat as if a blank space
+                        roomBlanksBoundary[i + 1][j - 1 + 1] = 1;
+                        boundCount++;
+                    }
+                }
+            }
+        }
+
+        float[][] roomBlanksCoords = new float[boundCount][2];
+        boundCount = 0;
+
+        for(int i=0;i<roomBlanksBoundary.length;i++) {
+            for (int j = 0; j < roomBlanksBoundary[0].length; j++) {
+                if(roomBlanksBoundary[i][j]>0) {
+                    boundaryVertices[boundCount] = new Vertex("boundary" + i + j);
+                    boundaryVertices[boundCount].iBound = i;
+                    boundaryVertices[boundCount].jBound = j;
+                    boundaryVertices[boundCount].vertexCount = boundCount;
+                    boundaryGraph.addVertex(boundaryVertices[boundCount],true);
+                    roomBlanksCoords[boundCount][0]=i;
+                    roomBlanksCoords[boundCount][1]=j;
+                    boundCount++;
+                }
+            }
+        }
+
+        final String FNAME = "testBlanksLayout.txt";
+        ArrayList<String> list_copy = new ArrayList<>();
+
+        list_copy.add ("Line 1");
+        list_copy.add ("Line 2");
+
+        String line1 = " ";
+
+        try ( BufferedWriter bw =
+                      new BufferedWriter (new FileWriter(FNAME)) )
+        {
+            for (int i=0;i<roomBlanksBoundary.length;i++) {
+                //System.out.println("systemData line "+i);
+                for (int j = 0; j < roomBlanksBoundary[0].length; j++) {
+                    //System.out.println("systemData column "+j);
+                    line1 = line1 + String.valueOf(roomBlanksBoundary[i][j]);
+                    if(String.valueOf(roomBlanksBoundary[i][j])==null){
+                        bw.write("0" + "\n");
+                    } else {
+                        bw.write(line1 + "\n");
+                    }
+                    line1 = " ";
+                }
+                bw.write("\r\n");
+                line1 = " ";
+            }
+
+
+            bw.close ();
+
+        } catch (IOException e) {
+            e.printStackTrace ();
+        }
+
+        float[] polyCoords = new float[boundCount*2];
+        boundCount=0;
+
+        for(int i=0;i<roomBlanksBoundary.length;i++) {
+            for (int j = 0; j < roomBlanksBoundary[0].length; j++) {
+                if(roomBlanksBoundary[i][j]>0) {
+                    /*boundaryVertices[boundCount] = new Vertex("boundary" + i + j);
+                    boundaryVertices[boundCount].iBound = i;
+                    boundaryVertices[boundCount].jBound = j;
+                    boundaryGraph.addVertex(boundaryVertices[boundCount],true);*/
+                    polyCoords[boundCount]=i;
+                    boundCount++;
+                    polyCoords[boundCount]=j;
+                    boundCount++;
+                }
+            }
+        }
+
+        boundCount=0;
+
+        for(int i=0;i<boundaryVertices.length;i++){
+            // check vertex against adjacent vertices
+            for(int j=0;j<boundaryVertices.length;j++){
+                // starts with bottom left so no need to worry about unconnected areas
+                if(boundaryVertices[i]==null){
+                    // do nowt
+                } else {
+                    if(boundaryVertices[j]==null){
+                        // do nowt
+                    } else {
+                        int i1 = boundaryVertices[i].iBound;
+                        int i2 = boundaryVertices[j].iBound;
+                        int j1 = boundaryVertices[i].jBound;
+                        int j2 = boundaryVertices[j].jBound;
+                        int count1 = boundaryVertices[i].vertexCount;
+                        int count2 = boundaryVertices[j].vertexCount;
+                        if (i1 == i2 && j1 == j2) {
+                            // same vertex enit
+                        } else {
+                            // different vertices - check if adjacent
+                            double r = Math.sqrt(Math.pow((i1 - i2), 2) + Math.pow((j1 - j2), 2));
+                            if (r < 1.1) { // no need to worry about diagonals
+                                // these blanks are adjacent so connect via edge
+                                boundaryGraph.addEdge(boundaryVertices[i], boundaryVertices[j]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        short[] polyOrder = new short[boundaryVertices.length+1];
+        for(int k=0;k<polyOrder.length;k++){
+            polyOrder[k]=-1;
+        }
+        int currentVertex = 0;
+        polyOrder[0] = (short) currentVertex;
+        if(boundaryVertices[0].getNeighbor(0).getOne().vertexCount == currentVertex){
+            // wrong vertex - need other one
+            polyOrder[1] = (short) boundaryVertices[0].getNeighbor(0).getTwo().vertexCount;
+            currentVertex = polyOrder[1];
+        } else {
+            polyOrder[1] = (short) boundaryVertices[0].getNeighbor(0).getOne().vertexCount;
+            currentVertex = polyOrder[1];
+        }
+        int polyCount = 1;
+        int naughtyCount = 0;
+
+        int[] naughtyNodes = new int[boundaryVertices.length+1];
+
+        while(currentVertex!=0){
+            int tempNeighsCount = boundaryVertices[currentVertex].getNeighborCount();
+            if(tempNeighsCount>1){
+                // then potentially acceptable route
+                int[] tempNodes = new int[boundaryVertices.length+1];
+                int tempCount = 0;
+                for(int i=0;i<tempNeighsCount;i++){
+                    for(int j=0;j<2;j++){
+                        int tempVert;
+                        if(j==0) {
+                            tempVert = boundaryVertices[currentVertex].getNeighbor(i).getOne().vertexCount;
+                        } else {
+                            tempVert = boundaryVertices[currentVertex].getNeighbor(i).getTwo().vertexCount;
+                        }
+
+                        boolean inPath = false;
+                        boolean inNaughties = false;
+
+                        for(int k=0;k<polyOrder.length;k++){
+                            if(polyOrder[k]==tempVert){
+                                // neighbour already in path
+                                inPath = true;
+                            }
+                        }
+
+                        for(int k=0;k<naughtyNodes.length;k++){
+                            if(naughtyNodes[k]==tempVert){
+                                // neighbour already in path
+                                inNaughties = true;
+                            }
+                        }
+
+                        if(inPath || inNaughties){
+                            // do nothing
+                            tempCount = tempCount;
+                        } else {
+                            tempNodes[tempCount]=tempVert;
+                            tempCount++;
+                        }
+
+                    }
+                }   // searched all the neighbours
+                polyCount++;
+                currentVertex = tempNodes[0];
+                polyOrder[polyCount] = (short) currentVertex;
+
+
+            } else {
+                // this route aint working son
+                naughtyNodes[naughtyCount]=currentVertex;
+                currentVertex = polyOrder[polyCount-1];
+                polyCount--;
+            }
+        }
+
+        // currentVertex is back to beginning
+        polyOrder[polyCount]=0;
+
+        for(int k=0;k<polyOrder.length;k++){
+            System.out.println("POLYORDER "+k+" "+polyOrder[k]);
+        }

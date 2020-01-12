@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="90" height="90" tilewidth="50" tileheight="50" infinite="0" nextobjectid="11">
+ <tileset firstgid="1" source="oSysTS.tsx"/>
+ <layer name="Tile Layer 1" width="90" height="90">
+  <data encoding="base64" compression="zlib">
+   eJztw8EJAAAMA6Ej+w/dNfpQcNVUVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVffcAbBo/SQ==
+  </data>
+ </layer>
+ <imagelayer name="planet">
+  <image source="planet_belowCRPD.png" width="4500" height="4500"/>
+ </imagelayer>
+ <layer name="station" width="90" height="90">
+  <data encoding="base64" compression="zlib">
+   eJztzjENAAAIA7Al+PeMg70ctAqaAAAAAADw1VwHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBqAbfjAAQ=
+  </data>
+ </layer>
+ <objectgroup name="stationObj">
+  <object id="1" x="3324" y="532" width="304" height="300"/>
+ </objectgroup>
+ <objectgroup name="warnObj">
+  <object id="8" x="-16.6667" y="1583.33" width="4491.67" height="616.667"/>
+ </objectgroup>
+ <objectgroup name="planetObj">
+  <object id="10" x="-150" y="2250" width="4916.67" height="2333.33"/>
+ </objectgroup>
+</map>

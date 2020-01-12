@@ -1,0 +1,20 @@
+
+batScreenButtons.png
+size: 512,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+ENEMYswitch
+  rotate: false
+  xy: 204, 2
+  size: 200, 100
+  orig: 200, 100
+  offset: 0, 0
+  index: -1
+PLAYERswitch
+  rotate: false
+  xy: 2, 2
+  size: 200, 100
+  orig: 200, 100
+  offset: 0, 0
+  index: -1

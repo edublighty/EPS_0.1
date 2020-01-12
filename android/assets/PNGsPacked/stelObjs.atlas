@@ -1,0 +1,34 @@
+
+stelObjs.png
+size: 512,256
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+terGas1
+  rotate: false
+  xy: 2, 4
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+terGas2
+  rotate: false
+  xy: 204, 4
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+terr1
+  rotate: false
+  xy: 406, 104
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+terr2
+  rotate: false
+  xy: 406, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1

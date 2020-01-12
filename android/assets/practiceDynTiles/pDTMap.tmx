@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="100" tileheight="100" infinite="0" nextobjectid="1">
+ <tileset firstgid="1" source="pDTSet.tsx"/>
+ <layer name="Tile Layer 1" width="20" height="20">
+  <data encoding="base64" compression="zlib">
+   eJxjZGBgYCQCMxGpjlhMqnnMQMxCgnksUD241LOQYR4+9YM9/EaKeUxUxoPdv7Qyj9r5g5j8y4RmHr78OxTCkJBZ1DZvIPwKAApSAeY=
+  </data>
+ </layer>
+</map>

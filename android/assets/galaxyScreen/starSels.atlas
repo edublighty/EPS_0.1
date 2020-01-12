@@ -1,0 +1,20 @@
+
+starSels.png
+size: 512,2048
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+starmebbe2
+  rotate: false
+  xy: 2, 2
+  size: 350, 588
+  orig: 350, 588
+  offset: 0, 0
+  index: -1
+starmebbe2Sel
+  rotate: false
+  xy: 2, 592
+  size: 350, 588
+  orig: 350, 588
+  offset: 0, 0
+  index: -1

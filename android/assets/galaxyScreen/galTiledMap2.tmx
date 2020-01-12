@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="100" tileheight="100" infinite="0" nextobjectid="1">
+ <layer name="Tile Layer 1" width="16" height="16">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AUjFQAAAQAAAE=
+  </data>
+ </layer>
+ <imagelayer name="milky">
+  <image source="milkyway2.jpg" width="1600" height="1600"/>
+ </imagelayer>
+</map>

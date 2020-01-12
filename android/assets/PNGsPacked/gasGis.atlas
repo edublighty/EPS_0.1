@@ -1,0 +1,27 @@
+
+gasGis.png
+size: 1024,512
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+gasGi1
+  rotate: false
+  xy: 2, 2
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+gasGi2
+  rotate: false
+  xy: 304, 2
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+gasGi3
+  rotate: false
+  xy: 606, 2
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1

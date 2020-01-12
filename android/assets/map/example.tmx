@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="240" height="13" tilewidth="16" tileheight="16" infinite="0" nextobjectid="1">
+ <tileset firstgid="1" source="ts3.tsx"/>
+ <tileset firstgid="3" source="a16pxTS.tsx"/>
+ <layer name="background" width="240" height="13" locked="1">
+  <data encoding="base64" compression="zlib">
+   eJztWUEOwyAMQ+ro/v/jadIOVUcCDoG4iIMvFSW2waGiR0rp2NhYDJmAw8bz8SbgMJJTba6oHDHll3EPrKJlNJ8IvbW9W+P0ArRZ8nv+4OlrTbNUr0VDj+de87PAqmVEP53hK1oD0ZkL40vPUE5Ifq16zlTOcat+z/wyrT8zmHqRxsW7VyCa0dql/Pbyacmv5l1OMp/7e9azuFRf0z4qv7298klg0RLBY1ZN6/l1RS2/1n6k9Uw0wx75bT1Pevo5y573AIOWKA6zvj2QvSbx0fKL6rjnVxuLnMVSfrXvdXQv5MqcLb4z7HkvzNZS+naL9HNGfTS/JT5Sfi38kfx+0Xu35Zlfj7o7v/8+3aGNYfORhYfGR8uvZb1mapfuu6PWgm29n6plJR8ltPS2kd7Uao7698B697watl9zgWR4ZfT+a96w4SUgun4UHwZPnoKrN+f2aJi3lmwg77fM35NNZK7WOpF+IB54+uzB5xDGnIZ5R3vq5cMH/1gnYw==
+  </data>
+ </layer>
+ <layer name="graphics" width="240" height="13">
+  <data encoding="base64" compression="zlib">
+   eJzt0zEKADAIA0CH/v/N7lKooN3uIFsyJgIAAAAAAAAAAACAiVMC/Fd/d0t38+oBOxKv3wBd
+  </data>
+ </layer>
+</map>

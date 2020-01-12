@@ -1,0 +1,10 @@
+1	Desert		75	100	0	25	2
+2	Nforest		50	75	0	50	2
+3	Swamp		25	50	0	50	2
+4	Ntundra		0	25	0	50	1
+5	Savannah	75	100	25	75	1
+6	Shrubland	50	75	50	75	1
+7	Grassplains	25	50	50	75	1
+8	Mtundra		0	25	50	100	3
+9	Volcanoes	75	100	75	100	3
+10	Rainforest	25	75	75	100	2

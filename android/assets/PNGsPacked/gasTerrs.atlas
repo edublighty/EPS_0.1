@@ -1,0 +1,27 @@
+
+gasTerrs.png
+size: 1024,256
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+terGas1
+  rotate: false
+  xy: 2, 2
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+terGas2
+  rotate: false
+  xy: 204, 2
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+terGas3
+  rotate: false
+  xy: 406, 2
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1

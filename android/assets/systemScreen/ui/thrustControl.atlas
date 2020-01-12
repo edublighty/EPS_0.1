@@ -1,0 +1,153 @@
+
+thrustControl.png
+size: 4096,2048
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+GALBUTTON
+  rotate: false
+  xy: 2306, 1710
+  size: 1200, 300
+  orig: 1200, 300
+  offset: 0, 0
+  index: -1
+MAPSTILE
+  rotate: false
+  xy: 2, 910
+  size: 1300, 1100
+  orig: 1300, 1100
+  offset: 0, 0
+  index: -1
+PLANETBUTTON
+  rotate: false
+  xy: 2, 608
+  size: 1200, 300
+  orig: 1200, 300
+  offset: 0, 0
+  index: -1
+SYSTEMBUTTON
+  rotate: false
+  xy: 2, 306
+  size: 1200, 300
+  orig: 1200, 300
+  offset: 0, 0
+  index: -1
+TitleBG
+  rotate: false
+  xy: 2, 204
+  size: 400, 100
+  orig: 400, 100
+  offset: 0, 0
+  index: -1
+engine3
+  rotate: false
+  xy: 1304, 1010
+  size: 1000, 1000
+  orig: 1000, 1000
+  offset: 0, 0
+  index: -1
+healthBack
+  rotate: false
+  xy: 3508, 1758
+  size: 200, 50
+  orig: 200, 50
+  offset: 0, 0
+  index: -1
+pause
+  rotate: false
+  xy: 3912, 1851
+  size: 159, 159
+  orig: 159, 159
+  offset: 0, 0
+  index: -1
+play
+  rotate: false
+  xy: 2098, 647
+  size: 159, 159
+  orig: 159, 159
+  offset: 0, 0
+  index: -1
+playerGauge2
+  rotate: false
+  xy: 2658, 1208
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+selector
+  rotate: false
+  xy: 3160, 706
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+selectorBlue
+  rotate: false
+  xy: 2658, 706
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+thrustSelector
+  rotate: false
+  xy: 3160, 1208
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+zoomMinus
+  rotate: false
+  xy: 1701, 613
+  size: 395, 395
+  orig: 395, 395
+  offset: 0, 0
+  index: -1
+zoomPlus
+  rotate: false
+  xy: 1304, 613
+  size: 395, 395
+  orig: 395, 395
+  offset: 0, 0
+  index: -1
+zoomsAutoOrbit
+  rotate: false
+  xy: 204, 2
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+zoomsMinus
+  rotate: false
+  xy: 3508, 1810
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+zoomsPanel
+  rotate: false
+  xy: 2306, 908
+  size: 350, 800
+  orig: 350, 800
+  offset: 0, 0
+  index: -1
+zoomsPause
+  rotate: false
+  xy: 2098, 808
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+zoomsPlay
+  rotate: false
+  xy: 2, 2
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+zoomsPlus
+  rotate: false
+  xy: 3710, 1810
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1

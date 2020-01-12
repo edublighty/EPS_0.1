@@ -1,0 +1,125 @@
+
+doorPack.png
+size: 1024,16
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+ExternalDoor-1
+  rotate: false
+  xy: 418, 2
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+ExternalDoor-2
+  rotate: false
+  xy: 470, 2
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+ExternalDoor-3
+  rotate: false
+  xy: 522, 2
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+ExternalDoor-4
+  rotate: false
+  xy: 574, 2
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+ExternalDoor-5
+  rotate: false
+  xy: 626, 2
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+ExternalDoor-6
+  rotate: false
+  xy: 678, 2
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+ExternalDoor-7
+  rotate: false
+  xy: 730, 2
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+ExternalDoor-8
+  rotate: false
+  xy: 782, 2
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+ExternalDoor-9
+  rotate: false
+  xy: 834, 2
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+InternalDoor-1
+  rotate: false
+  xy: 2, 2
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+InternalDoor-2
+  rotate: false
+  xy: 54, 2
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+InternalDoor-3
+  rotate: false
+  xy: 106, 2
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+InternalDoor-4
+  rotate: false
+  xy: 158, 2
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+InternalDoor-5
+  rotate: false
+  xy: 210, 2
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+InternalDoor-6
+  rotate: false
+  xy: 262, 2
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+InternalDoor-7
+  rotate: false
+  xy: 314, 2
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+InternalDoor-8
+  rotate: false
+  xy: 366, 2
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1

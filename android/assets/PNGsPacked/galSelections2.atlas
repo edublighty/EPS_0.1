@@ -1,0 +1,27 @@
+
+galSelections2.png
+size: 256,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+selectPointsmol
+  rotate: false
+  xy: 104, 52
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+selectPointsmolCurr
+  rotate: false
+  xy: 156, 52
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+selector2
+  rotate: false
+  xy: 2, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1

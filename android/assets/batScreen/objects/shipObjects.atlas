@@ -1,0 +1,62 @@
+
+shipObjects.png
+size: 64,32
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+airlockV
+  rotate: false
+  xy: 2, 2
+  size: 7, 25
+  orig: 7, 25
+  offset: 0, 0
+  index: -1
+doorV
+  rotate: false
+  xy: 2, 2
+  size: 7, 25
+  orig: 7, 25
+  offset: 0, 0
+  index: -1
+airlockVopen
+  rotate: false
+  xy: 11, 2
+  size: 7, 25
+  orig: 7, 25
+  offset: 0, 0
+  index: -1
+doorVopen
+  rotate: false
+  xy: 11, 2
+  size: 7, 25
+  orig: 7, 25
+  offset: 0, 0
+  index: -1
+doorH
+  rotate: false
+  xy: 20, 20
+  size: 25, 7
+  orig: 25, 7
+  offset: 0, 0
+  index: -1
+airlockH
+  rotate: false
+  xy: 20, 20
+  size: 25, 7
+  orig: 25, 7
+  offset: 0, 0
+  index: -1
+doorHopen
+  rotate: false
+  xy: 20, 11
+  size: 25, 7
+  orig: 25, 7
+  offset: 0, 0
+  index: -1
+airlockHopen
+  rotate: false
+  xy: 20, 11
+  size: 25, 7
+  orig: 25, 7
+  offset: 0, 0
+  index: -1

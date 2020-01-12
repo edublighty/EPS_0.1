@@ -1,0 +1,118 @@
+
+shipParts.png
+size: 1024,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Red
+  rotate: false
+  xy: 256, 2
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+airlock
+  rotate: false
+  xy: 360, 2
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+armory
+  rotate: false
+  xy: 778, 54
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+cockpit
+  rotate: false
+  xy: 622, 54
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+corridor1x1
+  rotate: false
+  xy: 570, 54
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+corridor2x1
+  rotate: false
+  xy: 408, 54
+  size: 100, 50
+  orig: 100, 50
+  offset: 0, 0
+  index: -1
+corridor2x2
+  rotate: false
+  xy: 154, 4
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+corridor3x1
+  rotate: false
+  xy: 256, 54
+  size: 150, 50
+  orig: 150, 50
+  offset: 0, 0
+  index: -1
+corridor3x2
+  rotate: false
+  xy: 2, 4
+  size: 150, 100
+  orig: 150, 100
+  offset: 0, 0
+  index: -1
+engine
+  rotate: false
+  xy: 510, 54
+  size: 58, 50
+  orig: 58, 50
+  offset: 0, 0
+  index: -1
+flame
+  rotate: false
+  xy: 308, 2
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+medbay
+  rotate: false
+  xy: 674, 54
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+oTwo
+  rotate: false
+  xy: 830, 54
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+reactor
+  rotate: false
+  xy: 882, 54
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+shields
+  rotate: false
+  xy: 934, 54
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+surveillance
+  rotate: false
+  xy: 726, 54
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1

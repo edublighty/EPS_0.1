@@ -1,0 +1,54 @@
+
+starSprites.png
+size: 2048,2048
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+milkyway2
+  rotate: false
+  xy: 2, 106
+  size: 1600, 1600
+  orig: 1600, 1600
+  offset: 0, 0
+  index: -1
+starBlue
+  rotate: false
+  xy: 1604, 1656
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+starYellow
+  rotate: false
+  xy: 2, 2
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+starYellowBright
+  rotate: false
+  xy: 2, 54
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+starYellowBright2
+  rotate: false
+  xy: 54, 54
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+
+starSprites2.png
+size: 512,512
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+star3
+  rotate: false
+  xy: 2, 2
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1

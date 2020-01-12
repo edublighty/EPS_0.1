@@ -1,0 +1,706 @@
+
+healthBars.png
+size: 8192,4096
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+healthBar1
+  rotate: false
+  xy: 2, 3014
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar10
+  rotate: false
+  xy: 2512, 1508
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar100
+  rotate: false
+  xy: 2010, 2
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar11
+  rotate: false
+  xy: 5524, 2010
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar12
+  rotate: false
+  xy: 2512, 3014
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar13
+  rotate: false
+  xy: 1508, 2010
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar14
+  rotate: false
+  xy: 3014, 2010
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar15
+  rotate: false
+  xy: 1508, 504
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar16
+  rotate: false
+  xy: 4018, 3014
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar17
+  rotate: false
+  xy: 5022, 1006
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar18
+  rotate: false
+  xy: 5524, 1508
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar19
+  rotate: false
+  xy: 6026, 2010
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar2
+  rotate: false
+  xy: 4018, 2
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar20
+  rotate: false
+  xy: 504, 2010
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar21
+  rotate: false
+  xy: 1006, 2512
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar22
+  rotate: false
+  xy: 1006, 3516
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar23
+  rotate: false
+  xy: 2010, 3516
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar24
+  rotate: false
+  xy: 504, 1006
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar25
+  rotate: false
+  xy: 504, 1508
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar26
+  rotate: false
+  xy: 1006, 2010
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar27
+  rotate: false
+  xy: 7030, 3516
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar28
+  rotate: false
+  xy: 2010, 3014
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar29
+  rotate: false
+  xy: 6026, 2512
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar3
+  rotate: false
+  xy: 4520, 504
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar30
+  rotate: false
+  xy: 3014, 3014
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar31
+  rotate: false
+  xy: 2512, 2
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar32
+  rotate: false
+  xy: 1006, 2
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar33
+  rotate: false
+  xy: 1006, 504
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar34
+  rotate: false
+  xy: 4018, 3516
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar35
+  rotate: false
+  xy: 2010, 1508
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar36
+  rotate: false
+  xy: 2512, 2010
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar37
+  rotate: false
+  xy: 4018, 1006
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar38
+  rotate: false
+  xy: 3516, 3014
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar39
+  rotate: false
+  xy: 2, 2
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar4
+  rotate: false
+  xy: 3516, 3516
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar40
+  rotate: false
+  xy: 4018, 2512
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar41
+  rotate: false
+  xy: 4520, 3014
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar42
+  rotate: false
+  xy: 5022, 2512
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar43
+  rotate: false
+  xy: 2, 1508
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar44
+  rotate: false
+  xy: 4520, 3516
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar45
+  rotate: false
+  xy: 3014, 1006
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar46
+  rotate: false
+  xy: 3516, 1508
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar47
+  rotate: false
+  xy: 4018, 2010
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar48
+  rotate: false
+  xy: 4520, 2512
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar49
+  rotate: false
+  xy: 3516, 2512
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar5
+  rotate: false
+  xy: 3516, 2
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar50
+  rotate: false
+  xy: 6528, 3516
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar51
+  rotate: false
+  xy: 6528, 2512
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar52
+  rotate: false
+  xy: 4018, 504
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar53
+  rotate: false
+  xy: 1508, 2
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar54
+  rotate: false
+  xy: 5022, 1508
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar55
+  rotate: false
+  xy: 5022, 3014
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar56
+  rotate: false
+  xy: 5524, 3014
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar57
+  rotate: false
+  xy: 6528, 3014
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar58
+  rotate: false
+  xy: 3516, 1006
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar59
+  rotate: false
+  xy: 2512, 3516
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar6
+  rotate: false
+  xy: 2, 1006
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar60
+  rotate: false
+  xy: 504, 2512
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar61
+  rotate: false
+  xy: 1006, 3014
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar62
+  rotate: false
+  xy: 5022, 3516
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar63
+  rotate: false
+  xy: 2512, 504
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar64
+  rotate: false
+  xy: 4520, 1006
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar65
+  rotate: false
+  xy: 3014, 2
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar66
+  rotate: false
+  xy: 5524, 3516
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar67
+  rotate: false
+  xy: 504, 504
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar68
+  rotate: false
+  xy: 7532, 3516
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar69
+  rotate: false
+  xy: 3014, 3516
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar7
+  rotate: false
+  xy: 2, 3516
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar70
+  rotate: false
+  xy: 1006, 1006
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar71
+  rotate: false
+  xy: 1508, 1508
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar72
+  rotate: false
+  xy: 2010, 2010
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar73
+  rotate: false
+  xy: 2512, 2512
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar74
+  rotate: false
+  xy: 504, 3014
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar75
+  rotate: false
+  xy: 2, 504
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar76
+  rotate: false
+  xy: 504, 2
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar77
+  rotate: false
+  xy: 6026, 3516
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar78
+  rotate: false
+  xy: 1508, 1006
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar79
+  rotate: false
+  xy: 2010, 1006
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar8
+  rotate: false
+  xy: 1006, 1508
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar80
+  rotate: false
+  xy: 2010, 504
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar81
+  rotate: false
+  xy: 2512, 1006
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar82
+  rotate: false
+  xy: 3014, 1508
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar83
+  rotate: false
+  xy: 3516, 2010
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar84
+  rotate: false
+  xy: 7030, 3014
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar85
+  rotate: false
+  xy: 4520, 2010
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar86
+  rotate: false
+  xy: 3516, 504
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar87
+  rotate: false
+  xy: 1508, 2512
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar88
+  rotate: false
+  xy: 4520, 1508
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar89
+  rotate: false
+  xy: 2, 2010
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar9
+  rotate: false
+  xy: 504, 3516
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar90
+  rotate: false
+  xy: 3014, 504
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar91
+  rotate: false
+  xy: 5022, 2010
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar92
+  rotate: false
+  xy: 5524, 2512
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar93
+  rotate: false
+  xy: 6026, 3014
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar94
+  rotate: false
+  xy: 3014, 2512
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar95
+  rotate: false
+  xy: 2010, 2512
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar96
+  rotate: false
+  xy: 1508, 3516
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar97
+  rotate: false
+  xy: 2, 2512
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar98
+  rotate: false
+  xy: 1508, 3014
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+healthBar99
+  rotate: false
+  xy: 4018, 1508
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1

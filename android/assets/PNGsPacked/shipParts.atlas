@@ -1,0 +1,76 @@
+
+shipParts.png
+size: 1024,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+BigSquare
+  rotate: false
+  xy: 104, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+CockDraft1
+  rotate: false
+  xy: 716, 2
+  size: 50, 100
+  orig: 50, 100
+  offset: 0, 0
+  index: -1
+EnginRum
+  rotate: false
+  xy: 206, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+Medbay
+  rotate: false
+  xy: 308, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+OxyTyms
+  rotate: false
+  xy: 2, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+ShieldRoom
+  rotate: false
+  xy: 512, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+SurveillanceRUm
+  rotate: false
+  xy: 410, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+VerticalCor
+  rotate: false
+  xy: 768, 2
+  size: 50, 100
+  orig: 50, 100
+  offset: 0, 0
+  index: -1
+horizontalCor
+  rotate: false
+  xy: 614, 52
+  size: 100, 50
+  orig: 100, 50
+  offset: 0, 0
+  index: -1
+normalCor
+  rotate: false
+  xy: 820, 52
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1

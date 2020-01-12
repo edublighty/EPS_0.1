@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="90" height="90" tilewidth="50" tileheight="50" infinite="0" nextobjectid="1">
+ <tileset firstgid="1" source="atmosTS.tsx"/>
+ <layer name="Tile Layer 1" width="90" height="90">
+  <data encoding="base64" compression="zlib">
+   eJzt2TEOg0AMRcFd9v53TpUGUaAg/AOeYlpkHiALWGOMBQAAANDI/IMZOs//BFPnss7pGQDgjLmTnqeDVGfXua5xeg74cj/q/CY613XWuq51eoYOdNb5TXQG4G52zbN4f8v09p0dAO5jx9Z1Ts8A3XjuAOA6+xQAahz9E7OHAQAAsryfAQAAAAAAQJ3tol+Onz7nsw3SbYF+PmzaXWg=
+  </data>
+ </layer>
+</map>

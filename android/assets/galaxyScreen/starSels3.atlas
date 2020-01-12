@@ -1,0 +1,167 @@
+
+starSels3.png
+size: 4096,4096
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Level1SHIP
+  rotate: false
+  xy: 1028, 165
+  size: 700, 400
+  orig: 700, 400
+  offset: 0, 0
+  index: -1
+Level2SHIP
+  rotate: false
+  xy: 3004, 979
+  size: 700, 400
+  orig: 700, 400
+  offset: 0, 0
+  index: -1
+PLOTCOURSE
+  rotate: false
+  xy: 1028, 63
+  size: 400, 100
+  orig: 400, 100
+  offset: 0, 0
+  index: -1
+TitleBG
+  rotate: false
+  xy: 3656, 1383
+  size: 400, 100
+  orig: 400, 100
+  offset: 0, 0
+  index: -1
+arrowUp
+  rotate: false
+  xy: 1730, 365
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+fuelNOK
+  rotate: false
+  xy: 2, 3
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+fuelOK
+  rotate: false
+  xy: 3358, 337
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+galaxy_v0.1Small
+  rotate: false
+  xy: 2, 1081
+  size: 3000, 3000
+  orig: 3000, 3000
+  offset: 0, 0
+  index: -1
+orange50px
+  rotate: false
+  xy: 2706, 979
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+skyEarth
+  rotate: false
+  xy: 4020, 4031
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+starSels
+  rotate: false
+  xy: 3004, 2033
+  size: 512, 2048
+  orig: 512, 2048
+  offset: 0, 0
+  index: -1
+starSels2
+  rotate: false
+  xy: 2, 55
+  size: 1024, 1024
+  orig: 1024, 1024
+  offset: 0, 0
+  index: -1
+starSprites
+  rotate: false
+  xy: 1028, 567
+  size: 1024, 512
+  orig: 1024, 512
+  offset: 0, 0
+  index: -1
+starmebbe2
+  rotate: false
+  xy: 3656, 1485
+  size: 350, 588
+  orig: 350, 588
+  offset: 0, 0
+  index: -1
+starmebbe2Sel
+  rotate: false
+  xy: 3358, 389
+  size: 350, 588
+  orig: 350, 588
+  offset: 0, 0
+  index: -1
+starmebbe3
+  rotate: false
+  xy: 3004, 1381
+  size: 650, 650
+  orig: 650, 650
+  offset: 0, 0
+  index: -1
+starmebbe3Sel
+  rotate: false
+  xy: 2706, 327
+  size: 650, 650
+  orig: 650, 650
+  offset: 0, 0
+  index: -1
+starmebbe4
+  rotate: false
+  xy: 2054, 429
+  size: 650, 650
+  orig: 650, 650
+  offset: 0, 0
+  index: -1
+starmebbe5
+  rotate: false
+  xy: 3518, 3581
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+starmebbe6
+  rotate: false
+  xy: 3518, 2075
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+starmebbe7
+  rotate: false
+  xy: 3518, 3079
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+starmebbeSel
+  rotate: false
+  xy: 3518, 2577
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+warpDist
+  rotate: false
+  xy: 1932, 2
+  size: 425, 425
+  orig: 425, 425
+  offset: 0, 0
+  index: -1

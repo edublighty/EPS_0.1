@@ -1,0 +1,20 @@
+
+marioPack.png
+size: 512,32
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+marioLittle2
+  rotate: false
+  xy: 2, 2
+  size: 224, 16
+  orig: 224, 16
+  offset: 0, 0
+  index: -1
+marioLittle3
+  rotate: false
+  xy: 228, 2
+  size: 224, 16
+  orig: 224, 16
+  offset: 0, 0
+  index: -1
