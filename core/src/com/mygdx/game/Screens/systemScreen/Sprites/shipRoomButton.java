@@ -1,23 +1,20 @@
 package com.mygdx.game.Screens.systemScreen.Sprites;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mygdx.game.MyGdxGame;
-import com.mygdx.game.Screens.battleDeck.battleShipScreen;
 
 import java.util.List;
 
-public class shipRoomSprite extends Image {
+public class shipRoomButton extends Image {
 
     public World world;
     public Body b2body;
@@ -27,96 +24,68 @@ public class shipRoomSprite extends Image {
     private int jRoom;  // BL of room position from ship origin
     private int iNum;   // number of tiles wide
     private int jNum;   // number of tiles tall
-    private int arrayNum;
     private int playerGroupNum;
     private int airGroupNum;
     private String roomType;
+    private boolean roomTxt;
+    private int arrayNum;
     private boolean systemON;
-    private MyGdxGame game;
-    private int damage;
+    private systemScreenShipGroup shipGroup;
+    MyGdxGame game;
 
-    public shipRoomSprite(MyGdxGame game, String roomType, List<Float> tempSize, float ratio,int i,int j,int iNum,int jNum,int systemCount) {
+    public shipRoomButton(MyGdxGame game, systemScreenShipGroup shipGroup, String roomType, boolean roomTxt, int systemCount) {
         super(game.getRoomsAt().findRegion(roomType));
         this.game = game;
         this.roomType = roomType;
-        this.iRoom=i;
-        this.jRoom=j;
-        this.iNum=iNum;
-        this.jNum=jNum;
+        this.roomTxt = roomTxt;
         this.arrayNum = systemCount;
-        damage = 99;
+        this.systemON = true;
+        this.shipGroup = shipGroup;
         //System.out.println("SHIPSECSPRITE "+roomType+" "+tempSize.get(0)+" "+tempSize.get(1)+" "+tempSize.get(2)+" "+tempSize.get(3));
         //defineSprite(tempSize);
         //room = new TextureRegion((getTexture()), 0, 0, tempSize.get(0), tempSize.get(1));
         // set bounds is coords first and then width/height
-        setX(tempSize.get(2) / MyGdxGame.PPM);
-        setY(tempSize.get(3) / MyGdxGame.PPM);
-        setWidth(tempSize.get(0)*ratio / MyGdxGame.PPM);
-        setHeight(tempSize.get(1)*ratio / MyGdxGame.PPM);
-        addListener(new ClickListener() {
-                        public void clicked(InputEvent event, float x, float y) {
-                            //
-                            //System.out.println("TOUCHING MY HANDLE SON");
-                        }
+        float aspect = game.getRoomsAt().findRegion(roomType).getRegionWidth() / game.getRoomsAt().findRegion(roomType).getRegionHeight();
+        setX(50f);
+        setY(50f);
+        setWidth(200f);
+        setHeight(this.getWidth()/aspect);
+        if(!roomTxt) {
+            addListener(new ClickListener() {
+                public void clicked(InputEvent event, float x, float y) {
+                    //
+                    //System.out.println("TOUCHING MY HANDLE SON");
+                }
 
-                        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                            //screen.galActors.updateMarkers(Xcoord,Ycoord,width,height,galHUD,systName);
-                            System.out.println("TOUCHING room "+roomType);
-                            return true;
-                        }
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    //screen.galActors.updateMarkers(Xcoord,Ycoord,width,height,galHUD,systName);
+                    if(systemON){
+                        // turn off
+                        systemON = false;
+                        shipGroup.toggleSystems(systemON,arrayNum);
+                    } else {
+                        // turn on
+                        systemON = true;
+                        shipGroup.toggleSystems(systemON,arrayNum);
+                    }
+                    return true;
+                }
 
-                        public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                            //
-                            //System.out.println("TOUCHING MY HANDLE SON");
-                        }
-                    });
+                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                    //
+                    //System.out.println("TOUCHING MY HANDLE SON");
+                }
+            });
+        }
         //setBounds(tempSize.get(2) / MyGdxGame.PPM, tempSize.get(3)/ MyGdxGame.PPM, tempSize.get(0)*ratio / MyGdxGame.PPM, tempSize.get(1)*ratio / MyGdxGame.PPM);
     }
 
-    public int getArrayNum(){ return arrayNum; }
-
     public void update() {
-        System.out.println("in room update");
-        if(this.roomO2<100){
-            //setTexture();
-        }
-        // setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
     }
 
-    public void toggleSystem(boolean bool){
-        this.systemON = bool;
-        if(!systemON){
-            // system off
-            this.setDrawable(new TextureRegionDrawable(game.getRoomsAt().findRegion(roomType+"Down")));
-        } else {
-            this.setDrawable(new TextureRegionDrawable(game.getRoomsAt().findRegion(roomType)));
-        }
+    public void updateDamage(int damage){
+        this.setDrawable(new TextureRegionDrawable(game.getRoomsAt().findRegion("damage"+damage)));
     }
-
-    public void setThisGroupNum(int thisGroupNum,int airGroupNum){
-        this.playerGroupNum = thisGroupNum;
-        this.airGroupNum = airGroupNum;
-    }
-
-    public void setDamage(int damage){
-        this.damage = damage;
-    }
-
-    public int getDamage(){
-        return damage;
-    }
-
-    public int getiRoom(){
-        return iRoom;
-    }
-
-    public int getjRoom(){
-        return jRoom;
-    }
-
-    public int getiNum(){ return iNum; }
-
-    public int getjNum(){ return jNum; }
 
     public String getRoomType(){
         return roomType;

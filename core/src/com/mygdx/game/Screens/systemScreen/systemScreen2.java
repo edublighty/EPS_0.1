@@ -28,6 +28,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.HUDs.sideHUD;
 import com.mygdx.game.MyGdxGame;
+import com.mygdx.game.Screens.galScreen.Tools.shieldGenerator;
 import com.mygdx.game.Screens.systemScreen.Sprites.systemScreenShipGroup;
 import com.mygdx.game.Screens.systemScreen.Sprites.traceImage;
 import com.mygdx.game.Screens.systemScreen.Sprites.orbLinesSprite;
@@ -35,11 +36,13 @@ import com.mygdx.game.Screens.systemScreen.Sprites.planetImage;
 import com.mygdx.game.Screens.systemScreen.Sprites.playerImage;
 import com.mygdx.game.Screens.systemScreen.Sprites.starImage;
 import com.mygdx.game.Screens.systemScreen.Stage.buttonOverlay;
+import com.mygdx.game.Screens.systemScreen.Stage.detailedShipOverlay;
 import com.mygdx.game.Screens.systemScreen.Stage.systemScreenActors;
 import com.mygdx.game.Screens.systemScreen.Stage.systemScreenHUD;
 import com.mygdx.game.Screens.systemScreen.Stage.systemScreenShipStage;
 import com.mygdx.game.Screens.systemScreen.Stage.worldStage;
 import com.mygdx.game.Screens.systemScreen.Tools.Vertex;
+import com.mygdx.game.Screens.systemScreen.Tools.barsGenerator;
 import com.mygdx.game.Screens.systemScreen.Tools.systemGenerator;
 import com.mygdx.game.Screens.systemScreen.Tools.testPlanetCreator;
 import com.mygdx.game.Tools.WorldContactListener;
@@ -180,7 +183,7 @@ public class systemScreen2 implements Screen {
     // HUD variables
     public systemScreenHUD systemHUD;
     private worldStage wStage;
-    public systemScreenShipStage systemShipImage;
+    public detailedShipOverlay shipOverlay;
     public sideHUD pauseHUD;
     public systemScreenActors systemActors;
     public Vector2 deltas;
@@ -204,6 +207,7 @@ public class systemScreen2 implements Screen {
 
     private double time1;
     private double time2;
+    private boolean swtch;
 
     public enum Level { HIGHEST, MIDDLE, LOWEST }
 
@@ -216,7 +220,11 @@ public class systemScreen2 implements Screen {
 
         //bgGenerator starGen = new bgGenerator();
 
+        //barsGenerator barsGen = new barsGenerator();
+        new shieldGenerator();
+
         // update variables
+        swtch = false;
         time1 = System.nanoTime();
         time2 = System.nanoTime();
         playerHealth = 100;
@@ -289,6 +297,7 @@ public class systemScreen2 implements Screen {
         //systemShipImage = new systemScreenShipStage(game,this,game.batch,gameport.getWorldWidth()*MyGdxGame.PPM, gameport.getWorldHeight()*MyGdxGame.PPM);
         systemActors = new systemScreenActors(game,this,game.batch,gameport.getWorldWidth()*MyGdxGame.PPM, gameport.getWorldHeight()*MyGdxGame.PPM);
 
+
         // set contact listeners for objects
         world.setContactListener(new WorldContactListener());
 
@@ -306,8 +315,6 @@ public class systemScreen2 implements Screen {
                 //System.out.println("mouse x "+mousePos.x+" mouse y "+mousePos.y);
                 //gamecam.unproject(mousePos); // mousePos is now in world coordinates
                 //System.out.println("player x "+player.b2body.getPosition().x+" player y "+player.b2body.getPosition().y);
-                float anX = gamecam.position.x-gamecam.viewportWidth+mousePos.x;
-                float anY = gamecam.position.y-gamecam.viewportHeight+mousePos.y;
                 //System.out.println("mouse x "+mousePos.x+" mouse y "+mousePos.y);
                 //System.out.println("world x "+anX+" world y "+anY);
                 float midX = MyGdxGame.V_WIDTH / (MyGdxGame.PPM*2);
@@ -319,7 +326,7 @@ public class systemScreen2 implements Screen {
                 //System.out.println("mouse x "+mousePos.x+" mouse y "+mousePos.y);
                 float burnI = -(mousePos.x - midX);
                 float burnJ = (mousePos.y - midY);
-
+                System.out.println("burnI "+burnI+" burnJ "+burnJ);
                 getburnAngle(burnI,burnJ,angle1);
 
                 engBurn = true;
@@ -485,11 +492,14 @@ public class systemScreen2 implements Screen {
         // create sprite in game world
         //player = new sysShipSpriteGRAVY(world, this,toteSize);
         player = new playerImage(game, world,this,toteSize,"Level1SHIP");
-        wStage.stage.addActor(player);
+        //wStage.stage.addActor(player);
         playerLevelsInterm = new playerImage(game, world,this,toteSize,"Level2SHIP");
-        wStage.stage.addActor(playerLevelsInterm);
+        //wStage.stage.addActor(playerLevelsInterm);
         playerShipShown = new systemScreenShipGroup(game,world,this,game.batch,toteSize);
+        System.out.println("screen group width "+playerShipShown.getWidth()+" and height "+playerShipShown.getHeight());
         wStage.stage.addActor(playerShipShown);
+        System.out.println("screen group 2 width "+playerShipShown.getWidth()+" and height "+playerShipShown.getHeight());
+        //shipOverlay = new detailedShipOverlay(game,world,this,game.batch,gameport.getWorldWidth(),gameport.getWorldHeight(),toteSize);
 
         // initially set other two layers transparent
         Color tempColor = playerLevelsInterm.getColor();
@@ -588,6 +598,12 @@ public class systemScreen2 implements Screen {
 
         //systemHUD = new systemScreenHUD(game, game.batch,gameport.getWorldWidth(),gameport.getWorldHeight(),this);
 
+
+
+    }
+
+    public systemScreenShipGroup getShip(){
+        return playerShipShown;
     }
 
     // Generate map of accelerations according to player position relative to stellar bodies
@@ -1009,6 +1025,9 @@ public class systemScreen2 implements Screen {
             pauseHUD.stage.draw();
         }
 
+        //game.batch.setProjectionMatrix(shipOverlay.stage.getCamera().combined);
+        //shipOverlay.stage.draw();
+
         //System.out.println("zoom is now "+gamecam.zoom);
     }
 
@@ -1096,6 +1115,24 @@ public class systemScreen2 implements Screen {
                 systemActors.tBar.setRotation(-playerThrust * 180 / 100);
                 systemActors.updateThrust(playerThrust);
             }
+        }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.H)){
+            float aspectWoH = gamecam.viewportWidth / gamecam.viewportHeight;
+            float height1 = gamecam.viewportHeight;
+            float height2 = playerShipShown.getHeight();
+            float backdropHeight = height2*2;
+            float zoom = backdropHeight/height1;
+            wStage.wStageCam.zoom = zoom;
+            playerShipShown.transparentBox(backdropHeight,aspectWoH);
+        }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.J)){
+            int noSystems = playerShipShown.getNoSystems();
+            int randSyst = (int) Math.round(Math.random()*noSystems);
+            int curDamage = playerShipShown.getDamage(randSyst);
+            int damage = (int) Math.round(Math.random()*curDamage);
+            playerShipShown.updateDamage(randSyst,damage);
         }
 
         /*if(Gdx.input.isTouched()) {
@@ -1405,6 +1442,14 @@ public class systemScreen2 implements Screen {
     public void update(float dt){
         handleInput(dt);
 
+        if(!swtch){
+            playerShipShown.setUpShip();
+            playerShipShown.resizeShip();
+            swtch = true;
+            player.b2body.getPosition().x = starr.getX() + starr.getWidth();
+            player.b2body.getPosition().y = starr.getY() + starr.getHeight();
+        }
+
         //world.step(1/60f,6,2);  //timeStep 60 per second
         accumulator += dt;
 
@@ -1550,13 +1595,9 @@ public class systemScreen2 implements Screen {
                 setPlayerAngle();
                 player.update((float) physTime);
                 playerLevelsInterm.b2body.setTransform(player.b2body.getPosition().x,player.b2body.getPosition().y,0);
-                //playerShipShown.b2body.setTransform(player.b2body.getPosition().x,player.b2body.getPosition().y,0);
-                //System.out.println("player at "+player.b2body.getPosition().x+" by "+player.b2body.getPosition().y);
-                //System.out.println("player levels width "+playerLevelsInterm.getWidth()+" height "+playerLevelsInterm.getWidth());
-                //System.out.println("player ship width "+playerShipShown.getWidth()+" height "+playerShipShown.getWidth());
                 playerShipShown.setPosition(player.b2body.getPosition().x-playerShipShown.getWidth()/2,player.b2body.getPosition().y-playerShipShown.getHeight()/2);
                 playerLevelsInterm.update(physTime);
-                //playerShipShown.update(physTime);
+
 
                 if(tracing) {
                     getTrace4(physTime);
@@ -1568,9 +1609,6 @@ public class systemScreen2 implements Screen {
                         float y2 = path.get(i+1).y;
                         float dx = (x2 - x1);
                         float dy = (y2 - y1);
-                        /*float dist = (float)Math.sqrt(dx*dx + dy*dy);
-                        float rad = (float)Math.atan2(dy, dx);*/
-                        //game.batch.draw(rect, x1, y1,dx, dy);
                         wStage.traceStage.addActor(new traceImage(game,this,x1,y1,dx,dy));
                     }
                     //tracing = false;
@@ -1618,12 +1656,13 @@ public class systemScreen2 implements Screen {
         // Get camera to follow sprite x and y movements
         /*gamecam.position.x = player.b2body.getPosition().x;
         gamecam.position.y = player.b2body.getPosition().y;*/
-        wStage.wStageCam.position.x = player.b2body.getPosition().x;
-        wStage.wStageCam.position.y = player.b2body.getPosition().y;
+        wStage.wStageCam.position.x = player.b2body.getPosition().x;//playerShipShown.getX()+playerShipShown.getWidth()/2;
+        wStage.wStageCam.position.y = player.b2body.getPosition().y;//playerShipShown.getY()+playerShipShown.getHeight()/2;
         wStage.wStageCam.update();
 
         // update the star graphic
-        //starr.update(dt);
+        starr.update(physTime);
+        playerShipShown.update(physTime);
 
         time1=System.nanoTime();
         //System.out.println("new time "+time1+" old time "+time2);

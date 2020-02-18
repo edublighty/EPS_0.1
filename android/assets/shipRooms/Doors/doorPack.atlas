@@ -1,125 +1,244 @@
 
 doorPack.png
-size: 1024,16
+size: 512,64
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-ExternalDoor-1
+ExternalDoor-1H
+  rotate: false
+  xy: 90, 30
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+ExternalDoor-1V
+  rotate: false
+  xy: 370, 2
+  size: 10, 50
+  orig: 10, 50
+  offset: 0, 0
+  index: -1
+ExternalDoor-2H
+  rotate: false
+  xy: 194, 30
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+ExternalDoor-2V
+  rotate: false
+  xy: 454, 2
+  size: 10, 50
+  orig: 10, 50
+  offset: 0, 0
+  index: -1
+ExternalDoor-3H
+  rotate: false
+  xy: 38, 18
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+ExternalDoor-3V
+  rotate: false
+  xy: 358, 2
+  size: 10, 50
+  orig: 10, 50
+  offset: 0, 0
+  index: -1
+ExternalDoor-4H
+  rotate: false
+  xy: 142, 18
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+ExternalDoor-4V
+  rotate: false
+  xy: 442, 2
+  size: 10, 50
+  orig: 10, 50
+  offset: 0, 0
+  index: -1
+ExternalDoor-5H
+  rotate: false
+  xy: 90, 42
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+ExternalDoor-5V
+  rotate: false
+  xy: 346, 2
+  size: 10, 50
+  orig: 10, 50
+  offset: 0, 0
+  index: -1
+ExternalDoor-6H
+  rotate: false
+  xy: 194, 42
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+ExternalDoor-6V
+  rotate: false
+  xy: 430, 2
+  size: 10, 50
+  orig: 10, 50
+  offset: 0, 0
+  index: -1
+ExternalDoor-7H
+  rotate: false
+  xy: 38, 30
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+ExternalDoor-7V
+  rotate: false
+  xy: 382, 2
+  size: 10, 50
+  orig: 10, 50
+  offset: 0, 0
+  index: -1
+ExternalDoor-8H
+  rotate: false
+  xy: 142, 30
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+ExternalDoor-8V
   rotate: false
   xy: 418, 2
-  size: 50, 10
-  orig: 50, 10
+  size: 10, 50
+  orig: 10, 50
   offset: 0, 0
   index: -1
-ExternalDoor-2
+ExternalDoor-9H
   rotate: false
-  xy: 470, 2
+  xy: 38, 42
   size: 50, 10
   orig: 50, 10
   offset: 0, 0
   index: -1
-ExternalDoor-3
+ExternalDoor-9V
   rotate: false
-  xy: 522, 2
-  size: 50, 10
-  orig: 50, 10
+  xy: 334, 2
+  size: 10, 50
+  orig: 10, 50
   offset: 0, 0
   index: -1
-ExternalDoor-4
+InternalDoor-1H
   rotate: false
-  xy: 574, 2
+  xy: 246, 42
   size: 50, 10
   orig: 50, 10
   offset: 0, 0
   index: -1
-ExternalDoor-5
+InternalDoor-1V
   rotate: false
-  xy: 626, 2
-  size: 50, 10
-  orig: 50, 10
+  xy: 14, 2
+  size: 10, 50
+  orig: 10, 50
   offset: 0, 0
   index: -1
-ExternalDoor-6
+InternalDoor-2H
   rotate: false
-  xy: 678, 2
+  xy: 90, 18
   size: 50, 10
   orig: 50, 10
   offset: 0, 0
   index: -1
-ExternalDoor-7
+InternalDoor-2V
   rotate: false
-  xy: 730, 2
-  size: 50, 10
-  orig: 50, 10
+  xy: 310, 2
+  size: 10, 50
+  orig: 10, 50
   offset: 0, 0
   index: -1
-ExternalDoor-8
+InternalDoor-3H
   rotate: false
-  xy: 782, 2
+  xy: 246, 30
   size: 50, 10
   orig: 50, 10
   offset: 0, 0
   index: -1
-ExternalDoor-9
+InternalDoor-3V
   rotate: false
-  xy: 834, 2
+  xy: 406, 2
+  size: 10, 50
+  orig: 10, 50
+  offset: 0, 0
+  index: -1
+InternalDoor-4H
+  rotate: false
+  xy: 142, 42
   size: 50, 10
   orig: 50, 10
   offset: 0, 0
   index: -1
-InternalDoor-1
+InternalDoor-4V
+  rotate: false
+  xy: 298, 2
+  size: 10, 50
+  orig: 10, 50
+  offset: 0, 0
+  index: -1
+InternalDoor-5H
+  rotate: false
+  xy: 142, 6
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+InternalDoor-5V
+  rotate: false
+  xy: 394, 2
+  size: 10, 50
+  orig: 10, 50
+  offset: 0, 0
+  index: -1
+InternalDoor-6H
+  rotate: false
+  xy: 90, 6
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+InternalDoor-6V
+  rotate: false
+  xy: 26, 2
+  size: 10, 50
+  orig: 10, 50
+  offset: 0, 0
+  index: -1
+InternalDoor-7H
+  rotate: false
+  xy: 38, 6
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+InternalDoor-7V
+  rotate: false
+  xy: 322, 2
+  size: 10, 50
+  orig: 10, 50
+  offset: 0, 0
+  index: -1
+InternalDoor-8H
+  rotate: false
+  xy: 194, 18
+  size: 50, 10
+  orig: 50, 10
+  offset: 0, 0
+  index: -1
+InternalDoor-8V
   rotate: false
   xy: 2, 2
-  size: 50, 10
-  orig: 50, 10
-  offset: 0, 0
-  index: -1
-InternalDoor-2
-  rotate: false
-  xy: 54, 2
-  size: 50, 10
-  orig: 50, 10
-  offset: 0, 0
-  index: -1
-InternalDoor-3
-  rotate: false
-  xy: 106, 2
-  size: 50, 10
-  orig: 50, 10
-  offset: 0, 0
-  index: -1
-InternalDoor-4
-  rotate: false
-  xy: 158, 2
-  size: 50, 10
-  orig: 50, 10
-  offset: 0, 0
-  index: -1
-InternalDoor-5
-  rotate: false
-  xy: 210, 2
-  size: 50, 10
-  orig: 50, 10
-  offset: 0, 0
-  index: -1
-InternalDoor-6
-  rotate: false
-  xy: 262, 2
-  size: 50, 10
-  orig: 50, 10
-  offset: 0, 0
-  index: -1
-InternalDoor-7
-  rotate: false
-  xy: 314, 2
-  size: 50, 10
-  orig: 50, 10
-  offset: 0, 0
-  index: -1
-InternalDoor-8
-  rotate: false
-  xy: 366, 2
-  size: 50, 10
-  orig: 50, 10
+  size: 10, 50
+  orig: 10, 50
   offset: 0, 0
   index: -1

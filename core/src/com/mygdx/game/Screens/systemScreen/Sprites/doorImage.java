@@ -27,6 +27,7 @@ public class doorImage extends Image {
     public int room2Count;
     public int doorVertex;
     public boolean doorOpen;
+    public boolean vertical;
     public boolean airlock;
     private float stateTimer;
     public enum State { NEUTRAL, OPENING, CLOSING };
@@ -36,9 +37,43 @@ public class doorImage extends Image {
     private float frameDuration;
     private Animation<TextureRegion> doorOpening;
     private Animation<TextureRegion> doorClosing;
+    private int iDoor;
+    private int jDoor;
+    private float aspect;
+    private String suffix;
 
-    public doorImage(World world, systemScreen2 screen, MyGdxGame game, float[] tempSize, String doorType, float room1CountA,float room2CountA,float doorVertexA,float airlockNum) {
+
+    public doorImage(World world, systemScreen2 screen, MyGdxGame game, float[] tempSize, String doorType, float room1CountA,float room2CountA,float doorVertexA,float airlockNum,float iRoom,float jRoom) {
         super(game.getShipObjsAt().findRegion(doorType));
+
+        if(doorType=="doorH" || doorType=="airlockH"){
+            // horizontal
+            vertical = false;
+            suffix = "H";
+            if(doorType=="doorH") {
+                aspect = game.getDoorsAt().findRegion("InternalDoor-1H").getRegionWidth() / game.getDoorsAt().findRegion("InternalDoor-1H").getRegionHeight();
+            } else {
+                aspect = game.getDoorsAt().findRegion("ExternalDoor-1H").getRegionWidth() / game.getDoorsAt().findRegion("ExternalDoor-1H").getRegionHeight();
+            }
+        } else {
+            vertical = true;
+            suffix = "V";
+            float w = 0;
+            float h = 0;
+            if(doorType=="doorV") {
+                w = game.getDoorsAt().findRegion("InternalDoor-1V").getRegionWidth();
+                h = game.getDoorsAt().findRegion("InternalDoor-1V").getRegionHeight();
+            } else {
+                w = game.getDoorsAt().findRegion("ExternalDoor-1V").getRegionWidth();
+                h = game.getDoorsAt().findRegion("ExternalDoor-1V").getRegionHeight();
+            }
+            aspect = w/h;
+        }
+
+
+        this.iDoor = (int) iRoom;
+        this.jDoor = (int) jRoom;
+
         System.out.println("door type "+doorType);
         if(airlockNum>0){
             //airlock
@@ -47,7 +82,7 @@ public class doorImage extends Image {
             airlock = false;
         }
 
-        frameDuration = 1f;
+        frameDuration = 0.1f;
         currentState = State.NEUTRAL;
         previousState = State.NEUTRAL;
         stateTimer = 0;
@@ -58,7 +93,7 @@ public class doorImage extends Image {
             Array<TextureRegion> frames = new Array<TextureRegion>();
             for(int i = 1; i < frameCount; i++){
                 //System.out.println("sprite i "+i);
-                frames.add(new TextureRegion(game.getDoorsAt().findRegion("ExternalDoor-"+Integer.toString(i))));
+                frames.add(new TextureRegion(game.getDoorsAt().findRegion("ExternalDoor-"+Integer.toString(i)+suffix)));
             }
 
             doorOpening = new Animation(frameDuration,frames);
@@ -66,19 +101,19 @@ public class doorImage extends Image {
             frames = new Array<TextureRegion>();
             for(int i = frameCount; i > 0; i--){
                 //System.out.println("sprite i "+i);
-                frames.add(new TextureRegion(game.getDoorsAt().findRegion("ExternalDoor-"+Integer.toString(i))));
+                frames.add(new TextureRegion(game.getDoorsAt().findRegion("ExternalDoor-"+Integer.toString(i)+suffix)));
             }
 
             doorClosing = new Animation(frameDuration,frames);
 
-            this.setDrawable(new TextureRegionDrawable(game.getDoorsAt().findRegion("ExternalDoor-"+Integer.toString(1))));
+            this.setDrawable(new TextureRegionDrawable(game.getDoorsAt().findRegion("ExternalDoor-"+Integer.toString(1)+suffix)));
         } else {
             frameCount = 8;
             // create opening animation
             Array<TextureRegion> frames = new Array<TextureRegion>();
             for(int i = 1; i < frameCount; i++){
                 //System.out.println("sprite i "+i);
-                frames.add(new TextureRegion(game.getDoorsAt().findRegion("InternalDoor-"+Integer.toString(i))));
+                frames.add(new TextureRegion(game.getDoorsAt().findRegion("InternalDoor-"+Integer.toString(i)+suffix)));
             }
 
             doorOpening = new Animation(frameDuration,frames);
@@ -86,12 +121,12 @@ public class doorImage extends Image {
             frames = new Array<TextureRegion>();
             for(int i = frameCount; i > 0; i--){
                 //System.out.println("sprite i "+i);
-                frames.add(new TextureRegion(game.getDoorsAt().findRegion("InternalDoor-"+Integer.toString(i))));
+                frames.add(new TextureRegion(game.getDoorsAt().findRegion("InternalDoor-"+Integer.toString(i)+suffix)));
             }
 
             doorClosing = new Animation(frameDuration,frames);
 
-            this.setDrawable(new TextureRegionDrawable(game.getDoorsAt().findRegion("InternalDoor-"+Integer.toString(1))));
+            this.setDrawable(new TextureRegionDrawable(game.getDoorsAt().findRegion("InternalDoor-"+Integer.toString(1)+suffix)));
         }
 
         this.world = world;
@@ -230,8 +265,14 @@ public class doorImage extends Image {
 
     }
 
+    public float getAspect(){ return aspect; }
+
     public TextureRegion getFrame(float dt) {
         TextureRegion region;
+
+        stateTimer += dt;
+
+        System.out.println("statetimer "+stateTimer);
 
         if(currentState == State.OPENING) {
             region = doorOpening.getKeyFrame(stateTimer);
@@ -246,10 +287,19 @@ public class doorImage extends Image {
         return region;
     }
 
+    public int getiDoor(){return iDoor;}
+
+    public int getjDoor(){return jDoor;}
+
+    public boolean getVertical(){return vertical;}
+
     public void update(float dt) {
         // setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         if(currentState == State.NEUTRAL){
         } else {
+            System.out.println("DOOR IS NOT NEUTRAL");
+            System.out.println("STATE "+currentState);
+            System.out.println("dt "+dt);
             setDrawable(new TextureRegionDrawable(getFrame(dt)));
         }
     }

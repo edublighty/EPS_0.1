@@ -21,8 +21,12 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -50,6 +54,9 @@ public class systemScreenShipGroup extends Group {
     public Viewport viewport;
     private float viewportWidth;
     private float viewportHeight;
+    private float shipWidth;
+    private float shipHeight;
+    private float tileWidth;
 
     // shipLayout variables
     public int roomCount;
@@ -71,6 +78,10 @@ public class systemScreenShipGroup extends Group {
     private shipRoomSprite[] playerExternals;
     public shipRoomSprite[] playerRoomsAirOver;
     public shipRoomSprite[] playerRoomsSystems;
+    private shipRoomButton[] playerRoomsSystemsEdge;
+    private shipRoomButton[] playerRoomsSystemsName;
+    private shipRoomButton[] playerRoomsSystemsDamage;
+    private shipRoomButton playerRoomsShield;
     private shipRoomSprite[] fireTiles;
     private doorImage[] playerDoors;
     private float[][] pDoors;
@@ -82,15 +93,19 @@ public class systemScreenShipGroup extends Group {
     TextureAtlas roomsAt;
     public World world;
     public Body b2body;
+    private Image backdrop;
+    private systemScreen2 screen;
 
     public systemScreenShipGroup(MyGdxGame game,World world, systemScreen2 screen, SpriteBatch sb, float toteSize){
 
         /*viewport = new FillViewport(viewportWidth,viewportHeight, new OrthographicCamera());
         this.viewportWidth=viewportWidth;
         this.viewportHeight=viewportHeight;*/
+
         roomsAt = game.getRoomsAt();
         this.game=game;
         this.world=world;
+        this.screen = screen;
 
         /*overTile = new TextureAtlas.AtlasRegion[roomTypes.values().length];
         //String overs[] = {"CockDraft1","BigSquare","horizontalCorB","horizontalCorT","normalCor","verticalCorL","verticalCorR","EnginRum","Medbay","OxyTyms","ShieldRoom","SurveillanceRUm"};
@@ -105,14 +120,28 @@ public class systemScreenShipGroup extends Group {
 
         roomTypesSet();
         genShip(screen);
-        defineSprite(getWidth());
-        setBounds(0,0,toteSize/(MyGdxGame.PPM*100),toteSize/(MyGdxGame.PPM*100));
-        setOrigin(getWidth()/2,getHeight()/2);
+        //defineSprite(getWidth());
+        //setBounds(this.getX(),this.getY(),(toteSize)/(MyGdxGame.PPM*100),toteSize/(MyGdxGame.PPM*100));
+        //setBounds(this.getX(),this.getY(),(this.getWidth())/(MyGdxGame.PPM*30),(this.getHeight())/(MyGdxGame.PPM*30));
+
+        setHeight((toteSize)/(MyGdxGame.PPM*100));
+        setWidth((toteSize)/(MyGdxGame.PPM*100));
+        //setPosition(this.getX()-this.getWidth()/2,this.getY()-this.getHeight()/2);
+        setOrigin(this.getWidth()/2,this.getHeight()/2);
         //stage.setDebugAll(true);
+
+        //setUpShip();
     }
 
     public void update(float dt){
-        setPosition(b2body.getPosition().x-getWidth()/2,b2body.getPosition().y-getHeight()/2);
+        //setPosition(b2body.getPosition().x-getWidth()/2,b2body.getPosition().y-getHeight()/2);
+        //System.out.println("update group width "+this.getWidth()+" and "+this.getHeight());
+        for(int i=0;i<playerDoors.length;i++){
+            if(playerDoors[i] == null){
+            } else {
+                playerDoors[i].update(dt);
+            }
+        }
     }
 
     public void defineSprite(float toteSize){
@@ -135,6 +164,7 @@ public class systemScreenShipGroup extends Group {
         fdef.isSensor = true;   // no longer collides as sensor
 
         b2body.createFixture(fdef).setUserData("front");*/
+        System.out.println("definition group width "+this.getWidth()+" and "+this.getHeight());
     }
 
     public void roomTypesSet(){
@@ -287,6 +317,7 @@ public class systemScreenShipGroup extends Group {
         shipLayout[2][2]= roomTypes.EngineRoom;//horizontal corridor
         shipLayout[0][1]= roomTypes.surveillanceRoom;//horizontal corridor
         shipLayout[0][3]= roomTypes.BigSquare;//horizontal corridor*/
+/*
 
         shipLayout[0][3] = roomSizes.corridor2x1;
         shipLayout[2][3] = roomSizes.corridor3x1;
@@ -301,7 +332,27 @@ public class systemScreenShipGroup extends Group {
         systemLayout[5][3] = roomTypes.surveillance;
         systemLayout[4][4] = roomTypes.cockpit;
         systemLayout[1][2] = roomTypes.airlock;
+*/
 
+        shipLayout[0][0] = roomSizes.corridor3x1;
+        shipLayout[0][2] = roomSizes.corridor3x1;
+        shipLayout[2][1] = roomSizes.corridor3x1;
+        shipLayout[3][0] = roomSizes.corridor2x1;
+        shipLayout[3][2] = roomSizes.corridor2x1;
+        shipLayout[5][1] = roomSizes.corridor3x1;
+        shipLayout[6][0] = roomSizes.corridor2x1;
+        shipLayout[7][2] = roomSizes.corridor3x1;
+        shipLayout[8][3] = roomSizes.corridor2x1;
+
+        systemLayout[0][0] = roomTypes.engine;
+        systemLayout[2][1] = roomTypes.shields;
+        systemLayout[4][2] = roomTypes.airlock;
+        systemLayout[4][1] = roomTypes.reactor;
+        systemLayout[5][1] = roomTypes.surveillance;
+        systemLayout[7][0] = roomTypes.medbay;
+        systemLayout[7][1] = roomTypes.oTwo;
+        systemLayout[9][2] = roomTypes.armory;
+        systemLayout[9][3] = roomTypes.cockpit;
 
         shipGraph = new Graph();
 
@@ -379,7 +430,8 @@ public class systemScreenShipGroup extends Group {
                     tempSize3.add(1f);
                     tempSize3.add(1f);
                     tempSize3.add(1f);
-                    playerRoomsSystems[systemCount] = new shipRoomSprite(game,systemLayout[i][j].name(),tempSize3,sGrphcRatio,i,j,xRoom,yRoom);
+                    playerRoomsSystems[systemCount] = new shipRoomSprite(game,systemLayout[i][j].name(),tempSize3,sGrphcRatio,i,j,xRoom,yRoom,systemCount);
+                    System.out.println("system count "+systemCount+" roomType "+systemLayout[i][j].name());
                     systemCount++;
                     tempSize3 = new ArrayList<Float>();;
                 }
@@ -502,7 +554,7 @@ public class systemScreenShipGroup extends Group {
                             float fireY = tileY;//+fireHeight*sGrphcRatio/2;
                             fireArray.add(fireX);           // x coordinate BL
                             fireArray.add(fireY);           // y coordinate BL
-                            fireTiles[tileCount] = new shipRoomSprite(game,"flame",fireArray,sGrphcRatio,i2,j2,0,0);
+                            fireTiles[tileCount] = new shipRoomSprite(game,"flame",fireArray,sGrphcRatio,i2,j2,0,0,tileCount);
                             tileCount++;
                             jTemp++;
                             // create edge between room and tile
@@ -545,9 +597,9 @@ public class systemScreenShipGroup extends Group {
 
                     // create room sprite
                     String temp = shipLayout[i][j].name();
-                    playerRooms[numROomsCount] = new shipRoomSprite(game,shipLayout[i][j].name(),tempSize3,sGrphcRatio,i,j,xRoom,yRoom);
-                    playerExternals[numROomsCount] = new shipRoomSprite(game,"Panel1",tempSize3,sGrphcRatio,i,j,xRoom,yRoom);
-                    playerRoomsAirOver[numROomsCount] = new shipRoomSprite(game,"Red",tempSize3,sGrphcRatio,i,j,xRoom,yRoom);
+                    playerRooms[numROomsCount] = new shipRoomSprite(game,shipLayout[i][j].name(),tempSize3,sGrphcRatio,i,j,xRoom,yRoom,numROomsCount);
+                    playerExternals[numROomsCount] = new shipRoomSprite(game,"Panel1",tempSize3,sGrphcRatio,i,j,xRoom,yRoom,numROomsCount);
+                    playerRoomsAirOver[numROomsCount] = new shipRoomSprite(game,"Red",tempSize3,sGrphcRatio,i,j,xRoom,yRoom,numROomsCount);
                     numROomsCount++;
                     String s = shipLayout[i][j].name();
                     System.out.println(s.substring(0, Math.min(s.length(), 7)));
@@ -1090,16 +1142,15 @@ public class systemScreenShipGroup extends Group {
             e.printStackTrace ();
         }
 
-
-        /*for(int i=0;i<playerDoors.length;i++) {
-            stage.addActor(playerDoors[i]);
-    }*/
         int tileX=0;
         int tileY = 0;
         tileWidth = 1f/40;
         int actorNum = 0;
 
-        for(int i=0;i<playerRooms.length-1;i++){
+        shipWidth = getMaxI()*tileWidth;
+        shipHeight = getMaxJ()*tileWidth;
+
+        for(int i=0;i<playerRooms.length;i++){
             if (playerRooms[i] == null) {
                 // nothign to draw
             } else {
@@ -1114,7 +1165,7 @@ public class systemScreenShipGroup extends Group {
                 // adjust rooms and add to group
                 playerRooms[i].setWidth(playerRooms[i].getiNum()*tileWidth);
                 playerRooms[i].setHeight(playerRooms[i].getjNum()*tileWidth);
-                playerRooms[i].setPosition(playerRooms[i].getiRoom()*tileWidth,playerRooms[i].getjRoom()*tileWidth);
+                playerRooms[i].setPosition(0+playerRooms[i].getiRoom()*tileWidth,0+playerRooms[i].getjRoom()*tileWidth);
                 int playerRoomsNum = actorNum;
                 this.addActor(playerRooms[i]);
                 actorNum++;
@@ -1132,6 +1183,8 @@ public class systemScreenShipGroup extends Group {
             }
         }
 
+
+
         for(int i=0;i<playerRoomsSystems.length;i++) {
             if (playerRoomsSystems[i] == null) {
                 // nothign to draw
@@ -1140,7 +1193,8 @@ public class systemScreenShipGroup extends Group {
                 String temp = playerRoomsSystems[i].getRoomType();
                 playerRoomsSystems[i].setWidth(tileWidth);
                 playerRoomsSystems[i].setHeight(tileWidth);
-                playerRoomsSystems[i].setPosition(playerRoomsSystems[i].getiRoom() * tileWidth, playerRoomsSystems[i].getjRoom() * tileWidth);
+                playerRoomsSystems[i].setPosition((playerRoomsSystems[i].getiRoom())* tileWidth, (playerRoomsSystems[i].getjRoom())* tileWidth);
+                System.out.println("room position x "+playerRoomsSystems[i].getiRoom()+" y "+playerRoomsSystems[i].getjRoom()+" tilewidth "+tileWidth);
                 this.addActor(playerRoomsSystems[i]);
                 if(playerRoomsSystems[i].equals("airlock")){
                     /*// right airlock - create door on left
@@ -1168,6 +1222,7 @@ public class systemScreenShipGroup extends Group {
 
         int temp = vertices.length;
 
+        // creating special airlock doors
         for(int i = 0;i < temp;i++){
             if(vertices[i] == null) {
                 // do owt
@@ -1178,14 +1233,42 @@ public class systemScreenShipGroup extends Group {
                         // no equipment in this room
                     } else {
                         if (vertices[i].equip1 == "airlock" || vertices[i].equip2 == "airlock") {
+                            int iRoom = vertices[i].tileNo[0];
+                            int jRoom = vertices[i].tileNo[1];
                             // create airlock above or below
                             int iAir = vertices[i].BL[0];
                             int jAir = vertices[i].BL[1];
                             vertices[i].airlock = true;
-                            if (roomShipMap[iAir][jAir - 1] > 0) {
-                                // there is a room below the airlock - make airlock above
+                            // check below first
+                            if (roomShipMap[iAir][jAir - 1] == 0) {
+                                // there is a nothing below the airlock
+                                System.out.println("airlock is below");
+                                doorWidth = doorHWidth * sGrphcRatio;
+                                doorHeight = doorHHeight * sGrphcRatio;
+                                iAir = iAir;
+                                jAir = jAir;
+                            } else if (roomShipMap[iAir][jAir + jRoom] == 0){
+                                // there is nothing abvoe the airlock
+                                System.out.println("airlock is above");
+                                doorWidth = doorHWidth * sGrphcRatio;
+                                doorHeight = doorHHeight * sGrphcRatio;
+                                iAir = iAir;
+                                jAir = jAir+jRoom;
+                            } else if (roomShipMap[iAir - 1][jAir] == 0){
+                                // there is nothing to left of airlock
+                                System.out.println("airlock is left");
                                 doorWidth = doorVWidth * sGrphcRatio;
                                 doorHeight = doorVHeight * sGrphcRatio;
+                                iAir = iAir;
+                                jAir = jAir;
+                            } else {
+                                // has to be to right of airlock
+                                System.out.println("airlock is right");
+                                doorWidth = doorVWidth * sGrphcRatio;
+                                doorHeight = doorVHeight * sGrphcRatio;
+                                iAir = iAir+iRoom;
+                                jAir = jAir;
+                            }
                                 float roomX = TLx + tileWidth * iAir * sGrphcRatio;
                                 float roomY = TLy + tileWidth * (jAir + 1) * sGrphcRatio;
                                 doorX = roomX + roomWidth * sGrphcRatio / 2 - doorVWidth * sGrphcRatio / 2;
@@ -1194,8 +1277,10 @@ public class systemScreenShipGroup extends Group {
                                 pDoors[1][doorCount] = doorHeight;
                                 pDoors[2][doorCount] = doorX;
                                 pDoors[3][doorCount] = doorY;
-                                pDoors[4][doorCount] = 1;
+                                pDoors[4][doorCount] = 1;       // 1 = airlock
                                 pDoors[5][doorCount] = vertices[i].vertexCount;
+                                pDoors[8][doorCount] = iAir;
+                                pDoors[9][doorCount] = jAir;
                                 System.out.println("airlock connected to "+vertices[i].getLabel());
                                 //pDoors[6] not required as no second room for airlock
                                 vertices[vertexCount] = new Vertex("Door" + doorCount);
@@ -1206,9 +1291,10 @@ public class systemScreenShipGroup extends Group {
                                 shipGraph.addEdge(vertices[i], vertices[vertexCount]);
                                 doorCount++;
                                 vertexCount++;
-                            } else {
+
+                            /*if(true) {
                                 // otherwise airlock goes below
-                                /*doorWidth = doorVWidth * sGrphcRatio;
+                                *//*doorWidth = doorVWidth * sGrphcRatio;
                                 doorHeight = doorVHeight * sGrphcRatio;
                                 float roomX = TLx + tileWidth * iAir * sGrphcRatio;
                                 float roomY = TLy + tileWidth * (jAir) * sGrphcRatio;
@@ -1227,7 +1313,7 @@ public class systemScreenShipGroup extends Group {
                                 vertices[vertexCount].doorCount = doorCount;
                                 shipGraph.addEdge(vertices[i], vertices[vertexCount]);
                                 doorCount++;
-                                vertexCount++;*/
+                                vertexCount++;*//*
 
 
 
@@ -1262,10 +1348,7 @@ public class systemScreenShipGroup extends Group {
                                 pDoors[9][doorCount] = jAir;
                                 vertexCount++;
                                 doorCount++;
-
-
-
-                            }
+                            }*/
                         }
                     }
                 }
@@ -1298,7 +1381,7 @@ public class systemScreenShipGroup extends Group {
                     }
                 }
                 System.out.println("doorString for placement " + doorString);
-                playerDoors[i] = new doorImage(world, screen, game, tempSize, doorString, pDoors[5][i], pDoors[6][i], pDoors[7][i], pDoors[4][i]);
+                playerDoors[i] = new doorImage(world, screen, game, tempSize, doorString, pDoors[5][i], pDoors[6][i], pDoors[7][i], pDoors[4][i],pDoors[8][i],pDoors[9][i]);
                 playerDoors[i].setWidth(pDoors[0][i] / 200000);
                 playerDoors[i].setHeight(pDoors[1][i] / 200000);
                 if (doorString == "doorH") {
@@ -1340,14 +1423,408 @@ public class systemScreenShipGroup extends Group {
         }
         */
 
-        shipWidthPx = 50*tileX;
-        shipHeightPx = 50*tileY;
+        System.out.println("group width 1 "+this.getWidth()+" and height "+this.getHeight());
+        System.out.println("tileWidths tileX "+tileX+" tileY "+tileY);
+
+        tileX = 5*tileX;
+        tileY = 5*tileY;
+
+        int noRooms = 0;
+        for(int i=0;i<playerRooms.length;i++) {
+            if (playerRooms[i] == null) {
+
+            } else {
+                noRooms++;
+            }
+        }
+        int noRooms2 = this.getChildren().size;
+
+        System.out.println("children "+noRooms+" vs "+noRooms2);
+
+        shipWidthPx = 0.25f*tileX;
+        shipHeightPx = 0.25f *tileY;
 
         setWidth(shipWidthPx);
         setHeight(shipHeightPx);
 
+        System.out.println("group width 2 "+this.getWidth()+" and height "+this.getHeight());
+
         //externalPanels.setWidth(shipWidthPx);
         //setHeight(shipHeightPx);
 
+    }
+
+    public int getNoRooms(){
+        int noRooms = 0;
+        for(int i=0;i<playerRooms.length;i++) {
+            if (playerRooms[i] == null) {
+
+            } else {
+                noRooms++;
+            }
+        }
+        return noRooms;
+    }
+
+    public int getShipTileWidth(){
+        int shipWidth = 0;
+        int curI = 0;
+        int iChosen = 0;
+        for(int i=0;i<playerRooms.length;i++) {
+            if (playerRooms[i] == null) {
+
+            } else {
+                if(playerRooms[i].getiRoom()>curI)
+                    curI = playerRooms[i].getiRoom();
+                iChosen = i;
+            }
+        }
+
+        shipWidth = playerRooms[iChosen].getiNum() + curI;
+
+        return shipWidth;
+    }
+
+    public int getShipTileHeight(){
+        int shipHeight = 0;
+        int curJ = 0;
+        int iChosen = 0;
+        for(int i=0;i<playerRooms.length;i++) {
+            if (playerRooms[i] == null) {
+
+            } else {
+                if(playerRooms[i].getjRoom()>curJ)
+                    curJ = playerRooms[i].getjRoom();
+                iChosen = i;
+            }
+        }
+
+        shipHeight = playerRooms[iChosen].getjNum() + curJ;
+
+        return shipHeight;
+    }
+
+
+    public int getMaxI(){
+        int curI = 0;
+        for(int i=0;i<playerRooms.length;i++) {
+            if (playerRooms[i] == null) {
+
+            } else {
+                if(playerRooms[i].getiRoom()>curI)
+                curI = playerRooms[i].getiRoom();
+            }
+        }
+        return curI;
+    }
+
+    public int getMaxJ(){
+        int curJ = 0;
+        for(int i=0;i<playerRooms.length;i++) {
+            if (playerRooms[i] == null) {
+
+            } else {
+                if(playerRooms[i].getjRoom()>curJ)
+                    curJ = playerRooms[i].getjRoom();
+            }
+        }
+        return curJ;
+    }
+
+    public int getNoSystems(){
+        int noSystems = 0;
+        for(int i=0;i<playerRoomsSystems.length;i++) {
+            if (playerRoomsSystems[i] == null) {
+
+            } else {
+                noSystems++;
+            }
+        }
+        return noSystems;
+    }
+
+    public int getDamage(int count){
+        return playerRoomsSystems[count].getDamage();
+    }
+
+    public void updateDamage(int count, int damage){
+        playerRoomsSystems[count].setDamage(damage);
+        playerRoomsSystemsDamage[count].setDrawable(new TextureRegionDrawable(game.getRoomsAt().findRegion("damage"+damage)));
+    }
+
+    public void setUpShip(){
+
+        // create backdrop for system detail
+
+        // create backdrop for ship menu
+
+        backdrop = new Image();
+        backdrop.setDrawable(new TextureRegionDrawable(game.getTilesAt().findRegion("pDTTile50Red")));
+        float margin = viewportHeight/10;
+        float width = tileWidth*getMaxI();
+        float height = tileWidth*getMaxJ();
+        float X = margin / 2;
+        float Y = margin / 2;
+        backdrop.setWidth(width);
+        backdrop.setHeight(height);
+        backdrop.setX(0);
+        backdrop.setY(0);
+        Color color = backdrop.getColor();
+        backdrop.setColor(color.r,color.g,color.b,0);
+        this.addActor(backdrop);
+        playerRoomsShield = new shipRoomButton(game, this,"shipShield", false,0);
+        this.addActor(playerRoomsShield);
+
+        playerRoomsSystemsEdge = new shipRoomButton[playerRoomsSystems.length];
+        playerRoomsSystemsName = new shipRoomButton[playerRoomsSystems.length];
+        playerRoomsSystemsDamage = new shipRoomButton[playerRoomsSystems.length];
+
+
+        for(int i=0;i<playerRoomsSystems.length;i++) {
+            if (playerRoomsSystems[i] == null) {
+
+            } else {
+                System.out.println("i " + i);
+                String roomType = playerRoomsSystems[i].getRoomType();
+                System.out.println("roomtype " + playerRoomsSystems[i].getRoomType());
+                int systemCount2 = playerRoomsSystems[i].getArrayNum();
+                playerRoomsSystemsName[i] = new shipRoomButton(game, this,roomType + "Txt", true,systemCount2);
+                playerRoomsSystemsEdge[i] = new shipRoomButton(game, this,"onButton", false,systemCount2);
+                playerRoomsSystemsDamage[i] = new shipRoomButton(game, this,"damage99", false,systemCount2);
+                this.addActor(playerRoomsSystemsName[i]);
+                this.addActor(playerRoomsSystemsEdge[i]);
+                this.addActor(playerRoomsSystemsDamage[i]);
+            }
+        }
+
+    }
+
+    public void resizeShip(){//float backdropHeight,float aspect){
+
+        //System.out.println("group width "+this.getWidth()+" and height "+this.getHeight());
+
+        Color color = backdrop.getColor();
+        backdrop.setColor(color.r,color.g,color.b,0.3f);
+        float aspect = screen.gamecam.viewportWidth / screen.gamecam.viewportHeight;
+        float height1 = screen.gamecam.viewportHeight;
+        float height2 = screen.playerShipShown.getHeight();
+        float backdropHeight = height2*2;
+        backdrop.setHeight(backdropHeight);
+        backdrop.setWidth(backdropHeight*aspect);
+        backdrop.setX(0+this.getWidth()/2-backdrop.getWidth()/2);
+        backdrop.setY(0+this.getHeight()/2-backdrop.getHeight()/2);
+        //System.out.println("box should be transparent");
+
+        playerRoomsShield.setHeight(backdrop.getHeight()*0.5f);
+        playerRoomsShield.setWidth(backdrop.getWidth()*0.5f);
+        playerRoomsShield.setX(0+this.getWidth()/2-playerRoomsShield.getWidth()/2);
+        playerRoomsShield.setY(0+this.getHeight()/2-playerRoomsShield.getHeight()/2);
+
+        int noSystems = 0;
+        for(int i=0;i<playerRoomsSystems.length;i++) {
+            if (playerRoomsSystems[i] == null) {
+            } else {
+                noSystems++;
+            }
+        }
+        float txtWidth = backdrop.getWidth() / noSystems;
+        System.out.println("txtWidth "+txtWidth+" vs backdrop "+backdrop.getWidth());
+
+
+        for(int i=0;i<playerRoomsSystems.length;i++) {
+            if (playerRoomsSystems[i] == null) {
+
+            } else {
+                playerRoomsSystemsName[i].setWidth(txtWidth);
+                playerRoomsSystemsName[i].setHeight(txtWidth / 3);
+                playerRoomsSystemsName[i].setX(0 + this.getWidth()/2-backdrop.getWidth()/2 + txtWidth * i);
+                float y;
+                playerRoomsSystemsEdge[i].setWidth(playerRoomsSystemsName[i].getWidth());
+                playerRoomsSystemsEdge[i].setHeight(playerRoomsSystemsName[i].getHeight());
+                playerRoomsSystemsEdge[i].setX(playerRoomsSystemsName[i].getX()+playerRoomsSystemsName[i].getWidth()/2-playerRoomsSystemsEdge[i].getWidth()/2);
+                float y2;
+                playerRoomsSystemsDamage[i].setWidth(playerRoomsSystemsName[i].getWidth());
+                playerRoomsSystemsDamage[i].setHeight(playerRoomsSystemsName[i].getHeight());
+                playerRoomsSystemsDamage[i].setX(playerRoomsSystemsName[i].getX()+playerRoomsSystemsName[i].getWidth()/2-playerRoomsSystemsDamage[i].getWidth()/2);
+                float y3;
+                if(Math.pow((-1),i)>0){
+                    // result is positive therefore i is even
+                    // place words along bottom
+                    y = 0 + this.getHeight()/2 - backdrop.getHeight()/2;
+                    y2 = y + playerRoomsSystemsName[i].getHeight();
+                    y3 = y2 + playerRoomsSystemsEdge[i].getHeight();
+                } else {
+                    // result is negative therefore i is odd
+                    // place words along top
+                    y = 0 + this.getHeight()/2 + backdrop.getHeight()/2 - playerRoomsSystems[i].getHeight();
+                    y2 = y - playerRoomsSystemsEdge[i].getHeight();
+                    y3 = y2 - playerRoomsSystemsDamage[i].getHeight();
+                }
+                playerRoomsSystemsName[i].setY(y);
+                playerRoomsSystemsEdge[i].setY(y2);
+                playerRoomsSystemsDamage[i].setY(y3);
+
+            }
+        }
+
+        shipWidth = playerRoomsShield.getWidth();
+        int noItiles = getShipTileWidth();
+        float curTileWidth = shipWidth / noItiles;
+        shipHeight = curTileWidth*getShipTileHeight();
+        System.out.println("max X tiles "+getShipTileWidth()+" max Y tiles "+getShipTileHeight());
+
+        // resize and position rooms
+
+        for(int i=0;i<playerRooms.length;i++) {
+            if (playerRooms[i] == null) {
+
+            } else {
+
+                // adjust rooms
+                playerRooms[i].setWidth(playerRooms[i].getiNum()*curTileWidth);
+                playerRooms[i].setHeight(playerRooms[i].getjNum()*curTileWidth);
+                float newX = 0 + this.getWidth()/2 - shipWidth/2 + playerRooms[i].getiRoom()*curTileWidth;
+                float newY = playerRoomsShield.getY() + playerRoomsShield.getHeight()/2  - shipHeight/2 + playerRooms[i].getjRoom()*curTileWidth;
+                playerRooms[i].setPosition(newX,newY);
+
+            }
+        }
+
+        // resize and position system icons
+
+        for(int i=0;i<playerRoomsSystems.length;i++) {
+            if (playerRoomsSystems[i] == null) {
+
+            } else {
+
+                // adjust rooms
+                playerRoomsSystems[i].setWidth(curTileWidth);
+                playerRoomsSystems[i].setHeight(curTileWidth);
+                float newX = 0 + this.getWidth()/2 - shipWidth/2 + playerRoomsSystems[i].getiRoom()*curTileWidth;
+                float newY = playerRoomsShield.getY() + playerRoomsShield.getHeight()/2  - shipHeight/2 + playerRoomsSystems[i].getjRoom()*curTileWidth;
+                playerRoomsSystems[i].setPosition(newX,newY);
+
+            }
+        }
+
+        // resize and position air overlays
+
+        for(int i=0;i<playerRoomsAirOver.length;i++) {
+            if (playerRoomsAirOver[i] == null) {
+
+            } else {
+                // adjust rooms
+                playerRoomsAirOver[i].setWidth(curTileWidth*playerRoomsAirOver[i].getiNum());
+                playerRoomsAirOver[i].setHeight(curTileWidth*playerRoomsAirOver[i].getjNum());
+                float newX = 0 + this.getWidth()/2 - shipWidth/2 + playerRoomsAirOver[i].getiRoom()*curTileWidth;
+                float newY = playerRoomsShield.getY() + playerRoomsShield.getHeight()/2  - shipHeight/2 + playerRoomsAirOver[i].getjRoom()*curTileWidth;
+                playerRoomsAirOver[i].setPosition(newX,newY);
+
+            }
+        }
+
+        // resize and position doors
+
+        for(int i=0;i<playerDoors.length;i++) {
+            if (playerDoors[i] == null) {
+
+            } else {
+                if(playerDoors[i].getVertical()){
+                    // vertical door
+                    playerDoors[i].setHeight(curTileWidth*0.6f);
+                    playerDoors[i].setWidth(playerDoors[i].getHeight()*playerDoors[i].getAspect());
+                    float newX = 0 + this.getWidth()/2 - shipWidth/2 + playerDoors[i].getiDoor()*curTileWidth - playerDoors[i].getWidth()/2;
+                    float newY = playerRoomsShield.getY() + playerRoomsShield.getHeight()/2  - shipHeight/2 + playerDoors[i].getjDoor()*curTileWidth + curTileWidth/2 - playerDoors[i].getHeight()/2;
+                    playerDoors[i].setPosition(newX,newY);
+                } else {
+                    // horizontal door
+                    playerDoors[i].setWidth(curTileWidth*0.6f);
+                    playerDoors[i].setHeight(playerDoors[i].getWidth()/playerDoors[i].getAspect());
+                    float newX = 0 + this.getWidth()/2 - shipWidth/2 + playerDoors[i].getiDoor()*curTileWidth + curTileWidth/2 - playerDoors[i].getWidth()/2;
+                    float newY = playerRoomsShield.getY() + playerRoomsShield.getHeight()/2  - shipHeight/2 + playerDoors[i].getjDoor()*curTileWidth - playerDoors[i].getHeight()/2;
+                    playerDoors[i].setPosition(newX,newY);
+                }
+            }
+        }
+
+        // Last step - sort order of images
+
+        int layerCount = 1;
+
+        backdrop.setZIndex(layerCount);
+        layerCount++;
+
+        System.out.println("playerRoomsSystemsName length "+playerRoomsSystemsName.length);
+
+        for(int i = 0;i<playerRoomsSystemsName.length;i++) {
+            if (playerRoomsSystemsName[i] == null) {
+
+            } else {
+                playerRoomsSystemsName[i].setZIndex(layerCount);
+                layerCount++;
+            }
+        }
+
+        for(int i = 0;i<playerRoomsSystemsEdge.length;i++) {
+            if (playerRoomsSystemsEdge[i] == null) {
+
+            } else {
+                playerRoomsSystemsEdge[i].setZIndex(layerCount);
+                layerCount++;
+            }
+        }
+
+        for(int i = 0;i<playerRoomsSystemsDamage.length;i++) {
+            if (playerRoomsSystemsDamage[i] == null) {
+
+            } else {
+                playerRoomsSystemsDamage[i].setZIndex(layerCount);
+                layerCount++;
+            }
+        }
+
+        playerRoomsShield.setZIndex(layerCount);
+        layerCount++;
+
+        for(int i = 0;i<playerRooms.length;i++) {
+            if (playerRooms[i] == null) {
+
+            } else {
+                playerRooms[i].setZIndex(layerCount);
+                layerCount++;
+            }
+        }
+
+        for(int i = 0;i<playerRoomsSystems.length;i++) {
+            if (playerRoomsSystems[i] == null) {
+
+            } else {
+                playerRoomsSystems[i].setZIndex(layerCount);
+                layerCount++;
+            }
+        }
+
+        System.out.println("ship shown children "+this.getChildren().size+" vs "+layerCount);
+
+
+    }
+
+    public void transparentBox(float backdropHeight,float aspect){
+
+        //Color color = backdrop.getColor();
+        //backdrop.setColor(color.r,color.g,color.b,0.3f);
+        //setUpShip();
+        //resizeShip();
+
+    }
+
+    public void toggleSystems(boolean bool,int systemCount){
+        playerRoomsSystems[systemCount].toggleSystem(bool);
+        if(!bool) {
+            // turn off
+            playerRoomsSystemsEdge[systemCount].setDrawable(new TextureRegionDrawable(game.getRoomsAt().findRegion("offButton")));
+        } else {
+            playerRoomsSystemsEdge[systemCount].setDrawable(new TextureRegionDrawable(game.getRoomsAt().findRegion("onButton")));
+        }
     }
 }

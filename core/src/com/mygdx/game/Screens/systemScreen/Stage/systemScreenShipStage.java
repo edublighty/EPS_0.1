@@ -104,6 +104,10 @@ public class systemScreenShipStage implements Disposable {
         systemShipGroup.setPosition(x,y);
     }
 
+    public systemScreenShipGroup getShipImage(){
+        return systemShipGroup;
+    }
+
     @Override
     public void dispose() {
 
