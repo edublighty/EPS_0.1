@@ -38,6 +38,7 @@ import com.mygdx.game.Screens.systemScreen.systemScreen2;
 
 public class  systemScreenActors implements Disposable {
 
+    private MyGdxGame game;
     public Table table;
     public Stage stage;
     public Viewport viewport;
@@ -63,12 +64,19 @@ public class  systemScreenActors implements Disposable {
     private Label thrustVar;
     private Label shieldsVar;
     private Label healthVar;
+    private double o2Per;
+    private Label o2Var;
+    private double tempPer;
+    private Label tempVar;
+    private double radPer;
+    private Label radVar;
 
     public systemScreenActors(MyGdxGame game, systemScreen2 screen, SpriteBatch sb, float viewportWidth, float viewportHeight){
 
         viewport = new FillViewport(viewportWidth,viewportHeight, new OrthographicCamera());
         stage = new Stage(viewport, sb);
         Gdx.input.setInputProcessor(stage);
+        this.game = game;
 
         // ------------------------------------------------------------------------------------------------------------
 
@@ -368,9 +376,9 @@ public class  systemScreenActors implements Disposable {
         tBar.setOrigin(tBar.getWidth()/2,tBar.getHeight()/2);
         stage.addActor(tBar);
 
-        int o2Per = 100;
-        int tempPer = 60;
-        int radPer = 3;
+        o2Per = 100;
+        tempPer = 60;
+        radPer = 3;
         int thrustPer = 0;
         int shieldsPer = 100;
         int healthPer = 100;
@@ -383,27 +391,27 @@ public class  systemScreenActors implements Disposable {
 
         BitmapFont font = new BitmapFont();
         //font.getData().setScale(1f/15);
-        int scale = 70;
+        float scale = (30/game.V_WIDTH)*1f/23;
         float xScale = 15f;
         float yScale = 3f;
         //font.getData().setScale(xScale/scale,yScale/scale);
-        //font.getData().se
+        font.getData().setScale(scale);
 
         Label o2Label = new Label("02: ", new Label.LabelStyle(font, Color.BLUE));
-        Label tempLabel = new Label("TEMP: ", new Label.LabelStyle(new BitmapFont(), Color.RED));
-        Label radLabel = new Label("RAD: ", new Label.LabelStyle(new BitmapFont(), Color.YELLOW));
+        Label tempLabel = new Label("TEMP: ", new Label.LabelStyle(font, Color.RED));
+        Label radLabel = new Label("RAD: ", new Label.LabelStyle(font, Color.YELLOW));
 
-        Label o2Var = new Label(o2PerS+"%",new Label.LabelStyle(new BitmapFont(), Color.BLUE));
-        Label tempVar = new Label(tempPerS+"*C",new Label.LabelStyle(new BitmapFont(), Color.RED));
-        Label radVar = new Label(radPerS+" rad/s",new Label.LabelStyle(new BitmapFont(), Color.YELLOW));
-        thrustVar = new Label(thrustPerS+"%",new Label.LabelStyle(new BitmapFont(), Color.ORANGE));
-        shieldsVar = new Label(shieldsPerS+"%",new Label.LabelStyle(new BitmapFont(), Color.BLUE));
-        healthVar = new Label(healthPerS+"%",new Label.LabelStyle(new BitmapFont(), Color.GREEN));
+        o2Var = new Label(o2PerS+"%",new Label.LabelStyle(font, Color.BLUE));
+        tempVar = new Label(tempPerS+"*C",new Label.LabelStyle(font, Color.RED));
+        radVar = new Label(radPerS+" rad/s",new Label.LabelStyle(font, Color.YELLOW));
+        thrustVar = new Label(thrustPerS+"%",new Label.LabelStyle(font, Color.ORANGE));
+        shieldsVar = new Label(shieldsPerS+"%",new Label.LabelStyle(font, Color.BLUE));
+        healthVar = new Label(healthPerS+"%",new Label.LabelStyle(font, Color.GREEN));
 
         float statsStatsHeight = o2Label.getHeight();
         float statsMargin = (statsHeight - 3*statsStatsHeight)/4;
 
-        float statso2XLab = CMx + gauge.getWidth()/8 + statsWidth/2 - o2Label.getWidth();
+        float statso2XLab = CMx + gauge.getWidth()/8;// + statsWidth/2 - o2Label.getWidth();
         float statso2XVar = statso2XLab + o2Label.getWidth();
         float statso2Y = CMy + gauge.getHeight()/2 + statsStatsHeight + statsMargin;
         o2Label.setX(statso2XLab);
@@ -413,7 +421,7 @@ public class  systemScreenActors implements Disposable {
         o2Var.setY(statso2Y);
         stage.addActor(o2Var);
 
-        float statsTempXLab = CMx + gauge.getWidth()/8 + statsWidth/2 - tempLabel.getWidth();
+        float statsTempXLab = CMx + gauge.getWidth()/8;// + statsWidth/2 - tempLabel.getWidth();
         float statsTempXVar = statsTempXLab + tempLabel.getWidth();
         float statsTempY = CMy + gauge.getHeight()/2;
         tempLabel.setX(statsTempXLab);
@@ -435,6 +443,7 @@ public class  systemScreenActors implements Disposable {
 
         float statsThrustXVar = CMx + gauge.getWidth()*0f;
         float statsThrustY = CMy + gauge.getHeight()*0.9f;
+        thrustVar.setWidth(gauge.getWidth()*1f);
         thrustVar.setX(statsThrustXVar);
         thrustVar.setY(statsThrustY);
         stage.addActor(thrustVar);
@@ -503,6 +512,31 @@ public class  systemScreenActors implements Disposable {
 
     public void updateHealth(int healthPer){
         healthVar.setText(healthPer+"%");
+    }
+
+    public void updateTemp(double newTemp){
+        tempPer = newTemp;
+        int tempTemp = (int) (tempPer);
+        tempVar.setText(tempTemp+"*C");
+    }
+    public double getTempPer(){return tempPer;}
+
+    public void updateRad(double newRad){
+        radPer = newRad;
+        int tempRad = (int) (radPer);
+        radVar.setText(tempRad+" rad/s");
+    }
+    public double getRadPer(){
+        return radPer;
+    }
+
+    public void update02(double new02){
+        o2Per = new02;
+        int tempO2 = (int) (o2Per);
+        o2Var.setText(tempO2+"%");
+    }
+    public double getO2Per(){
+        return o2Per;
     }
 
     /*public void updateHandle(){

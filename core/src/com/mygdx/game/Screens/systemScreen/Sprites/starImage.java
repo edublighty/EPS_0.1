@@ -65,7 +65,7 @@ public class starImage extends Image {
         //stObj = new TextureRegion(getTexture(),0,0,300,300);
         this.world = world;
         //defineSprite();       // not necessary for stationary object sprite
-        setBounds((float) locX / MyGdxGame.PPM, (float) locY / MyGdxGame.PPM, (float) size / MyGdxGame.PPM, (float) size / MyGdxGame.PPM);
+        //setBounds((float) locX / MyGdxGame.PPM, (float) locY / MyGdxGame.PPM, (float) size / MyGdxGame.PPM, (float) size / MyGdxGame.PPM);
     }
 
     public TextureRegion getFrame(float dt) {

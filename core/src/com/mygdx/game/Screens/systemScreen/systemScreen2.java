@@ -8,7 +8,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -20,7 +19,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -29,6 +27,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.HUDs.sideHUD;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.Screens.galScreen.Tools.shieldGenerator;
+import com.mygdx.game.Screens.systemScreen.Sprites.backImage;
 import com.mygdx.game.Screens.systemScreen.Sprites.systemScreenShipGroup;
 import com.mygdx.game.Screens.systemScreen.Sprites.traceImage;
 import com.mygdx.game.Screens.systemScreen.Sprites.orbLinesSprite;
@@ -39,18 +38,23 @@ import com.mygdx.game.Screens.systemScreen.Stage.buttonOverlay;
 import com.mygdx.game.Screens.systemScreen.Stage.detailedShipOverlay;
 import com.mygdx.game.Screens.systemScreen.Stage.systemScreenActors;
 import com.mygdx.game.Screens.systemScreen.Stage.systemScreenHUD;
-import com.mygdx.game.Screens.systemScreen.Stage.systemScreenShipStage;
 import com.mygdx.game.Screens.systemScreen.Stage.worldStage;
 import com.mygdx.game.Screens.systemScreen.Tools.Vertex;
-import com.mygdx.game.Screens.systemScreen.Tools.barsGenerator;
 import com.mygdx.game.Screens.systemScreen.Tools.systemGenerator;
 import com.mygdx.game.Screens.systemScreen.Tools.testPlanetCreator;
 import com.mygdx.game.Tools.WorldContactListener;
 import com.mygdx.game.Tools.b2dWorldCreator;
 
+import java.awt.Image;
+
 public class systemScreen2 implements Screen {
 
+    // physics variables
     private float tStep = 1/60f;
+
+    // camera and window variables
+    private float windowWidth;
+    private float windowHeight;
 
     // Tiled variables
     private TiledMap map;
@@ -89,6 +93,7 @@ public class systemScreen2 implements Screen {
     // sprites
     //public planetSpriteGRAVY[] planets = new planetSpriteGRAVY[9];
     public planetImage[] planets = new planetImage[9];
+    public planetImage[] orbits = new planetImage[9];
     //public starSprite starr;
     public starImage starr;
     public orbLinesSprite[] orbline = new orbLinesSprite[9];
@@ -100,6 +105,7 @@ public class systemScreen2 implements Screen {
     private traceImage dummy;
 
     // booleans
+    private boolean rendering;
     public static boolean burnFlag;
     public static boolean planetFlag;
     private boolean moveToPoint;
@@ -117,7 +123,7 @@ public class systemScreen2 implements Screen {
     private float maxOrbSpeed;          // maximum speed allowed when entering orbit of planet
     private int solarM;
     private int planetM1;
-    private int G;
+    private float G;
     private int gravR;
     public boolean venting;
     private float angle1;
@@ -132,6 +138,9 @@ public class systemScreen2 implements Screen {
     //private int iCount;
     private int nP;
     public float solarRad;
+    private float firstOrbRad;
+    private float planSpace;
+    private float orbRad;
 
 
     public double dR;               // radius of player from star
@@ -154,12 +163,22 @@ public class systemScreen2 implements Screen {
     Array<Vector2> path = new Array<Vector2>();
     int wWid;
     int wHei;
+
+    // ship-specific variables
     private float maxBurnThrust;    // maximum thrust at open throttle
     public float burnThrust;  // specific to start with as can take into account ship mass later
     private float burnPer;
     private float burnX;       // mouse click X
     private float burnY;       // mouse click Y
     private float burnR;       // distance between ship and mouse click
+    private float shipRadDef;
+    private float shipTempDef;
+
+    // system-specific variables
+    public int starRad;
+    private int radMultiplier;
+    public int starTemp;
+    private int tempMultiplier;
 
     // Timing variables for render loop
     // last second
@@ -175,6 +194,7 @@ public class systemScreen2 implements Screen {
 
     // Viewport variables
     private boolean initialsing;
+    private static final float maxZoom = 2;
     private float maxZoomX;
     private float maxZoomY;
     private float minZoomX;
@@ -219,11 +239,12 @@ public class systemScreen2 implements Screen {
     public systemScreen2(MyGdxGame game){
 
         //bgGenerator starGen = new bgGenerator();
-
+        //backgroundGenerator3 bg = new backgroundGenerator3();
         //barsGenerator barsGen = new barsGenerator();
         new shieldGenerator();
 
         // update variables
+        rendering = false;
         swtch = false;
         time1 = System.nanoTime();
         time2 = System.nanoTime();
@@ -243,25 +264,32 @@ public class systemScreen2 implements Screen {
         pathCountLimit=(int) (1000);
         orbitPlanet = false;
         planetDeburn = false;
-        planetOrbDia = 200f / MyGdxGame.PPM;
+        planetOrbDia = game.V_WIDTH/30;
         solarM = 100;
         planetM1 = 1;
         gravR = 3;      // power of radius in grav equations
-        G = 3;
-        maxBurnThrust = 0.5f;
-        burnThrust = maxBurnThrust;
-        burnPer = 1f;
+        G = (1*game.V_WIDTH/30);
         handling = false;
         deltas = new Vector2(0,0);
         angle1=0;
         angle2=0;
 
+        // ship-specific variables
+        maxBurnThrust = 50f;
+        burnThrust = maxBurnThrust;
+        burnPer = 50f;
+        shipRadDef = 4f/1500;           // Radiation Deflection constant - defined by score of 4 at radius 1500
+        shipTempDef = 4f/1500;          // Temperature Deflection constant - defined by score of 4 at radius 1500
+
+        // system-specific variables
+        radMultiplier = 500000;
+        tempMultiplier = 13000;
 
         new testPlanetCreator();
 
         // initial player conditions
-        float startVx = 5f;
-        float startVy = -2f;
+        float startVx = 0.2f;
+        float startVy = 3f;
 
         // import of assets
         atlas = new TextureAtlas("PNGsPacked/Pointers.atlas");
@@ -286,6 +314,7 @@ public class systemScreen2 implements Screen {
 
         // viewport to maintain virtual aspect ratio despite screen size
         gameport = new FitViewport(MyGdxGame.V_WIDTH / MyGdxGame.PPM, MyGdxGame.V_HEIGHT / MyGdxGame.PPM, gamecam) {};
+        //System.out.println("viewport width "+gameport.getWorldWidth()+" and height "+gameport.getWorldHeight());
 
         // world variables
         world = new World(new Vector2(0,0), true); // 0,0 transpires as no gravity
@@ -293,10 +322,10 @@ public class systemScreen2 implements Screen {
 
         // create game overlays
         wStage = new worldStage(game,this,game.batch,gameport.getWorldWidth(),gameport.getWorldHeight());
+
         pauseHUD = new sideHUD(game,gameport.getWorldWidth(),gameport.getWorldHeight());
         //systemShipImage = new systemScreenShipStage(game,this,game.batch,gameport.getWorldWidth()*MyGdxGame.PPM, gameport.getWorldHeight()*MyGdxGame.PPM);
         systemActors = new systemScreenActors(game,this,game.batch,gameport.getWorldWidth()*MyGdxGame.PPM, gameport.getWorldHeight()*MyGdxGame.PPM);
-
 
         // set contact listeners for objects
         world.setContactListener(new WorldContactListener());
@@ -312,18 +341,14 @@ public class systemScreen2 implements Screen {
                 System.out.println("going for burn");
                 //touchDragged2();
                 mousePos = new Vector3(Gdx.input.getX()/MyGdxGame.PPM, Gdx.input.getY()/MyGdxGame.PPM, 0);
-                //System.out.println("mouse x "+mousePos.x+" mouse y "+mousePos.y);
-                //gamecam.unproject(mousePos); // mousePos is now in world coordinates
-                //System.out.println("player x "+player.b2body.getPosition().x+" player y "+player.b2body.getPosition().y);
-                //System.out.println("mouse x "+mousePos.x+" mouse y "+mousePos.y);
-                //System.out.println("world x "+anX+" world y "+anY);
-                float midX = MyGdxGame.V_WIDTH / (MyGdxGame.PPM*2);
-                float midY = MyGdxGame.V_HEIGHT / (MyGdxGame.PPM*2);
+                float midX = windowWidth / (MyGdxGame.PPM*2*gamecam.zoom);
+                float midY = windowHeight / (MyGdxGame.PPM*2*gamecam.zoom);
                 float playerX = player.b2body.getPosition().x;
                 float playerY = player.b2body.getPosition().y;
-                //System.out.println("mid x "+midX+" mid y "+midY);
+                System.out.println("mid x "+midX+" mid y "+midY);
                 //System.out.println("player x "+player.b2body.getPosition().x+" player y "+player.b2body.getPosition().y);
-                //System.out.println("mouse x "+mousePos.x+" mouse y "+mousePos.y);
+                System.out.println("mouse x "+mousePos.x+" mouse y "+mousePos.y);
+                System.out.println("viewportWIdth "+gamecam.viewportWidth+" viewportHeight "+gamecam.viewportHeight);
                 float burnI = -(mousePos.x - midX);
                 float burnJ = (mousePos.y - midY);
                 System.out.println("burnI "+burnI+" burnJ "+burnJ);
@@ -451,7 +476,7 @@ public class systemScreen2 implements Screen {
         Gdx.input.setInputProcessor(multiplexer);
 
         // Initialisation of system
-        systemGenerator sGen = new systemGenerator(game);
+        systemGenerator sGen = new systemGenerator(game,this);
         sGen.planetGen();
         solarRad = sGen.toteSize;
         planetData = sGen.getPlanetData();
@@ -461,8 +486,8 @@ public class systemScreen2 implements Screen {
         nP = planetData[0].length;
         gravData = new double[nP+1][4];
         gravData[0][0] = sGen.getStarData()[3];
-        gravData[0][1] = solarRad;
-        gravData[0][2] = solarRad;
+        gravData[0][1] = game.V_WIDTH/2;
+        gravData[0][2] = game.V_WIDTH/2;
         paused = false;
 
         velComps = new double[4][15];
@@ -491,22 +516,6 @@ public class systemScreen2 implements Screen {
         float toteSize = sGen.toteSize;//(750*(nP+1)+500)/2;
         // create sprite in game world
         //player = new sysShipSpriteGRAVY(world, this,toteSize);
-        player = new playerImage(game, world,this,toteSize,"Level1SHIP");
-        //wStage.stage.addActor(player);
-        playerLevelsInterm = new playerImage(game, world,this,toteSize,"Level2SHIP");
-        //wStage.stage.addActor(playerLevelsInterm);
-        playerShipShown = new systemScreenShipGroup(game,world,this,game.batch,toteSize);
-        System.out.println("screen group width "+playerShipShown.getWidth()+" and height "+playerShipShown.getHeight());
-        wStage.stage.addActor(playerShipShown);
-        System.out.println("screen group 2 width "+playerShipShown.getWidth()+" and height "+playerShipShown.getHeight());
-        //shipOverlay = new detailedShipOverlay(game,world,this,game.batch,gameport.getWorldWidth(),gameport.getWorldHeight(),toteSize);
-
-        // initially set other two layers transparent
-        Color tempColor = playerLevelsInterm.getColor();
-        playerLevelsInterm.setColor(tempColor.r,tempColor.g,tempColor.b,0);
-        tempColor = playerShipShown.getColor();
-        playerShipShown.setColor(tempColor.r,tempColor.g,tempColor.b,0);
-        level = Level.HIGHEST;
 
 
         //dummy = new traceImage(world, this,toteSize);
@@ -516,8 +525,27 @@ public class systemScreen2 implements Screen {
         int locY;// = (int) (5750/2 +  (Math.pow(-1,i))*((i)*375+750))-size/2;
         int size;
 
-        maxZoomX = 0;
-        maxZoomY = 0;
+        int sType = 1; //(int) starData[0];
+        String sObj = "star"+Integer.toString(sType);
+
+        // set background image
+        float backW = gameport.getWorldWidth()*1.5f;
+        float backH = backW;
+        float backX = (float) (gravData[0][1] - backW/2);
+        float backY = (float) (gravData[0][2] - backH/2);
+        backImage backImage = new backImage(this,backX,backY,backW,backH);
+        Color color = backImage.getColor();
+        backImage.setColor(color.r,color.g,color.b,0.5f*color.a);
+        wStage.stage.addActor(backImage);
+
+        // set star data
+        starr = new starImage(world,this, sObj, nP, wWid, wHei,(int) gravData[0][0]);//new starSprite(world, this, sObj, nP, wWid, wHei,(int) gravData[0][0]);
+        starr.setWidth(gameport.getWorldWidth()*(5f/60));
+        starr.setHeight(gameport.getWorldWidth()*(5f/60));
+        starr.setPosition((float) (gravData[0][1] - starr.getWidth()/2),(float) (gravData[0][2] - starr.getHeight()/2));
+        System.out.println("starr X "+starr.getX()+" height "+starr.getY());
+        System.out.println("starr width "+starr.getWidth()+" height "+starr.getHeight());
+        wStage.stage.addActor(starr);
 
         while(i<nP) {
             String stelObj = "terrs";
@@ -539,11 +567,28 @@ public class systemScreen2 implements Screen {
                     stelObj = "gasGi"+Integer.toString(1);
                     break;
             }
-            planets[i] = new planetImage(world,this,stelObj,planetData,i,wWid,wHei);//new planetSpriteGRAVY(world,this,stelObj,planetData,i,wWid,wHei);
-            wStage.stage.addActor(planets[i]);
-            gravData[i+1][0] = 0.01;
+            orbits[i] = new planetImage(world,this,"orbit2",planetData,i,wWid,wHei);//new planetSpriteGRAVY(world,this,stelObj,planetData,i,wWid,wHei);
+            wStage.stage.addActor(orbits[i]);
+            orbits[i].setZIndex(1);
+            firstOrbRad = sGen.getfirstOrbRad();
+            planSpace = sGen.getPlanSpace();
+            orbRad = firstOrbRad+planSpace*i;
+            System.out.println("firstorbrad "+firstOrbRad);
+            System.out.println("planSpace "+planSpace);
+            System.out.println("orbRad "+orbRad);
+            orbits[i].setWidth(orbRad*2);
+            orbits[i].setHeight(orbRad*2);
+            float orbThickness = orbits[i].getWidth()*(2/500);
+            orbits[i].setPosition(starr.getX()+starr.getWidth()/2-orbits[i].getWidth()/2,starr.getY()+starr.getHeight()/2-orbits[i].getHeight()/2);
+            planets[i] = new planetImage(world,this,"planetShine",planetData,i,wWid,wHei);//new planetSpriteGRAVY(world,this,stelObj,planetData,i,wWid,wHei);
+            planets[i].setWidth(starr.getWidth()/10);
+            planets[i].setHeight(starr.getWidth()/10);
+            gravData[i+1][0] = 0.01;    // completely unnecessary
             gravData[i+1][1] = planetData[2][i];
             gravData[i+1][2] = planetData[3][i];
+            planets[i].setPosition((float) (planetData[2][i]-planets[i].getWidth()/2 - orbThickness/2), (float) (planetData[3][i]-planets[i].getHeight()/2 - orbThickness/2));
+            wStage.stage.addActor(planets[i]);
+
             orbline[i] = new orbLinesSprite(world,this,Math.round(planetData[8][i])/MyGdxGame.PPM,toteSize,toteSize);
             planetLines[i] = new orbLinesSprite(world,this,planetOrbDia,(float) planetData[2][i],(float) planetData[3][i]);
 
@@ -560,15 +605,28 @@ public class systemScreen2 implements Screen {
             i++;
         }
 
-        maxZoomX = solarRad*2*1.25f;
-        maxZoomY = solarRad*2*1.25f;
+        float startX = starr.getX() + starr.getWidth()*5f;
+        float startY = starr.getY() + starr.getHeight()*2f;
+        System.out.println("startX "+startX+" startY "+startY);
+        player = new playerImage(game, world,this,toteSize,"Level1SHIP",startX,startY);
+        //wStage.stage.addActor(player);
+        playerLevelsInterm = new playerImage(game, world,this,toteSize,"Level2SHIP",startX,startY);
+        //wStage.stage.addActor(playerLevelsInterm);
 
-        int sType = 1; //(int) starData[0];
-        String sObj = "star"+Integer.toString(sType);
+        // set up ship graphic
+        float shipWidth = starr.getWidth();
+        playerShipShown = new systemScreenShipGroup(game,world,this,game.batch,shipWidth);
+        System.out.println("screen group width "+playerShipShown.getWidth()+" and height "+playerShipShown.getHeight());
+        wStage.stage.addActor(playerShipShown);
+        System.out.println("screen group 2 width "+playerShipShown.getWidth()+" and height "+playerShipShown.getHeight());
+        //shipOverlay = new detailedShipOverlay(game,world,this,game.batch,gameport.getWorldWidth(),gameport.getWorldHeight(),toteSize);
 
-        // set star data
-        starr = new starImage(world,this, sObj, nP, wWid, wHei,(int) gravData[0][0]);//new starSprite(world, this, sObj, nP, wWid, wHei,(int) gravData[0][0]);
-        wStage.stage.addActor(starr);
+        // initially set other two layers transparent
+        Color tempColor = playerLevelsInterm.getColor();
+        playerLevelsInterm.setColor(tempColor.r,tempColor.g,tempColor.b,0);
+        tempColor = playerShipShown.getColor();
+        playerShipShown.setColor(tempColor.r,tempColor.g,tempColor.b,0);
+        level = Level.HIGHEST;
 
         // set contact listeners for objects
         world.setContactListener(new WorldContactListener());
@@ -638,7 +696,7 @@ public class systemScreen2 implements Screen {
         }
     }
 
-    public void getTrace4(float dt) {
+    public void getTrace(float dt) {
 
         winWidth = Gdx.graphics.getWidth();
         winHeight = Gdx.graphics.getHeight();
@@ -646,7 +704,6 @@ public class systemScreen2 implements Screen {
         scrHeight = (int) gamecam.viewportHeight*gamecam.zoom;
         winWorldX = (winWidth / scrWidth);        // ratio of window to screen
         winWorldY = (winHeight / scrHeight);      // ratio of window to screen
-        dt = dt;// / 500;
         collision = false;
 
         boolean buffer2 = true;
@@ -657,6 +714,7 @@ public class systemScreen2 implements Screen {
         dummysY = player.b2body.getPosition().y;
         dummyVx = playerVx;
         dummyVy = playerVy;
+        //System.out.println("dt "+dt+" posX "+dummysX+" posY "+dummysY);
         //dummy.b2body.setLinearVelocity(player.b2body.getLinearVelocity());
 
         double sX;
@@ -692,6 +750,7 @@ public class systemScreen2 implements Screen {
                             r = Math.sqrt(Math.pow(gravData[i + 1][1] / MyGdxGame.PPM - sX, 2) + Math.pow(gravData[i + 1][2] / MyGdxGame.PPM - sY, 2));
                             Ax = Ax + (G * planetM1 * -(sX - gravData[i + 1][1] / MyGdxGame.PPM) / Math.pow(r, gravR));
                             Ay = Ay + (G * planetM1 * -(sY - gravData[i + 1][2] / MyGdxGame.PPM) / Math.pow(r, gravR));
+                            //System.out.println("tracing i "+i+" Ax "+Ax+" Ay "+Ay);
                         /*if (!collision) {
                             collision = inCircle(gravData[i + 1][1] / MyGdxGame.PPM, gravData[i + 1][2] / MyGdxGame.PPM, gravData[i + 1][0] / MyGdxGame.PPM, sX, sY);
                         }*/
@@ -700,6 +759,7 @@ public class systemScreen2 implements Screen {
                     r = Math.sqrt(Math.pow(gravData[0][1] / MyGdxGame.PPM - sX, 2) + Math.pow(gravData[0][2] / MyGdxGame.PPM - sY, 2));
                     Ax = Ax + G * solarM * -(sX - gravData[0][1] / MyGdxGame.PPM) / Math.pow(r, gravR);
                     Ay = Ay + G * solarM * -(sY - gravData[0][2] / MyGdxGame.PPM) / Math.pow(r, gravR);
+                    //System.out.println("tracing star "+" Ax "+Ax+" Ay "+Ay);
                 }
                 path.add(new Vector2((float) sX, (float) sY));
                 /*if(!collision) {
@@ -794,7 +854,7 @@ public class systemScreen2 implements Screen {
         burnR = (float) (Math.sqrt(Math.pow(burnI, 2) + Math.pow(burnJ, 2)));
         double theta0 = Math.atan(burnJ/burnI);
         double theta0D = theta0*180/Math.PI;
-        System.out.println("should be less than 90 "+theta0D);
+        //System.out.println("should be less than 90 "+theta0D);
         if(burnI>0){
             if(burnJ>0){
                 // top right screen quadrant is -90 at the y axis and -0 at x axis
@@ -1034,6 +1094,31 @@ public class systemScreen2 implements Screen {
     @Override
     public void resize (int width, int height) {
 
+        System.out.println("resize "+width+" by "+height);
+
+        double newWidth;
+        double newHeight;
+
+        double currentAspect = width / height;
+        double desiredAspect = game.aspect;
+        if(currentAspect>desiredAspect){
+            // width is larger than should be
+            newHeight = height;
+            newWidth = height*desiredAspect;
+        } else {
+            // height is larger than should be
+            newWidth = width;
+            newHeight = width/desiredAspect;
+        }
+
+        width = (int) newWidth;
+        height = (int) newHeight;
+
+        windowHeight = height;
+        windowWidth = width;
+
+        System.out.println("resize output "+width+" by "+height);
+
         winWidth = Gdx.graphics.getWidth();
         winHeight = Gdx.graphics.getHeight();
         scrWidth = (int) gamecam.viewportWidth;
@@ -1043,12 +1128,19 @@ public class systemScreen2 implements Screen {
         winWorldX = (winWidth / scrWidth);        // ratio of window to screen
         winWorldY = (winHeight / scrHeight);      // ratio of window to screen
 
+        wStage.stage.getViewport().update(width,height,true);
+        //wStage.stage.getViewport().setScreenSize(width,height);
+        wStage.traceStage.getViewport().update(width,height,true);
         gameport.update(width,height);
         gamecam.update();
         // update HUDs here
         //systemHUD.viewport.update(width,height);
 
         //galHUD.viewport.update(width,height);
+
+        if (!swtch) {
+            rendering = true;
+        }
     }
 
     @Override
@@ -1076,11 +1168,11 @@ public class systemScreen2 implements Screen {
     public void handleInput(float dt){
         // THIS IS WHERE TOUCH DRAG WILL OCCUR (no its not)
         if(Gdx.input.isKeyPressed(Input.Keys.Q)){                         // destination on screen Y
-            if(gamecam.viewportWidth<maxZoomX && gamecam.viewportHeight<maxZoomY) {
+            if(true){//gamecam.zoom<maxZoom) {
                 //gamecam.viewportWidth=gamecam.viewportWidth*1.01f;
                 //System.out.println("before "+gamecam.viewportWidth+" by "+gamecam.viewportHeight+" and zoom "+gamecam.zoom);
-                gamecam.zoom+=0.02f;
-                wStage.wStageCam.zoom+=0.02f;
+                gamecam.zoom*=1.02f;
+                wStage.wStageCam.zoom*=1.02f;
                 //System.out.println("after "+gamecam.viewportWidth+" by "+gamecam.viewportHeight);
                 //gamecam.viewportHeight=(float) (gamecam.viewportWidth*winWorldX/winWorldY);
                 //player.setBounds(0,0,player.getWidth()*1.01f,player.getHeight()*1.01f);
@@ -1088,12 +1180,12 @@ public class systemScreen2 implements Screen {
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.E)){
-            if(gamecam.viewportWidth>minZoomX && gamecam.viewportHeight>minZoomY) {
+            if(true){//gamecam.viewportWidth>minZoomX && gamecam.viewportHeight>minZoomY) {
                 //gamecam.viewportWidth = gamecam.viewportWidth * 0.99f;
                 //gamecam.viewportHeight = (float) (gamecam.viewportWidth*winWorldX/winWorldY);
                 //System.out.println("before "+gamecam.viewportWidth+" by "+gamecam.viewportHeight);
-                gamecam.zoom -= 0.02f;
-                wStage.wStageCam.zoom-=0.02f;
+                gamecam.zoom *= 0.98f;
+                wStage.wStageCam.zoom *= 0.98f;
                 //System.out.println("after "+gamecam.viewportWidth+" by "+gamecam.viewportHeight);
                 //player.setBounds(0,0,player.getWidth()*0.99f,player.getHeight()*0.99f);
             }
@@ -1439,41 +1531,60 @@ public class systemScreen2 implements Screen {
             }
     }
 
+    public Vector2 getPlayerSpeed(){
+
+        Vector2 playerSpeed = player.b2body.getLinearVelocity();
+
+        return playerSpeed;
+    }
+
+    public double getPlayerSpeedR(){
+        Vector2 playerSpeed = getPlayerSpeed();
+        double playerSpeedR = Math.sqrt(Math.pow(playerSpeed.x,2)+Math.pow(playerSpeed.y,2));
+
+        return playerSpeedR;
+    }
+
     public void update(float dt){
-        handleInput(dt);
+        //System.out.println("update");
+        if(rendering) {
+            handleInput(dt);
 
-        if(!swtch){
-            playerShipShown.setUpShip();
-            playerShipShown.resizeShip();
-            swtch = true;
-            player.b2body.getPosition().x = starr.getX() + starr.getWidth();
-            player.b2body.getPosition().y = starr.getY() + starr.getHeight();
-        }
+            boolean statusCheck = false;
 
-        //world.step(1/60f,6,2);  //timeStep 60 per second
-        accumulator += dt;
+            if (!swtch) {
+                playerShipShown.setUpShip();
+                playerShipShown.resizeShip();
+                swtch = true;
+            }
 
-        float pX = 0;
-        float pY = 0;
+            //world.step(1/60f,6,2);  //timeStep 60 per second
+            accumulator += dt;
 
-        double frameTime = 0;
-        double newTime = TimeUtils.millis() / 1000.0;
-        frameTime = newTime - currentTime;
-        currentTime = newTime;
-        float physTime = step;
+            float pX = 0;
+            float pY = 0;
 
-        if(accumulator >= step){
-            doPhysics = true;
-            accumulator -= step;
-        }
+            double frameTime = 0;
+            double newTime = TimeUtils.millis() / 1000.0;
+            frameTime = newTime - currentTime;
+            currentTime = newTime;
+            float physTime = step;
 
-        //doPhysics = true;
+            if (accumulator >= step) {
+                doPhysics = true;
+                statusCheck = true;
+                accumulator -= step;
+            }
 
-        int i;
+            //System.out.println("accum "+accumulator+" step "+step+" dt "+dt+" frameTime "+frameTime);
 
-        if(burnFlag){
-            // applying burning to player and hud
-        }
+            //doPhysics = true;
+
+            int i;
+
+            if (burnFlag) {
+                // applying burning to player and hud
+            }
 
         /*if(planetFlag) {
             // player over planet
@@ -1491,10 +1602,10 @@ public class systemScreen2 implements Screen {
             }
         }*/
 
-        boolean tempBool = true;
-        //doPhysics = false;
+            boolean tempBool = true;
+            //doPhysics = false;
 
-        if(doPhysics) {
+            if (doPhysics) {
                 if (autoOrbit) {
                     // see calcEscapeVel
                     Vector2 vec2 = new Vector2((float) (/*Math.pow(-1,orbDir)**/(orbDir * v * Math.cos(theta))), (float) (/*Math.pow(-1,orbDir)**/-orbDir * v * Math.sin(theta)));
@@ -1505,117 +1616,118 @@ public class systemScreen2 implements Screen {
                     theta = (theta + orbDir * omega * dt);
                 } else {
                     // do the solar system thing
-                        if (useAccMap) {
-                            Vector2 As = interpolateAcc(player.b2body.getPosition().x, player.b2body.getPosition().y);
-                            double Ax = As.x;
-                            double Ay = As.y;
-                            //Vx = (float) (player.b2body.getLinearVelocity().x + Ax * dt);
-                            //Vy = (float) (player.b2body.getLinearVelocity().y + Ay * dt);
-                            //Vector2 vec2 = new Vector2(Vx, Vy);
-                            //player.b2body.setLinearVelocity(vec2);
-                        } else {
-                                dt = (float) frameTime;
-                                double r;
-                                float Ax = 0;
-                                float Ay = 0;
-                                playersX = player.b2body.getPosition().x;
-                                playersY = player.b2body.getPosition().y;
-                                if(orbitPlanet){
-                                    r = Math.sqrt(Math.pow(gravData[planetNum][1] / MyGdxGame.PPM - playersX, 2) + Math.pow(gravData[planetNum][2] / MyGdxGame.PPM - playersY, 2));
-                                    Ax = (float) (G * planetM1*-(playersX - gravData[planetNum][1] / MyGdxGame.PPM) / Math.pow(r, gravR));
-                                    Ay = (float) (G * planetM1*-(playersY - gravData[planetNum][2] / MyGdxGame.PPM) / Math.pow(r, gravR));
-                                    if(planetDeburn){
-                                        G=G/2;
-                                        Vector2 orbVel = calcEscapeVel((playersX - gravData[planetNum][1] / MyGdxGame.PPM),(playersY - gravData[planetNum][2] / MyGdxGame.PPM),r);
+                    if (useAccMap) {
+                        Vector2 As = interpolateAcc(player.b2body.getPosition().x, player.b2body.getPosition().y);
+                        double Ax = As.x;
+                        double Ay = As.y;
+                        //Vx = (float) (player.b2body.getLinearVelocity().x + Ax * dt);
+                        //Vy = (float) (player.b2body.getLinearVelocity().y + Ay * dt);
+                        //Vector2 vec2 = new Vector2(Vx, Vy);
+                        //player.b2body.setLinearVelocity(vec2);
+                    } else {
+                        dt = (float) frameTime;
+                        double r;
+                        float Ax = 0;
+                        float Ay = 0;
+                        playersX = player.b2body.getPosition().x;
+                        playersY = player.b2body.getPosition().y;
+                        if (orbitPlanet) {
+                            r = Math.sqrt(Math.pow(gravData[planetNum][1] / MyGdxGame.PPM - playersX, 2) + Math.pow(gravData[planetNum][2] / MyGdxGame.PPM - playersY, 2));
+                            Ax = (float) (G * planetM1 * -(playersX - gravData[planetNum][1] / MyGdxGame.PPM) / Math.pow(r, gravR));
+                            Ay = (float) (G * planetM1 * -(playersY - gravData[planetNum][2] / MyGdxGame.PPM) / Math.pow(r, gravR));
+                            if (planetDeburn) {
+                                G = G / 2;
+                                Vector2 orbVel = calcEscapeVel((playersX - gravData[planetNum][1] / MyGdxGame.PPM), (playersY - gravData[planetNum][2] / MyGdxGame.PPM), r);
+                                playerVx = orbVel.x;
+                                playerVy = orbVel.y;
+                                if (playerVx > orbVel.x || playerVy > orbVel.y) {
+                                    if (playerVx > orbVel.x) {
                                         playerVx = orbVel.x;
+                                        // Vx = Vx * 0.95f;
+                                        planetDeburn = true;
+                                    } else if (playerVy > orbVel.y) {
+                                        //Vy = Vy * 0.95f;
                                         playerVy = orbVel.y;
-                                        if(playerVx>orbVel.x || playerVy>orbVel.y){
-                                            if(playerVx>orbVel.x) {
-                                                playerVx = orbVel.x;
-                                                // Vx = Vx * 0.95f;
-                                                planetDeburn = true;
-                                            } else if(playerVy>orbVel.y) {
-                                                //Vy = Vy * 0.95f;
-                                                playerVy = orbVel.y;
-                                                planetDeburn = true;
-                                            } else {
-                                                planetDeburn = false;
-                                            }
-                                        }
-                                        if(player.b2body.getLinearVelocity().x<orbVel.x && player.b2body.getLinearVelocity().y<orbVel.y){
-                                            playerVx = orbVel.x;
-                                            playerVy = orbVel.y;
-                                        }
+                                        planetDeburn = true;
+                                    } else {
                                         planetDeburn = false;
                                     }
-
-                                    if(inCircle(gravData[planetNum][1] / MyGdxGame.PPM, gravData[planetNum][2] / MyGdxGame.PPM, gravData[planetNum][0] / MyGdxGame.PPM, player.b2body.getPosition().x, player.b2body.getPosition().y)){
-                                        // transfer to planet screen
-                                        //game.setScreen(new practiceDynTiles(game));
-                                    }
-                                } else {
-                                    if (!starOnly) {
-                                        for (i = 0; i < nP; i++) {
-                                            r = Math.sqrt(Math.pow(gravData[i + 1][1] / MyGdxGame.PPM - playersX, 2) + Math.pow(gravData[i + 1][2] / MyGdxGame.PPM - playersY, 2));
-                                            //System.out.println("r is " + r);
-                                            if (r < planetOrbDia) {
-                                                // within orbit of planet
-                                                orbitPlanet = true;
-                                                planetNum = i + 1;
-                                                planetDeburn = true;
-                                            }
-                                            Ax = Ax + (float) (G * planetM1 * -(playersX - gravData[i + 1][1] / MyGdxGame.PPM) / Math.pow(r, gravR));
-                                            Ay = Ay + (float) (G * planetM1 * -(playersY - gravData[i + 1][2] / MyGdxGame.PPM) / Math.pow(r, gravR));
-                                        }
-                                    }
-                                    r = Math.sqrt(Math.pow(gravData[0][1] / MyGdxGame.PPM - playersX, 2) + Math.pow(gravData[0][2] / MyGdxGame.PPM - playersY, 2));
-                                    Ax = Ax + (float) (G * solarM * -(playersX - gravData[0][1] / MyGdxGame.PPM) / Math.pow(r, gravR));
-                                    Ay = Ay + (float) (G * solarM * -(playersY - gravData[0][2] / MyGdxGame.PPM) / Math.pow(r, gravR));
                                 }
-                                if(engBurn){
-                                    // apply acceleration due to engine burn here
-                                    System.out.println("playerThrust "+playerThrust);
-                                    System.out.println("burnX "+(playerThrust*maxBurnThrust*burnX/burnR)/100);
-                                    System.out.println("burnY "+((playerThrust/100)*maxBurnThrust*burnY/burnR));
-                                    Ax = Ax + ((playerThrust*maxBurnThrust*burnX/burnR)/100);
-                                    Ay = Ay + ((playerThrust*maxBurnThrust*burnY/burnR)/100);
+                                if (player.b2body.getLinearVelocity().x < orbVel.x && player.b2body.getLinearVelocity().y < orbVel.y) {
+                                    playerVx = orbVel.x;
+                                    playerVy = orbVel.y;
                                 }
-                                playerVx = (playerVx + Ax * dt);                    // new velocity at end of timestep
-                                pX = (playerVx) * dt;// + Ax*Math.pow(dt,2)/2);     // displacement across timestep
-                                playerVy = (playerVy + Ay * dt);                    // new velocity at end of timestep
-                                pY = (playerVy) * dt;// + Ay*Math.pow(dt,2)/2);     // displacement across timestep
-                                playersX = playersX + pX;
-                                playersY = playersY + pY;
-                                player.b2body.setTransform(playersX,playersY,0);
-                            //}
+                                planetDeburn = false;
                             }
+
+                            if (inCircle(gravData[planetNum][1] / MyGdxGame.PPM, gravData[planetNum][2] / MyGdxGame.PPM, gravData[planetNum][0] / MyGdxGame.PPM, player.b2body.getPosition().x, player.b2body.getPosition().y)) {
+                                // transfer to planet screen
+                                //game.setScreen(new practiceDynTiles(game));
+                            }
+                        } else {
+                            if (!starOnly) {
+                                for (i = 0; i < nP; i++) {
+                                    r = Math.sqrt(Math.pow(gravData[i + 1][1] / MyGdxGame.PPM - playersX, 2) + Math.pow(gravData[i + 1][2] / MyGdxGame.PPM - playersY, 2));
+                                    //System.out.println("r is " + r);
+                                    if (r < planetOrbDia) {
+                                        // within orbit of planet
+                                        orbitPlanet = true;
+                                        planetNum = i + 1;
+                                        planetDeburn = true;
+                                    }
+                                    Ax = Ax + (float) (G * planetM1 * -(playersX - gravData[i + 1][1] / MyGdxGame.PPM) / Math.pow(r, gravR));
+                                    Ay = Ay + (float) (G * planetM1 * -(playersY - gravData[i + 1][2] / MyGdxGame.PPM) / Math.pow(r, gravR));
+                                }
+                            }
+                            r = Math.sqrt(Math.pow(gravData[0][1] / MyGdxGame.PPM - playersX, 2) + Math.pow(gravData[0][2] / MyGdxGame.PPM - playersY, 2));
+                            Ax = Ax + (float) (G * solarM * -(playersX - gravData[0][1] / MyGdxGame.PPM) / Math.pow(r, gravR));
+                            Ay = Ay + (float) (G * solarM * -(playersY - gravData[0][2] / MyGdxGame.PPM) / Math.pow(r, gravR));
+                        }
+                        if (engBurn) {
+                            // apply acceleration due to engine burn here
+                            System.out.println("burn " + playerThrust);
+                            Ax = Ax + ((playerThrust * maxBurnThrust * burnX / burnR) / 100);
+                            Ay = Ay + ((playerThrust * maxBurnThrust * burnY / burnR) / 100);
+                        }
+                        //System.out.println("Ax is "+Ax+" over dt "+dt);
+                        //System.out.println("playerVx "+playerVx+" playerVy "+playerVy);
+                        //System.out.println("player X "+player.b2body.getPosition().x+" Y "+player.b2body.getPosition().y);
+                        playerVx = (playerVx + Ax * dt);                    // new velocity at end of timestep
+                        pX = (playerVx) * dt;// + Ax*Math.pow(dt,2)/2);     // displacement across timestep
+                        playerVy = (playerVy + Ay * dt);                    // new velocity at end of timestep
+                        pY = (playerVy) * dt;// + Ay*Math.pow(dt,2)/2);     // displacement across timestep
+                        playersX = playersX + pX;
+                        playersY = playersY + pY;
+                        player.b2body.setTransform(playersX, playersY, 0);
                         //}
+                    }
+                    //}
                 }
                 world.step((float) physTime, 6, 2);
                 setPlayerAngle();
                 player.update((float) physTime);
-                playerLevelsInterm.b2body.setTransform(player.b2body.getPosition().x,player.b2body.getPosition().y,0);
-                playerShipShown.setPosition(player.b2body.getPosition().x-playerShipShown.getWidth()/2,player.b2body.getPosition().y-playerShipShown.getHeight()/2);
-                playerLevelsInterm.update(physTime);
+                //playerLevelsInterm.b2body.setTransform(player.b2body.getPosition().x, player.b2body.getPosition().y, 0);
+                playerShipShown.setPosition(player.b2body.getPosition().x - playerShipShown.getWidth() / 2, player.b2body.getPosition().y - playerShipShown.getHeight() / 2);
+                //playerLevelsInterm.update(physTime);
 
 
-                if(tracing) {
-                    getTrace4(physTime);
+                if (tracing) {
+                    getTrace(physTime);
                     wStage.traceStage.clear();
-                    for(i=0;i<pathCount-1;i++) {
+                    for (i = 0; i < pathCount - 1; i++) {
                         float x1 = path.get(i).x;
-                        float x2 = path.get(i+1).x;
+                        float x2 = path.get(i + 1).x;
                         float y1 = path.get(i).y;
-                        float y2 = path.get(i+1).y;
+                        float y2 = path.get(i + 1).y;
                         float dx = (x2 - x1);
                         float dy = (y2 - y1);
-                        wStage.traceStage.addActor(new traceImage(game,this,x1,y1,dx,dy));
+                        wStage.traceStage.addActor(new traceImage(game, this, x1, y1, dx, dy));
                     }
                     //tracing = false;
                 }
 
                 boolean colouring = false;
-                if(colouring) {
+                if (colouring) {
                     if (wStage.wStageCam.zoom > 0.9 && level != Level.HIGHEST) {
                         // Change to HIGHEST level
                         Color tempColor = player.getColor();
@@ -1649,28 +1761,53 @@ public class systemScreen2 implements Screen {
                     playerShipShown.setColor(tempColor.r, tempColor.g, tempColor.b, 1);
                 }
                 checkVenting(dt);
-        }
+            }
 
-        doPhysics = false;
 
-        // Get camera to follow sprite x and y movements
+            if (statusCheck) {
+                double r = Math.sqrt(Math.pow(gravData[0][1] / MyGdxGame.PPM - playersX, 2) + Math.pow(gravData[0][2] / MyGdxGame.PPM - playersY, 2));
+
+                double powRad = (starRad / r - shipRadDef) * radMultiplier * dt;
+
+                double powHeat = (starTemp / r - shipTempDef) * tempMultiplier * dt;
+                double newTemp = systemActors.getTempPer();
+                if (powHeat > 0) {
+                    // heating up
+                    newTemp += powHeat;
+                } else {
+                    // can cool down
+                    newTemp -= powHeat;
+                    if (newTemp < 20) {
+                        newTemp = 20;
+                    }
+                }
+
+                systemActors.updateTemp(newTemp);
+                systemActors.updateRad(powRad);
+
+            }
+
+            doPhysics = false;
+
+            // Get camera to follow sprite x and y movements
         /*gamecam.position.x = player.b2body.getPosition().x;
         gamecam.position.y = player.b2body.getPosition().y;*/
-        wStage.wStageCam.position.x = player.b2body.getPosition().x;//playerShipShown.getX()+playerShipShown.getWidth()/2;
-        wStage.wStageCam.position.y = player.b2body.getPosition().y;//playerShipShown.getY()+playerShipShown.getHeight()/2;
-        wStage.wStageCam.update();
+            wStage.wStageCam.position.x = player.b2body.getPosition().x;//playerShipShown.getX()+playerShipShown.getWidth()/2;
+            wStage.wStageCam.position.y = player.b2body.getPosition().y;//playerShipShown.getY()+playerShipShown.getHeight()/2;
+            wStage.wStageCam.update();
 
-        // update the star graphic
-        starr.update(physTime);
-        playerShipShown.update(physTime);
+            // update the star graphic
+            starr.update(physTime);
+            playerShipShown.update(physTime);
 
-        time1=System.nanoTime();
-        //System.out.println("new time "+time1+" old time "+time2);
-        checkPlayerGauge();
+            time1 = System.nanoTime();
+            //System.out.println("new time "+time1+" old time "+time2);
+            checkPlayerGauge();
 
-        // update camera and render
-        gamecam.update();
-        renderer.setView(gamecam);
+            // update camera and render
+            gamecam.update();
+            renderer.setView(gamecam);
+        }
     }
 
     public void checkPlayerGauge(){

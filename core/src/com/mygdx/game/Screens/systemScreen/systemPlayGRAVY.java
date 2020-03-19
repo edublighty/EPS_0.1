@@ -128,7 +128,7 @@ public class systemPlayGRAVY implements Screen {
         moveToPoint = false;
         starOnly = true;
         useAccMap = true;
-        systemGenerator sGen = new systemGenerator(game);
+        systemGenerator sGen = new systemGenerator(game,null);
         sGen.planetGen();
         solarRad = sGen.toteSize;
         planetData = sGen.getPlanetData();

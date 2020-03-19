@@ -1,68 +1,138 @@
 
 allPlanets.png
-size: 1024,512
+size: 2048,2048
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 gasGi1
   rotate: false
-  xy: 2, 204
+  xy: 1256, 1706
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
 gasGi2
   rotate: false
-  xy: 304, 204
+  xy: 754, 702
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
 gasGi3
   rotate: false
-  xy: 606, 204
+  xy: 1256, 1404
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-terGas1
+orbit
+  rotate: false
+  xy: 754, 1506
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+orbit2
   rotate: false
   xy: 2, 2
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+planetShine
+  rotate: false
+  xy: 754, 1004
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+selectPoint
+  rotate: false
+  xy: 1760, 1906
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+selectPointsmol
+  rotate: false
+  xy: 1458, 1352
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+selectPointsmolCurr
+  rotate: false
+  xy: 754, 548
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+selector1
+  rotate: false
+  xy: 1558, 1704
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+selector2
+  rotate: false
+  xy: 1256, 1100
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+star1
+  rotate: false
+  xy: 2, 1256
+  size: 750, 750
+  orig: 750, 750
+  offset: 0, 0
+  index: -1
+star2
+  rotate: false
+  xy: 2, 504
+  size: 750, 750
+  orig: 750, 750
+  offset: 0, 0
+  index: -1
+terGas1
+  rotate: false
+  xy: 504, 302
   size: 200, 200
   orig: 200, 200
   offset: 0, 0
   index: -1
 terGas2
   rotate: false
-  xy: 204, 2
+  xy: 1558, 1806
   size: 200, 200
   orig: 200, 200
   offset: 0, 0
   index: -1
 terGas3
   rotate: false
-  xy: 406, 2
+  xy: 1256, 1202
   size: 200, 200
   orig: 200, 200
   offset: 0, 0
   index: -1
 terr1
   rotate: false
-  xy: 908, 404
+  xy: 754, 600
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 terr2
   rotate: false
-  xy: 608, 102
+  xy: 1056, 902
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 terr3
   rotate: false
-  xy: 908, 302
+  xy: 504, 200
   size: 100, 100
   orig: 100, 100
   offset: 0, 0

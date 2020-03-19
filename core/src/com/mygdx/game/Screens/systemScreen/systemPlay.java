@@ -143,7 +143,7 @@ public class systemPlay implements Screen {
         useAccMap = false;
 
         // Initialisation of system
-        systemGenerator sGen = new systemGenerator(game);
+        systemGenerator sGen = new systemGenerator(game,null);
         sGen.planetGen();
         solarRad = sGen.toteSize;
         planetData = sGen.getPlanetData();

@@ -124,8 +124,8 @@ public class systemScreenShipGroup extends Group {
         //setBounds(this.getX(),this.getY(),(toteSize)/(MyGdxGame.PPM*100),toteSize/(MyGdxGame.PPM*100));
         //setBounds(this.getX(),this.getY(),(this.getWidth())/(MyGdxGame.PPM*30),(this.getHeight())/(MyGdxGame.PPM*30));
 
-        setHeight((toteSize)/(MyGdxGame.PPM*100));
-        setWidth((toteSize)/(MyGdxGame.PPM*100));
+        setHeight((toteSize));
+        setWidth((toteSize));
         //setPosition(this.getX()-this.getWidth()/2,this.getY()-this.getHeight()/2);
         setOrigin(this.getWidth()/2,this.getHeight()/2);
         //stage.setDebugAll(true);
@@ -1441,8 +1441,8 @@ public class systemScreenShipGroup extends Group {
 
         System.out.println("children "+noRooms+" vs "+noRooms2);
 
-        shipWidthPx = 0.25f*tileX;
-        shipHeightPx = 0.25f *tileY;
+        shipWidthPx = 2f*tileX;
+        shipHeightPx = 2f*tileY;
 
         setWidth(shipWidthPx);
         setHeight(shipHeightPx);

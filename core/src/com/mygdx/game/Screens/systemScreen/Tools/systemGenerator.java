@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
 import com.mygdx.game.MyGdxGame;
+import com.mygdx.game.Screens.systemScreen.systemScreen2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.math.BigDecimal;
 
 public class systemGenerator {
 
+    systemScreen2 screen;
     private float x;                                                    // current x coordinate
     private float y;                                                    // current y coorindate
     private double Rgal;                                                // distance to centre of galaxy
@@ -31,12 +33,16 @@ public class systemGenerator {
     private int tempScore;
     private int radScore;
     public float toteSize;
+    private float firstOrbRad;
+    private float planSpace;
 
     private double[][] planetProbs;
     private double[][] planetData;
 
-    public systemGenerator(MyGdxGame game){
+    public systemGenerator(MyGdxGame game, systemScreen2 screen){
         System.out.println("systGen constructor");
+        this.screen = screen;
+        toteSize = game.V_WIDTH/2;
         x = game.galX;
         y = game.galY;
         Rgal = Math.sqrt(Math.pow((double) x,2)+Math.pow((double) y,2));
@@ -138,10 +144,13 @@ public class systemGenerator {
         starData[0] = Sntype;
         starData[1] = starScore;
         starData[2] = starTemp;
-        starData[3] = 750;//starRad;
+        starData[3] = starRad;
         //starData[4] = 5;
 
         // star type has been set
+        // communicate with system class
+        screen.starRad = starRad;
+        screen.starTemp = starTemp;
 
     }
 
@@ -205,9 +214,9 @@ public class systemGenerator {
         // 5    - Temperature double
         // 6    - Radiation double
 
-        int orbRad;
-        int firstOrbRad = 2000;
-        int planSpace=4000;
+        double orbRad;
+        planSpace=toteSize/3;
+        firstOrbRad = planSpace*2;
 
         while(i<nP){
             System.out.println("i "+i);
@@ -224,7 +233,7 @@ public class systemGenerator {
             int tChoice = (int) Double.parseDouble(ecimals.substring(3,4))-50;
             int rChoice = (int) Double.parseDouble(ecimals.substring(5,6));
             double nPd = (double) nP;
-            toteSize = (750*(nP+1)+500)/2;       // position of sun from origin
+            //toteSize = (750*(nP+1)+500)/2;       // position of sun from origin
 
             while(scanning) {
                 System.out.println("i "+i+" and j "+j);
@@ -261,6 +270,10 @@ public class systemGenerator {
         System.out.println("Example: Planet 5");
         System.out.println("Type "+planetData[0][3]+" size "+planetData[1][3]+" xPos "+planetData[2][3]+" yPos "+planetData[3][3]);
     }
+
+    public float getfirstOrbRad(){return firstOrbRad;    }
+
+    public float getPlanSpace(){return planSpace;}
 
     public void spacingGen(){
         System.out.println("spacingGen");

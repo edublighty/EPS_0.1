@@ -18,10 +18,10 @@ public class playerImage extends Image {
     public World world;
     public Body b2body;
 
-    public playerImage(MyGdxGame game, World world, systemScreen2 screen, float toteSize,String level){
+    public playerImage(MyGdxGame game, World world, systemScreen2 screen, float toteSize,String level,float startX,float startY){
         super(game.getStarSelsAt().findRegion(level));
         this.world = world;
-        defineSprite(toteSize);
+        defineSprite(toteSize,startX,startY);
         setBounds(0,0,toteSize/(MyGdxGame.PPM*100),toteSize/(MyGdxGame.PPM*100));
         setOrigin(getWidth()/2,getHeight()/2);
     }
@@ -30,9 +30,9 @@ public class playerImage extends Image {
         setPosition(b2body.getPosition().x-getWidth()/2,b2body.getPosition().y-getHeight()/2);
     }
 
-    public void defineSprite(float toteSize){
+    public void defineSprite(float toteSize,float startX,float startY){
         BodyDef bdef = new BodyDef();
-        bdef.position.set(toteSize/2 / MyGdxGame.PPM,toteSize / (MyGdxGame.PPM*2));
+        bdef.position.set(startX,startY);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 

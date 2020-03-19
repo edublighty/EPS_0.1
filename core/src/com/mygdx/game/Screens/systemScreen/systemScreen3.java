@@ -357,7 +357,7 @@ public class systemScreen3 implements Screen {
         Gdx.input.setInputProcessor(multiplexer);
 
         // Initialisation of system
-        systemGenerator sGen = new systemGenerator(game);
+        systemGenerator sGen = new systemGenerator(game,null);
         sGen.planetGen();
         solarRad = sGen.toteSize;
         planetData = sGen.getPlanetData();

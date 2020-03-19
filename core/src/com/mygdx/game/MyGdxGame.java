@@ -7,12 +7,13 @@ import com.mygdx.game.Screens.mainMenu.mainScreen;
 
 public class MyGdxGame extends Game {
 
-	public static final int V_WIDTH=1280;
-	public static final int V_HEIGHT=720;
+	public static float V_WIDTH=30;//1280;
+	public static float V_HEIGHT=30;//(1280/720);
+	public float aspect;
 	public float galX;
 	public float galY;
 	public SpriteBatch batch;		// Contains all info rendered to screen
-	public static final float PPM = 150;
+	public static final float PPM = 1;
 
 	public static final short DEFAULT_BIT = 1;
 	public static final short SHIP_BIT = 2;
@@ -47,6 +48,8 @@ public class MyGdxGame extends Game {
 	
 	@Override
 	public void create () {
+		aspect = 1280f/720;
+		V_HEIGHT = V_WIDTH/aspect;
 		batch = new SpriteBatch();
 		galX = 10;									// set initial coordinates - get from list
 		galY = 10;									// set initial coordinates - get from list
