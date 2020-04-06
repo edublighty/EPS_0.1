@@ -133,6 +133,22 @@ public class systemScreenShipGroup extends Group {
         //setUpShip();
     }
 
+    public shipRoomSprite[] getSystems(){
+        return playerRoomsSystems;
+    }
+
+    public shipRoomButton[] getSystemLabels(){
+        return playerRoomsSystemsName;
+    }
+
+    public shipRoomButton[] getSystemSwitches(){
+        return playerRoomsSystemsEdge;
+    }
+
+    public shipRoomButton[] getSystemDamageBars(){
+        return playerRoomsSystemsDamage;
+    }
+
     public void update(float dt){
         //setPosition(b2body.getPosition().x-getWidth()/2,b2body.getPosition().y-getHeight()/2);
         //System.out.println("update group width "+this.getWidth()+" and "+this.getHeight());
@@ -1452,6 +1468,49 @@ public class systemScreenShipGroup extends Group {
         //externalPanels.setWidth(shipWidthPx);
         //setHeight(shipHeightPx);
 
+        // create backdrop for system detail
+
+        // create backdrop for ship menu
+
+        backdrop = new Image();
+        backdrop.setDrawable(new TextureRegionDrawable(game.getTilesAt().findRegion("pDTTile50Red")));
+        float margin = viewportHeight/10;
+        float width = tileWidth*getMaxI();
+        float height = tileWidth*getMaxJ();
+        float X = margin / 2;
+        float Y = margin / 2;
+        backdrop.setWidth(width);
+        backdrop.setHeight(height);
+        backdrop.setX(0);
+        backdrop.setY(0);
+        Color color = backdrop.getColor();
+        backdrop.setColor(color.r,color.g,color.b,0);
+        this.addActor(backdrop);
+        playerRoomsShield = new shipRoomButton(game, this,"shipShield", false,0);
+        this.addActor(playerRoomsShield);
+
+        playerRoomsSystemsEdge = new shipRoomButton[playerRoomsSystems.length];
+        playerRoomsSystemsName = new shipRoomButton[playerRoomsSystems.length];
+        playerRoomsSystemsDamage = new shipRoomButton[playerRoomsSystems.length];
+
+
+        for(int i=0;i<playerRoomsSystems.length;i++) {
+            if (playerRoomsSystems[i] == null) {
+
+            } else {
+                System.out.println("i " + i);
+                String roomType = playerRoomsSystems[i].getRoomType();
+                System.out.println("roomtype " + playerRoomsSystems[i].getRoomType());
+                int systemCount2 = playerRoomsSystems[i].getArrayNum();
+                playerRoomsSystemsName[i] = new shipRoomButton(game, this,roomType + "Txt", true,systemCount2);
+                playerRoomsSystemsEdge[i] = new shipRoomButton(game, this,"onButton", false,systemCount2);
+                playerRoomsSystemsDamage[i] = new shipRoomButton(game, this,"damage99", false,systemCount2);
+                //this.addActor(playerRoomsSystemsName[i]);
+                //this.addActor(playerRoomsSystemsEdge[i]);
+                //this.addActor(playerRoomsSystemsDamage[i]);
+            }
+        }
+
     }
 
     public int getNoRooms(){
@@ -1554,7 +1613,7 @@ public class systemScreenShipGroup extends Group {
 
     public void setUpShip(){
 
-        // create backdrop for system detail
+        /*// create backdrop for system detail
 
         // create backdrop for ship menu
 
@@ -1595,7 +1654,7 @@ public class systemScreenShipGroup extends Group {
                 this.addActor(playerRoomsSystemsEdge[i]);
                 this.addActor(playerRoomsSystemsDamage[i]);
             }
-        }
+        }*/
 
     }
 

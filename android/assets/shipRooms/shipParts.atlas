@@ -6,84 +6,119 @@ filter: Nearest,Nearest
 repeat: none
 Red
   rotate: false
-  xy: 1508, 1424
+  xy: 404, 1390
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
+acceptAlarm
+  rotate: false
+  xy: 1106, 1846
+  size: 400, 200
+  orig: 400, 200
+  offset: 0, 0
+  index: -1
+acceptAlarmAccepted
+  rotate: false
+  xy: 2, 1142
+  size: 400, 200
+  orig: 400, 200
+  offset: 0, 0
+  index: -1
+acceptAll
+  rotate: false
+  xy: 504, 1846
+  size: 600, 200
+  orig: 600, 200
+  offset: 0, 0
+  index: -1
 airlock
   rotate: false
-  xy: 1508, 1372
+  xy: 1508, 534
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 airlockDown
   rotate: false
-  xy: 1508, 1008
+  xy: 1508, 430
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 airlockTxt
   rotate: false
-  xy: 1660, 1648
+  xy: 1508, 681
   size: 200, 44
   orig: 200, 44
   offset: 0, 0
   index: -1
 armory
   rotate: false
-  xy: 1508, 1580
+  xy: 1910, 1894
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 armoryDown
   rotate: false
-  xy: 1508, 852
+  xy: 404, 1234
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 armoryTxt
   rotate: false
-  xy: 504, 29
+  xy: 1508, 638
   size: 200, 41
   orig: 200, 41
   offset: 0, 0
   index: -1
+clearAlarm
+  rotate: false
+  xy: 2, 1344
+  size: 400, 200
+  orig: 400, 200
+  offset: 0, 0
+  index: -1
+clearAll
+  rotate: false
+  xy: 504, 1644
+  size: 600, 200
+  orig: 600, 200
+  offset: 0, 0
+  index: -1
 cockpit
   rotate: false
-  xy: 1910, 1842
+  xy: 404, 1442
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 cockpitDown
   rotate: false
-  xy: 1508, 1216
+  xy: 404, 1338
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 cockpitTxt
   rotate: false
-  xy: 1660, 1694
+  xy: 204, 4
   size: 200, 44
   orig: 200, 44
   offset: 0, 0
   index: -1
 corridor1x1
   rotate: false
-  xy: 1508, 1268
+  xy: 1560, 586
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 corridor2x1
   rotate: false
-  xy: 1508, 1632
+  xy: 1862, 910
   size: 100, 50
   orig: 100, 50
   offset: 0, 0
@@ -97,721 +132,721 @@ corridor2x2
   index: -1
 corridor3x1
   rotate: false
-  xy: 1508, 1684
+  xy: 1508, 808
   size: 150, 50
   orig: 150, 50
   offset: 0, 0
   index: -1
 corridor3x2
   rotate: false
-  xy: 504, 1744
+  xy: 1508, 860
   size: 150, 100
   orig: 150, 100
   offset: 0, 0
   index: -1
 damage0
   rotate: false
-  xy: 504, 1112
+  xy: 1006, 656
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage1
   rotate: false
-  xy: 656, 1736
+  xy: 1006, 1280
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage10
   rotate: false
-  xy: 1006, 592
+  xy: 1006, 32
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage11
   rotate: false
-  xy: 504, 488
+  xy: 1508, 1794
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage12
   rotate: false
-  xy: 1006, 540
+  xy: 1508, 1742
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage13
   rotate: false
-  xy: 504, 436
+  xy: 1508, 1690
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage14
   rotate: false
-  xy: 1006, 488
+  xy: 1508, 1638
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage15
   rotate: false
-  xy: 906, 1996
+  xy: 504, 1592
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage16
   rotate: false
-  xy: 504, 384
+  xy: 1508, 1586
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage17
   rotate: false
-  xy: 1006, 436
+  xy: 1508, 1534
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage18
   rotate: false
-  xy: 504, 332
+  xy: 1508, 1482
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage19
   rotate: false
-  xy: 1006, 384
+  xy: 504, 604
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage2
   rotate: false
-  xy: 1006, 1164
+  xy: 504, 552
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage20
   rotate: false
-  xy: 1006, 332
+  xy: 1508, 1326
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage21
   rotate: false
-  xy: 504, 228
+  xy: 1508, 1274
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage22
   rotate: false
-  xy: 1006, 280
+  xy: 1508, 1222
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage23
   rotate: false
-  xy: 504, 176
+  xy: 1508, 1170
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage24
   rotate: false
-  xy: 2, 1136
+  xy: 2, 726
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage25
   rotate: false
-  xy: 1006, 228
+  xy: 1508, 1118
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage26
   rotate: false
-  xy: 504, 124
+  xy: 1508, 1066
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage27
   rotate: false
-  xy: 1006, 176
+  xy: 1508, 1014
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage28
   rotate: false
-  xy: 504, 72
+  xy: 1508, 962
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage29
   rotate: false
-  xy: 1006, 124
+  xy: 504, 1332
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage3
   rotate: false
-  xy: 504, 1060
+  xy: 1006, 604
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage30
   rotate: false
-  xy: 906, 1944
+  xy: 1006, 1592
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage31
   rotate: false
-  xy: 1408, 1996
+  xy: 504, 1540
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage32
   rotate: false
-  xy: 906, 1892
+  xy: 1006, 1540
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage33
   rotate: false
-  xy: 1408, 1944
+  xy: 2, 1090
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage34
   rotate: false
-  xy: 1408, 1892
+  xy: 2, 1038
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage35
   rotate: false
-  xy: 906, 1840
+  xy: 2, 986
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage36
   rotate: false
-  xy: 1408, 1840
+  xy: 2, 934
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage37
   rotate: false
-  xy: 2, 1292
+  xy: 2, 882
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage38
   rotate: false
-  xy: 2, 1240
+  xy: 2, 830
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage39
   rotate: false
-  xy: 2, 1188
+  xy: 2, 778
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage4
   rotate: false
-  xy: 1006, 1112
+  xy: 504, 500
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage40
   rotate: false
-  xy: 2, 1084
+  xy: 2, 622
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage41
   rotate: false
-  xy: 2, 1032
+  xy: 2, 570
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage42
   rotate: false
-  xy: 2, 980
+  xy: 2, 518
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage43
   rotate: false
-  xy: 2, 928
+  xy: 2, 466
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage44
   rotate: false
-  xy: 2, 876
+  xy: 2, 414
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage45
   rotate: false
-  xy: 2, 824
+  xy: 2, 362
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage46
   rotate: false
-  xy: 2, 772
+  xy: 2, 310
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage47
   rotate: false
-  xy: 2, 720
+  xy: 2, 258
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage48
   rotate: false
-  xy: 2, 668
+  xy: 2, 206
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage49
   rotate: false
-  xy: 2, 616
+  xy: 2, 154
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage5
   rotate: false
-  xy: 504, 1008
+  xy: 1006, 552
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage50
   rotate: false
-  xy: 656, 1788
+  xy: 2, 102
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage51
   rotate: false
-  xy: 2, 408
+  xy: 2, 50
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage52
   rotate: false
-  xy: 2, 356
+  xy: 504, 1488
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage53
   rotate: false
-  xy: 2, 304
+  xy: 1006, 1488
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage54
   rotate: false
-  xy: 2, 252
+  xy: 504, 1436
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage55
   rotate: false
-  xy: 2, 200
+  xy: 504, 396
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage56
   rotate: false
-  xy: 2, 148
+  xy: 1006, 1436
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage57
   rotate: false
-  xy: 2, 96
+  xy: 504, 1384
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage58
   rotate: false
-  xy: 2, 564
+  xy: 1006, 1384
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage59
   rotate: false
-  xy: 2, 44
+  xy: 1006, 1020
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage6
   rotate: false
-  xy: 1006, 1060
+  xy: 504, 448
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage60
   rotate: false
-  xy: 504, 1632
+  xy: 504, 1176
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage61
   rotate: false
-  xy: 1006, 1684
+  xy: 504, 188
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage62
   rotate: false
-  xy: 504, 1580
+  xy: 504, 1124
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage63
   rotate: false
-  xy: 1006, 1632
+  xy: 504, 1072
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage64
   rotate: false
-  xy: 1006, 1580
+  xy: 1006, 1124
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage65
   rotate: false
-  xy: 504, 1424
+  xy: 504, 864
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage66
   rotate: false
-  xy: 504, 1528
+  xy: 504, 1020
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage67
   rotate: false
-  xy: 1006, 1528
+  xy: 1006, 1072
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage68
   rotate: false
-  xy: 1158, 1788
+  xy: 504, 1280
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage69
   rotate: false
-  xy: 504, 1476
+  xy: 504, 968
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage7
   rotate: false
-  xy: 1006, 1476
+  xy: 504, 916
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage70
   rotate: false
-  xy: 504, 1372
+  xy: 504, 812
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage71
   rotate: false
-  xy: 1158, 1736
+  xy: 504, 1228
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage72
   rotate: false
-  xy: 1006, 1372
+  xy: 1006, 864
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage73
   rotate: false
-  xy: 504, 1320
+  xy: 504, 760
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage74
   rotate: false
-  xy: 504, 1268
+  xy: 1006, 812
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage75
   rotate: false
-  xy: 1006, 1320
+  xy: 504, 708
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage76
   rotate: false
-  xy: 504, 1216
+  xy: 1006, 760
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage77
   rotate: false
-  xy: 1006, 1268
+  xy: 504, 656
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage78
   rotate: false
-  xy: 504, 1164
+  xy: 1006, 1176
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage79
   rotate: false
-  xy: 1006, 1216
+  xy: 1006, 708
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage8
   rotate: false
-  xy: 1006, 1424
+  xy: 1006, 916
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage80
   rotate: false
-  xy: 2, 512
+  xy: 1006, 1332
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage81
   rotate: false
-  xy: 504, 956
+  xy: 1006, 500
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage82
   rotate: false
-  xy: 504, 748
+  xy: 1006, 292
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage83
   rotate: false
-  xy: 1006, 1008
+  xy: 1508, 1430
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage84
   rotate: false
-  xy: 504, 904
+  xy: 1006, 448
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage85
   rotate: false
-  xy: 1006, 956
+  xy: 504, 344
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage86
   rotate: false
-  xy: 504, 852
+  xy: 1006, 396
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage87
   rotate: false
-  xy: 1006, 904
+  xy: 504, 292
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage88
   rotate: false
-  xy: 504, 800
+  xy: 1006, 344
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage89
   rotate: false
-  xy: 1006, 852
+  xy: 504, 240
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage9
   rotate: false
-  xy: 2, 460
+  xy: 2, 674
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage90
   rotate: false
-  xy: 1006, 800
+  xy: 1006, 968
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage91
   rotate: false
-  xy: 504, 696
+  xy: 1006, 240
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage92
   rotate: false
-  xy: 1006, 748
+  xy: 504, 136
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage93
   rotate: false
-  xy: 504, 644
+  xy: 1006, 188
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage94
   rotate: false
-  xy: 1006, 696
+  xy: 504, 84
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage95
   rotate: false
-  xy: 504, 592
+  xy: 1006, 136
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage96
   rotate: false
-  xy: 1006, 644
+  xy: 1006, 84
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage97
   rotate: false
-  xy: 504, 540
+  xy: 504, 32
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage98
   rotate: false
-  xy: 504, 1684
+  xy: 1006, 1228
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage99
   rotate: false
-  xy: 504, 280
+  xy: 1508, 1378
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 engine
   rotate: false
-  xy: 1910, 1894
+  xy: 1508, 756
   size: 58, 50
   orig: 58, 50
   offset: 0, 0
@@ -825,112 +860,112 @@ engineDown
   index: -1
 engineTxt
   rotate: false
-  xy: 1660, 1789
+  xy: 1660, 911
   size: 200, 49
   orig: 200, 49
   offset: 0, 0
   index: -1
 flame
   rotate: false
-  xy: 1508, 956
+  xy: 1560, 482
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 medbay
   rotate: false
-  xy: 1508, 1528
+  xy: 1710, 675
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 medbayDown
   rotate: false
-  xy: 1508, 1320
+  xy: 1508, 482
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 medbayTxt
   rotate: false
-  xy: 1006, 75
+  xy: 1660, 862
   size: 200, 47
   orig: 200, 47
   offset: 0, 0
   index: -1
 oTwo
   rotate: false
-  xy: 404, 1390
+  xy: 1508, 586
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 oTwoDown
   rotate: false
-  xy: 1508, 1112
+  xy: 1612, 586
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 oTwoTxt
   rotate: false
-  xy: 1660, 1740
+  xy: 1660, 813
   size: 200, 47
   orig: 200, 47
   offset: 0, 0
   index: -1
 offButton
   rotate: false
-  xy: 2, 1344
+  xy: 1106, 1644
   size: 400, 200
   orig: 400, 200
   offset: 0, 0
   index: -1
 onButton
   rotate: false
-  xy: 504, 1846
+  xy: 1508, 1846
   size: 400, 200
   orig: 400, 200
   offset: 0, 0
   index: -1
 reactor
   rotate: false
-  xy: 1508, 1060
+  xy: 404, 1286
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 reactorDown
   rotate: false
-  xy: 1508, 1476
+  xy: 1862, 806
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 reactorTxt
   rotate: false
-  xy: 706, 28
+  xy: 1568, 727
   size: 200, 42
   orig: 200, 42
   offset: 0, 0
   index: -1
 shields
   rotate: false
-  xy: 404, 1442
+  xy: 1862, 858
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 shieldsDown
   rotate: false
-  xy: 1508, 800
+  xy: 1508, 378
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 shieldsTxt
   rotate: false
-  xy: 1208, 76
+  xy: 2, 2
   size: 200, 46
   orig: 200, 46
   offset: 0, 0
@@ -944,21 +979,21 @@ shipShield
   index: -1
 surveillance
   rotate: false
-  xy: 1508, 1164
+  xy: 1560, 534
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 surveillanceDown
   rotate: false
-  xy: 1508, 904
+  xy: 1612, 534
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 surveillanceTxt
   rotate: false
-  xy: 2, 2
+  xy: 1660, 771
   size: 200, 40
   orig: 200, 40
   offset: 0, 0

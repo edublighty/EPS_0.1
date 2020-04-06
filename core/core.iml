@@ -4,8 +4,6 @@
     <facet type="android-gradle" name="Android-Gradle">
       <configuration>
         <option name="GRADLE_PROJECT_PATH" value=":core" />
-        <option name="LAST_SUCCESSFUL_SYNC_AGP_VERSION" />
-        <option name="LAST_KNOWN_AGP_VERSION" />
       </configuration>
     </facet>
     <facet type="java-gradle" name="Java-Gradle">
@@ -30,6 +28,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="Gradle: gdx-box2d-1.9.9" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: gdx-freetype-1.9.9" level="project" />
     <orderEntry type="library" exported="" name="Gradle: gdx-1.9.9" level="project" />
   </component>
 </module>

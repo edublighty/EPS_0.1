@@ -4,8 +4,6 @@
     <facet type="android-gradle" name="Android-Gradle">
       <configuration>
         <option name="GRADLE_PROJECT_PATH" value=":desktop" />
-        <option name="LAST_SUCCESSFUL_SYNC_AGP_VERSION" />
-        <option name="LAST_KNOWN_AGP_VERSION" />
       </configuration>
     </facet>
     <facet type="java-gradle" name="Java-Gradle">
@@ -33,7 +31,9 @@
     <orderEntry type="library" exported="" name="Gradle: gdx-backend-lwjgl-1.9.9" level="project" />
     <orderEntry type="library" exported="" name="Gradle: gdx-platform-1.9.9-natives-desktop" level="project" />
     <orderEntry type="library" exported="" name="Gradle: gdx-box2d-platform-1.9.9-natives-desktop" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: gdx-freetype-platform-1.9.9-natives-desktop" level="project" />
     <orderEntry type="library" exported="" name="Gradle: gdx-box2d-1.9.9" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: gdx-freetype-1.9.9" level="project" />
     <orderEntry type="library" exported="" name="Gradle: gdx-1.9.9" level="project" />
     <orderEntry type="library" exported="" name="Gradle: lwjgl_util-2.9.2" level="project" />
     <orderEntry type="library" exported="" name="Gradle: lwjgl-2.9.2" level="project" />

@@ -32,6 +32,7 @@ public class shipRoomButton extends Image {
     private boolean systemON;
     private systemScreenShipGroup shipGroup;
     MyGdxGame game;
+    private float aspect;
 
     public shipRoomButton(MyGdxGame game, systemScreenShipGroup shipGroup, String roomType, boolean roomTxt, int systemCount) {
         super(game.getRoomsAt().findRegion(roomType));
@@ -45,7 +46,7 @@ public class shipRoomButton extends Image {
         //defineSprite(tempSize);
         //room = new TextureRegion((getTexture()), 0, 0, tempSize.get(0), tempSize.get(1));
         // set bounds is coords first and then width/height
-        float aspect = game.getRoomsAt().findRegion(roomType).getRegionWidth() / game.getRoomsAt().findRegion(roomType).getRegionHeight();
+        aspect = game.getRoomsAt().findRegion(roomType).getRegionWidth() / game.getRoomsAt().findRegion(roomType).getRegionHeight();
         setX(50f);
         setY(50f);
         setWidth(200f);
@@ -90,6 +91,8 @@ public class shipRoomButton extends Image {
     public String getRoomType(){
         return roomType;
     }
+
+    public float getAspect(){ return aspect; }
 
     public void defineSprite(List<Float> tempSize) {
         BodyDef bdef = new BodyDef();
