@@ -77,17 +77,6 @@ public class systemScreen2 implements Screen {
     private TextureAtlas thrustAt;
     private TextureAtlas healthAt;
     private TextureAtlas shieldAt;
-    public buttonOverlay buttonoverlay;
-    private float posDX;      // Destination X
-    private float posDY;      // Destination Y
-    private float posCX;      // Current X
-    private float posCY;      // Current Y
-    private double thetaS;        // angle of travel for player ship
-    private float zS = 25;
-    private boolean moveFlag;
-    private double deltaZ;
-    Vector2 centerPosition;
-    Vector2 mouseLoc;
     public Vector3 mousePos;
 
     // Box2D variables
@@ -112,9 +101,6 @@ public class systemScreen2 implements Screen {
 
     // booleans
     private boolean rendering;
-    public static boolean burnFlag;
-    public static boolean planetFlag;
-    private boolean moveToPoint;
     public boolean notStarted;
     public boolean autoOrbit;
     private boolean tracing;
@@ -140,7 +126,6 @@ public class systemScreen2 implements Screen {
     private double[][] planetData;
     private double[][] stellarAccMap;
     private double[] starData;
-    private double[][] velComps;
     //private int iCount;
     private int nP;
     public float solarRad;
@@ -159,7 +144,6 @@ public class systemScreen2 implements Screen {
     private ShapeRenderer sr;
     private double winWidth;
     private double winHeight;
-    private int points;
     private double winWorldX;
     private double winWorldY;
     private double scrWidth;
@@ -262,9 +246,6 @@ public class systemScreen2 implements Screen {
     public systemScreen2(MyGdxGame game){
 
         backgroundGenerator6_Pixmap bg = new backgroundGenerator6_Pixmap(game);
-        //barsGenerator barsGen = new barsGenerator();
-        //new shieldGenerator();
-        //new starGenerator2();
 
         // update variables
         int starSystNo = 1+1;
@@ -306,7 +287,6 @@ public class systemScreen2 implements Screen {
 
         // ship-specific variables
         maxBurnThrust = 30f/50;
-        System.out.println("maxBurnThrust "+maxBurnThrust);
         burnThrust = maxBurnThrust;
         burnPer = 50f;
 
@@ -323,7 +303,6 @@ public class systemScreen2 implements Screen {
         Platlas = new TextureAtlas("PNGsPacked/allPlanets.atlas");
         Statlas = new TextureAtlas("PNGsPacked/Stars.atlas");
         starAnim = new TextureAtlas("PNGsPacked/stars/starsPack.atlas");
-        //starAnim = new TextureAtlas("systemScreen/starPNGs/Randomised/starsAnim.atlas");
         tilesAt = new TextureAtlas("PNGsPacked/biomespack50px.atlas");
         rect = tilesAt.findRegion("pDTTile50Orange");
         thrustAt = new TextureAtlas("systemScreen/ui/thrustControl.atlas");
@@ -365,20 +344,11 @@ public class systemScreen2 implements Screen {
         GestureDetector gd = new GestureDetector(new GestureDetector.GestureListener() {
             @Override
             public boolean touchDown(float x, float y, int pointer, int button) {
-                System.out.println("going for burn");
-                //touchDragged2();
                 mousePos = new Vector3(Gdx.input.getX()/MyGdxGame.PPM, Gdx.input.getY()/MyGdxGame.PPM, 0);
                 float midX = windowWidth / (MyGdxGame.PPM*2*gamecam.zoom);
                 float midY = windowHeight / (MyGdxGame.PPM*2*gamecam.zoom);
-                float playerX = player.b2body.getPosition().x;
-                float playerY = player.b2body.getPosition().y;
-                System.out.println("mid x "+midX+" mid y "+midY);
-                //System.out.println("player x "+player.b2body.getPosition().x+" player y "+player.b2body.getPosition().y);
-                System.out.println("mouse x "+mousePos.x+" mouse y "+mousePos.y);
-                System.out.println("viewportWIdth "+gamecam.viewportWidth+" viewportHeight "+gamecam.viewportHeight);
                 float burnI = -(mousePos.x - midX);
                 float burnJ = (mousePos.y - midY);
-                System.out.println("burnI "+burnI+" burnJ "+burnJ);
                 getburnAngle(burnI,burnJ,angle1);
 
                 allStop = false;
@@ -456,15 +426,6 @@ public class systemScreen2 implements Screen {
         gravData[0][1] = game.V_WIDTH/2;
         gravData[0][2] = game.V_WIDTH/2;
         paused = false;
-
-        velComps = new double[4][15];
-        //iCount=0;
-
-        points = 50;
-
-        burnFlag = false;
-        planetFlag = false;
-
         // load map
         map = new TiledMap();
         renderer = new OrthogonalTiledMapRenderer(map, 1/MyGdxGame.PPM);
@@ -1258,50 +1219,6 @@ public class systemScreen2 implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);    // clears screen
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);                   // clears screen
 
-        // render game map
-        //renderer.render();
-
-        //renderer our Box2DDebugLines
-        //b2dr.render(world, gamecam.combined);
-/*
-        game.batch.setProjectionMatrix(gamecam.combined);
-        game.batch.begin();
-        player.draw(game.batch);
-        int i = 0;
-        while(i<nP){
-            planets[i].draw(game.batch);
-            i++;
-        }
-        starr.draw(game.batch);
-        for(i=0;i<pathCount-1;i++) {
-            float x1 = path.get(i).x;
-            float x2 = path.get(i+1).x;
-            float y1 = path.get(i).y;
-            float y2 = path.get(i+1).y;
-            float dx = (x2 - x1);
-            float dy = (y2 - y1);
-            *//*
-            float dist = (float)Math.sqrt(dx*dx + dy*dy);
-            float rad = (float)Math.atan2(dy, dx);*//*
-            game.batch.draw(rect, x1, y1,dx, dy);
-        }
-        //game.batch.draw(rect)
-        game.batch.end();
-        */
-/*
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        if(collision) {
-            shapeRenderer.setColor(1, 0, 0, 1);
-        } else {
-            shapeRenderer.setColor(1, 1, 1, 1);
-        }
-        for(i=0;i<pathCount-1;i++) {
-            //shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            shapeRenderer.line(path.get(i),path.get(i+1));
-            //shapeRenderer.end();
-        }
-        shapeRenderer.end();*/
-
         game.batch.setProjectionMatrix(wStage.traceStage.getCamera().combined);
         wStage.traceStage.draw();
 
@@ -1309,25 +1226,15 @@ public class systemScreen2 implements Screen {
         wStage.stage.draw();
         wStage.stage.act();
 
-        // draw HUDs here
-        /*game.batch.setProjectionMatrix(galActors.stage.getCamera().combined);
-        galActors.stage.draw();*/
         game.batch.setProjectionMatrix(systemActors.stage.getCamera().combined);
         systemActors.stage.draw();
         systemActors.stage.act();
-
-        /*game.batch.setProjectionMatrix(systemShipImage.stage.getCamera().combined);
-        systemShipImage.stage.draw();*/
 
         if(paused) {
             game.batch.setProjectionMatrix(pauseHUD.stage.getCamera().combined);
             pauseHUD.stage.draw();
         }
 
-        //game.batch.setProjectionMatrix(shipOverlay.stage.getCamera().combined);
-        //shipOverlay.stage.draw();
-
-        //System.out.println("zoom is now "+gamecam.zoom);
     }
 
     @Override
@@ -1362,13 +1269,11 @@ public class systemScreen2 implements Screen {
         winHeight = Gdx.graphics.getHeight();
         scrWidth = (int) gamecam.viewportWidth;
         scrHeight = (int) gamecam.viewportHeight;
-        //System.out.println("initial veiwport "+scrWidth+" and "+scrHeight);
 
         winWorldX = (winWidth / scrWidth);        // ratio of window to screen
         winWorldY = (winHeight / scrHeight);      // ratio of window to screen
 
         wStage.stage.getViewport().update(width,height,true);
-        //wStage.stage.getViewport().setScreenSize(width,height);
         wStage.traceStage.getViewport().update(width,height,true);
         gameport.update(width,height);
         gamecam.update();
@@ -1408,25 +1313,15 @@ public class systemScreen2 implements Screen {
         // THIS IS WHERE TOUCH DRAG WILL OCCUR (no its not)
         if(Gdx.input.isKeyPressed(Input.Keys.Q)){                         // destination on screen Y
             if(true){//gamecam.zoom<maxZoom) {
-                //gamecam.viewportWidth=gamecam.viewportWidth*1.01f;
-                //System.out.println("before "+gamecam.viewportWidth+" by "+gamecam.viewportHeight+" and zoom "+gamecam.zoom);
                 gamecam.zoom*=1.02f;
                 wStage.wStageCam.zoom*=1.02f;
-                //System.out.println("after "+gamecam.viewportWidth+" by "+gamecam.viewportHeight);
-                //gamecam.viewportHeight=(float) (gamecam.viewportWidth*winWorldX/winWorldY);
-                //player.setBounds(0,0,player.getWidth()*1.01f,player.getHeight()*1.01f);
             }
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.E)){
             if(true){//gamecam.viewportWidth>minZoomX && gamecam.viewportHeight>minZoomY) {
-                //gamecam.viewportWidth = gamecam.viewportWidth * 0.99f;
-                //gamecam.viewportHeight = (float) (gamecam.viewportWidth*winWorldX/winWorldY);
-                //System.out.println("before "+gamecam.viewportWidth+" by "+gamecam.viewportHeight);
                 gamecam.zoom *= 0.98f;
                 wStage.wStageCam.zoom *= 0.98f;
-                //System.out.println("after "+gamecam.viewportWidth+" by "+gamecam.viewportHeight);
-                //player.setBounds(0,0,player.getWidth()*0.99f,player.getHeight()*0.99f);
             }
         }
 
@@ -1466,40 +1361,17 @@ public class systemScreen2 implements Screen {
             playerShipShown.updateDamage(randSyst,damage);
         }
 
-        /*if(Gdx.input.isTouched()) {
-            System.out.println("holding down");
-            mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            gamecam.unproject(mousePos); // mousePos is now in world coordinates
-            burnX = player.b2body.getPosition().x - mousePos.x;
-            burnY = player.b2body.getPosition().y - mousePos.y;
-            burnR = (float) (Math.sqrt(Math.pow(burnX, 2) + Math.pow(burnY, 2)));
-            *//*float vX = (float) (1 * X / r);
-            float vY = (float) (1 * Y / r);
-            //Vector2 vector = new Vector2(vX + player.b2body.getLinearVelocity().x, vY + player.b2body.getLinearVelocity().y);
-            //player.b2body.setLinearVelocity(vector);
-            playerVx = vX + playerVx;
-            playerVy = vY + playerVy;*//*
-            engBurn = true;
-        } else {
-            engBurn = false;
-        }*/
-
-        /*if(handling){
-            systemActors.updateHandle();
-        }*/
     }
 
     public boolean touchDragged2(){//, int pointer) {
         float x = Gdx.input.getDeltaX();
         float y = Gdx.input.getDeltaY();
-        //System.out.println("results "+x+" and "+y);
         gamecam.translate(-x,y);
         return true;
     }
 
     public void checkAirlocks(){
         // checks whether venting is still true
-        //System.out.println("checking airlocks");
         int airlocksOpen = 0;
         for(int i=0;i<(vertices.length);i++) {
             if(vertices[i]==null){
@@ -1717,36 +1589,17 @@ public class systemScreen2 implements Screen {
                                 }
 
                             }
-
-
-                            /*
-                            if (vertices[i].o2 < 30) {
-                                playerShipShown.updateAir(0.56f,i);
-                            } else if (vertices[i].o2 < 40) {
-                                playerShipShown.updateAir(0.48f,i);
-                            } else if (vertices[i].o2 < 50) {
-                                playerShipShown.updateAir(0.40f,i);
-                            } else if (vertices[i].o2 < 60) {
-                                playerShipShown.updateAir(0.32f,i);
-                            } else if (vertices[i].o2 < 70) {
-                                playerShipShown.updateAir(0.24f,i);
-                            } else if (vertices[i].o2 < 80) {
-                                playerShipShown.updateAir(0.16f,i);
-                            } else if (vertices[i].o2 < 90) {
-                                playerShipShown.updateAir(0.08f,i);
-                            }
-                            */
                         }
                     }
                 }
             }
             //System.out.println("ventCheck is "+ventCheck);
         } else {
-            for(int i=0;i<(vertices.length);i++) {
+            for (int i = 0; i < (vertices.length); i++) {
                 // search all vertices for rooms / tiles / doors
-                if(vertices[i]==null){
+                if (vertices[i] == null) {
                 } else {
-                    if(vertices[i].thisRoom==null){
+                    if (vertices[i].thisRoom == null) {
                     } else {
                         if (vertices[i].thisRoom == Vertex.vertexRoom.room) {
                             if (vertices[i].vacuuming) {
@@ -1764,40 +1617,27 @@ public class systemScreen2 implements Screen {
                             }
 
                             if (vertices[i].o2 < 30) {
-                                playerShipShown.updateAir(0.56f,i);
+                                playerShipShown.updateAir(0.56f, i);
                             } else if (vertices[i].o2 < 40) {
-                                playerShipShown.updateAir(0.48f,i);
+                                playerShipShown.updateAir(0.48f, i);
                             } else if (vertices[i].o2 < 50) {
-                                playerShipShown.updateAir(0.40f,i);
+                                playerShipShown.updateAir(0.40f, i);
                             } else if (vertices[i].o2 < 60) {
-                                playerShipShown.updateAir(0.32f,i);
+                                playerShipShown.updateAir(0.32f, i);
                             } else if (vertices[i].o2 < 70) {
-                                playerShipShown.updateAir(0.24f,i);
+                                playerShipShown.updateAir(0.24f, i);
                             } else if (vertices[i].o2 < 80) {
-                                playerShipShown.updateAir(0.16f,i);
+                                playerShipShown.updateAir(0.16f, i);
                             } else if (vertices[i].o2 < 90) {
-                                playerShipShown.updateAir(0.08f,i);
+                                playerShipShown.updateAir(0.08f, i);
                             } else {
-                                playerShipShown.updateAir(0,i);
+                                playerShipShown.updateAir(0, i);
                             }
-                        } /*else if(vertices[i].thisRoom == Vertex.vertexRoom.tile){
-                            if(vertices[i].onFire){
-                                // tile is on fire
-                                if(vertices[i].fireHealth>0){
-                                    // tile fire is still burning
-                                    vertices[i].fireHealth--;
-                                    vertices[vertices[i].coreRoomCount].roomDamage--;
-                                } else {
-                                    // tile was on fire and now gone out
-                                    vertices[i].onFire = false;
-                                    vertices[i].fireDamaged = true;
-                                }
-                            }
-                        }*/
+                        }
                     }
                 }
             }
-            }
+        }
     }
 
     public Vector2 getPlayerPosition(){
@@ -1860,18 +1700,7 @@ public class systemScreen2 implements Screen {
                 accumulator -= step;
             }
 
-            //System.out.println("accum "+accumulator+" step "+step+" dt "+dt+" frameTime "+frameTime);
-
-            //doPhysics = true;
-
             int i;
-
-            if (burnFlag) {
-                // applying burning to player and hud
-            }
-
-            boolean tempBool = true;
-            //doPhysics = false;
 
             if (doPhysics) {
                 if (autoOrbit) {
@@ -1888,10 +1717,6 @@ public class systemScreen2 implements Screen {
                         Vector2 As = interpolateAcc(player.b2body.getPosition().x, player.b2body.getPosition().y);
                         double Ax = As.x;
                         double Ay = As.y;
-                        //Vx = (float) (player.b2body.getLinearVelocity().x + Ax * dt);
-                        //Vy = (float) (player.b2body.getLinearVelocity().y + Ay * dt);
-                        //Vector2 vec2 = new Vector2(Vx, Vy);
-                        //player.b2body.setLinearVelocity(vec2);
                     } else {
                         dt = (float) frameTime;
                         double r;
@@ -1914,7 +1739,6 @@ public class systemScreen2 implements Screen {
                                         // Vx = Vx * 0.95f;
                                         planetDeburn = true;
                                     } else if (playerVy > orbVel.y) {
-                                        //Vy = Vy * 0.95f;
                                         playerVy = orbVel.y;
                                         planetDeburn = true;
                                     } else {
@@ -1963,9 +1787,6 @@ public class systemScreen2 implements Screen {
                             Ax = A.x;
                             Ay = A.y;
                         }
-                        //System.out.println("Ax is "+Ax+" over dt "+dt);
-                        //System.out.println("playerVx "+playerVx+" playerVy "+playerVy);
-                        //System.out.println("player X "+player.b2body.getPosition().x+" Y "+player.b2body.getPosition().y);
                         playerVx = (playerVx + Ax * dt);                    // new velocity at end of timestep
                         pX = (playerVx) * dt;// + Ax*Math.pow(dt,2)/2);     // displacement across timestep
                         playerVy = (playerVy + Ay * dt);                    // new velocity at end of timestep
@@ -1973,9 +1794,7 @@ public class systemScreen2 implements Screen {
                         playersX = playersX + pX;
                         playersY = playersY + pY;
                         player.b2body.setTransform(playersX, playersY, 0);
-                        //}
                     }
-                    //}
                 }
                 world.step((float) physTime, 6, 2);
                 setPlayerAngle();
@@ -1997,7 +1816,6 @@ public class systemScreen2 implements Screen {
                         float dy = (y2 - y1);
                         wStage.traceStage.addActor(new traceImage(game, this, x1, y1, dx, dy));
                     }
-                    //tracing = false;
                 }
 
                 boolean colouring = false;
@@ -2073,8 +1891,6 @@ public class systemScreen2 implements Screen {
             doPhysics = false;
 
             // Get camera to follow sprite x and y movements
-        /*gamecam.position.x = player.b2body.getPosition().x;
-        gamecam.position.y = player.b2body.getPosition().y;*/
             wStage.wStageCam.position.x = player.b2body.getPosition().x;//playerShipShown.getX()+playerShipShown.getWidth()/2;
             wStage.wStageCam.position.y = player.b2body.getPosition().y;//playerShipShown.getY()+playerShipShown.getHeight()/2;
             wStage.wStageCam.update();
@@ -2084,7 +1900,6 @@ public class systemScreen2 implements Screen {
             playerShipShown.update(physTime);
 
             time1 = System.nanoTime();
-            //System.out.println("new time "+time1+" old time "+time2);
             checkPlayerGauge();
 
             // update camera and render
@@ -2094,21 +1909,6 @@ public class systemScreen2 implements Screen {
     }
 
     public void checkPlayerGauge(){
-/*
-        if((time1-time2)>1000000000) {
-            //playerHealth--;
-            systemActors.updateHealth(playerHealth);
-            //playerShields--;
-            systemActors.updateShields(playerShields);
-            //System.out.println("UPDATING HEALTH AND SHIELDS health: "+playerHealth+" shields: "+playerShields);
-            // update health bar
-            String health = "healthBar" + playerHealth;
-            //System.out.println("string is:"+health+":");
-
-            time1=System.nanoTime();
-            time2=System.nanoTime();
-        }
-        */
     }
 
     public void setPlayerAngle(){
