@@ -1,13 +1,17 @@
 package com.mygdx.game.Perlin;
 
+import com.mygdx.game.MyGdxGame;
+
 import java.util.Random;
 
 public class Perlin {
 
     public float[][] perlinNoise;
+    private static MyGdxGame game;
 
-    public float[][] perlinFun(Perlin noise, int width, int height, int oct1, int oct2, int oct3, int oct4, int oct5, int oct6, int oct7) {
+    public float[][] perlinFun(Perlin noise, MyGdxGame gameIn, int width, int height, int oct1, int oct2, int oct3, int oct4, int oct5, int oct6, int oct7) {
 
+        this.game=gameIn;
         float[][] seed = noise.GenerateWhiteNoise(width, height);
 
         float[][] seedC = noise.GenerateSmoothNoise(seed, oct1);
@@ -31,7 +35,7 @@ public class Perlin {
 
     public static float[][] GenerateWhiteNoise(int width,int height){
 
-        Random random = new Random((long) (Math.round(Math.random() * 100 * Math.random() * 10))); //Seed to 0 for testing
+        //Random random = new Random((long) (Math.round(Math.random() * 100 * Math.random() * 10))); //Seed to 0 for testing
         float[][] noise = new float[width][height];
 
         System.out.println("noise width "+width+" and height "+height);
@@ -39,7 +43,12 @@ public class Perlin {
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < height; j++){
-                noise[i][j] = (float)(Math.random() % 1);
+                double random = game.randManager.getRandomNo(1);
+                //System.out.println("perling random is "+random);
+                //System.out.println("random can be "+(Math.random()));
+                //System.out.println("random should be "+(Math.random() % 1));
+                noise[i][j] = (float)((random/10 % 1));
+                //System.out.println("noise is "+noise[i][j]);
             }
         }
 

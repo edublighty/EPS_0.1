@@ -3,7 +3,6 @@ package com.mygdx.game.Screens.systemScreen.Tools;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.Perlin.Perlin;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -11,11 +10,11 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class backgroundGenerator2 {
+public class backgroundGenerator4 {
 
-    private static MyGdxGame game;
+    MyGdxGame game;
 
-    public backgroundGenerator2() {
+    public backgroundGenerator4() {
 
         //image dimension
         int width = 1500;
@@ -26,8 +25,8 @@ public class backgroundGenerator2 {
         int clrBlue = 225;
         int clrGreen = 225;
         int aMin = 0;
-        double pow = 3;
-        double pow2 = 8;
+        double pow = 1;
+        double pow2 = 7;
 
         float aArray[][] = new float[width][height];
         float a2Array[][] = new float[width][height];
@@ -47,6 +46,28 @@ public class backgroundGenerator2 {
         float a11Array[][] = new float[width][height];
         float a12Array[][] = new float[width][height];
 
+        float a13Array[][] = new float[width][height];
+        float a14Array[][] = new float[width][height];
+
+        float a15Array[][] = new float[width][height];
+        float a16Array[][] = new float[width][height];
+
+        int aoct1 = 2;
+        int aoct2 = 3;
+        int aoct3 = 4;
+        int aoct4 = 5;
+        int aoct5 = 1;
+        int aoct6 = 1;
+        int aoct7 = 6;
+
+        int a2oct1 = 1;
+        int a2oct2 = 2;
+        int a2oct3 = 3;
+        int a2oct4 = 1;
+        int a2oct5 = 1;
+        int a2oct6 = 1;
+        int a2oct7 = 6;
+/*
         int aoct1 = 1;
         int aoct2 = 1;
         int aoct3 = 2;
@@ -62,6 +83,7 @@ public class backgroundGenerator2 {
         int a2oct5 = 3;
         int a2oct6 = 1;
         int a2oct7 = 4;
+        */
 
         int oct1 = 1;
         int oct2 = 1;
@@ -75,6 +97,7 @@ public class backgroundGenerator2 {
 
         aArray = perlin.perlinFun(perlin,game,width,height, aoct1, aoct2, aoct3, aoct4, aoct5, aoct6, aoct7);
         a2Array = perlin.perlinFun(perlin,game,width,height, a2oct1, a2oct2, a2oct3, a2oct4, a2oct5, a2oct6, a2oct7);
+
 
         a3Array = perlin.perlinFun(perlin,game,width,height, aoct1, aoct2, aoct3, aoct4, aoct5, aoct6, aoct7);
         a4Array = perlin.perlinFun(perlin,game,width,height, a2oct1, a2oct2, a2oct3, a2oct4, a2oct5, a2oct6, a2oct7);
@@ -91,6 +114,12 @@ public class backgroundGenerator2 {
         a11Array = perlin.perlinFun(perlin,game,width,height, aoct1, aoct2, aoct3, aoct4, aoct5, aoct6, aoct7);
         a12Array = perlin.perlinFun(perlin,game,width,height, a2oct1, a2oct2, a2oct3, a2oct4, a2oct5, a2oct6, a2oct7);
 
+        a13Array = perlin.perlinFun(perlin,game,width,height, aoct1, aoct2, aoct3, aoct4, aoct5, aoct6, aoct7);
+        a14Array = perlin.perlinFun(perlin,game,width,height, a2oct1, a2oct2, a2oct3, a2oct4, a2oct5, a2oct6, a2oct7);
+
+        a15Array = perlin.perlinFun(perlin,game,width,height, aoct1, aoct2, aoct3, aoct4, aoct5, aoct6, aoct7);
+        a16Array = perlin.perlinFun(perlin,game,width,height, a2oct1, a2oct2, a2oct3, a2oct4, a2oct5, a2oct6, a2oct7);
+
         //create buffered image object img
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         //file object
@@ -102,7 +131,7 @@ public class backgroundGenerator2 {
         //create random image pixel by pixel
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                double temp = (Math.pow(aArray[x][y],pow) * Math.pow(a2Array[x][y],pow2));
+                double temp = (Math.pow(aArray[x][y],pow)) ;//* Math.pow(a2Array[x][y],pow2));
                 if(temp<0){
                     //temp = Math.pow(temp,2);
                 } else {
@@ -327,86 +356,150 @@ public class backgroundGenerator2 {
                 img6.setRGB(x, y, p);
             }
         }
-/*
 
+        BufferedImage img7 = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+        // 7 - white
         //create random image pixel by pixel
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-
-                int p1 = img1.getRGB(x,y);
-                int alpha1 = (p1 >> 24) & 0xFF;
-                int red1 = (p1 >> 16) & 0xFF;
-                int green1 = (p1 >> 8) & 0xFF;
-                int blue1 = p1 & 0xFF;
-
-                int p2 = img2.getRGB(x,y);
-                int alpha2 = (p2 >> 24) & 0xFF;
-                int red2 = (p2 >> 16) & 0xFF;
-                int green2 = (p2 >> 8) & 0xFF;
-                int blue2 = p2 & 0xFF;
-
-                int p3 = img3.getRGB(x,y);
-                int alpha3 = (p3 >> 24) & 0xFF;
-                int red3 = (p3 >> 16) & 0xFF;
-                int green3 = (p3 >> 8) & 0xFF;
-                int blue3 = p3 & 0xFF;
-
-                int p4 = img3.getRGB(x,y);
-                int alpha4 = (p4 >> 24) & 0xFF;
-                int red4 = (p4 >> 16) & 0xFF;
-                int green4 = (p4 >> 8) & 0xFF;
-                int blue4 = p4 & 0xFF;
-
-                int p5 = img3.getRGB(x,y);
-                int alpha5 = (p5 >> 24) & 0xFF;
-                int red5 = (p5 >> 16) & 0xFF;
-                int green5 = (p5 >> 8) & 0xFF;
-                int blue5 = p5 & 0xFF;
-
-                int p6 = img3.getRGB(x,y);
-                int alpha6 = (p6 >> 24) & 0xFF;
-                int red6 = (p6 >> 16) & 0xFF;
-                int green6 = (p6 >> 8) & 0xFF;
-                int blue6 = p6 & 0xFF;
-
-*/
-/*
-                System.out.println("alpha1 "+alpha1+" alpha2 "+alpha2+" alpha3 "+alpha3);
-                System.out.println("red1 "+red1+" red2 "+red2+" red3 "+red3);
-                System.out.println("green1 "+green1+" green2 "+green2+" green3 "+green3);
-                System.out.println("blue1 "+blue1+" blue2 "+blue2+" blue3 "+blue3);*//*
-
-
-                */
-/*int alpha = alpha1;
-                if(alpha2>alpha){
-                    alpha=alpha2;
+                double temp = (Math.pow(a13Array[x][y],pow) * Math.pow(a14Array[x][y],pow2));
+                if(temp<0){
+                    //temp = Math.pow(temp,2);
+                } else {
+                    //temp = Math.sqrt(temp);
                 }
-                if(alpha3>alpha){
-                    alpha=alpha3;
-                }*//*
+                int a = (int) (temp * clr) - aMin; //alpha
+                if(a<0){
+                    a=0;
+                }
+                if(a>255){
+                    a=255;
+                }
+                /*if(a<50){
+                    a=0;
+                }
+                if(a>225){
+                    a=0;
+                }*/
+                int r;
+                int g;
+                int b;
+                r = (int) (255); //red
+                g = (int) (255); //green
+                b = (int) (255); //blue
 
-                int alpha = (int) Math.pow((Math.pow(alpha1,2)+Math.pow(alpha2,2)+Math.pow(alpha3,2)+Math.pow(alpha4,2)+Math.pow(alpha5,2)+Math.pow(alpha6,2)),(1/2))/6;
-                int red = (int) Math.pow((Math.pow(red1,2)+Math.pow(red2,2)+Math.pow(red3,2)+Math.pow(red4,2)+Math.pow(red5,2)+Math.pow(red6,2)),(1/2))/6;
-                int green = (int) Math.pow((Math.pow(green1,2)+Math.pow(green2,2)+Math.pow(green3,2)+Math.pow(green4,2)+Math.pow(green5,2)+Math.pow(green6,2)),(1/2))/6;
-                int blue = (int) Math.pow((Math.pow(blue1,2)+Math.pow(blue2,2)+Math.pow(blue3,2)+Math.pow(blue4,2)+Math.pow(blue5,2)+Math.pow(blue6,2)),(1/2))/6;
+                int p = (a << 24) | (r << 16) | (g << 8) | b; //pixel
 
-                int p = (alpha << 24) | (red << 16) | (green << 8) | blue; //pixel
-
-                img.setRGB(x, y, p);
+                img7.setRGB(x, y, p);
             }
         }
-*/
+
+        BufferedImage img8 = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+        // 8 - white AGAIN SONNNNN
+        //create random image pixel by pixel
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                double temp = (Math.pow(a15Array[x][y],pow) * Math.pow(a16Array[x][y],pow2));
+                if(temp<0){
+                    //temp = Math.pow(temp,2);
+                } else {
+                    //temp = Math.sqrt(temp);
+                }
+                int a = (int) (temp * clr) - aMin; //alpha
+                if(a<0){
+                    a=0;
+                }
+                if(a>255){
+                    a=255;
+                }
+                /*if(a<50){
+                    a=0;
+                }
+                if(a>225){
+                    a=0;
+                }*/
+                int r;
+                int g;
+                int b;
+                r = (int) (255); //red
+                g = (int) (255); //green
+                b = (int) (255); //blue
+
+                int p = (a << 24) | (r << 16) | (g << 8) | b; //pixel
+
+                img8.setRGB(x, y, p);
+            }
+        }
+
+        BufferedImage img9 = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+        int noStars = 100;
+        // make random stars across galwidth and galheight
+        while(noStars>0){
+
+            int X = (int) (width*Math.random());
+            int Y = (int) (height*Math.random());
+
+            clrRed = (int) 255;
+            clrGreen = (int) 255;
+            clrBlue = (int) 225;
+            int a;
+            int r;
+            int g;
+            int b;
+
+            for (int y = 0; y < 2; y++) {
+                for (int x = 0; x < 2; x++) {
+                    // calculate distance from (0,3) in grid
+                    double rad = Math.sqrt(Math.pow((x - 2), 2) + Math.pow((y - 3), 2));
+                    // distance from (3,4) in grid to (5,0) where its planned for star to be dimmest
+                    a = 255;//(int) (255 - (100 * rad / baseRad));
+                    if (x == 0) {
+                        if (y == 0) {
+                            a = 0;
+                        } else if (y == height - 1) {
+                            a = 0;
+                        }
+                    } else if (x == width - 1) {
+                        if (y == 0) {
+                            a = 0;
+                        } else if (y == height - 1) {
+                            a = 0;
+                        }
+                    }
+                    r = (int) clrRed;//(255-(130*rad/baseRad)); // blue
+                    g = (int) clrGreen;//(255-(130*rad/baseRad)); // blue
+                    b = (int) (clrBlue);// - (clrBlue * 0.25 * rad / baseRad)); // blue
+
+                    int p = (a << 24) | (r << 16) | (g << 8) | b; //pixel
+                    //System.out.println("p is now "+p);
+
+                    try {
+                        img9.setRGB(X + x, Y + y, p);
+                    } catch (Exception e) {
+                        // probably out of bounds, who cares
+                    }
+                }
+            }
+
+            noStars--;
+        }
 
 
         // paint both images, preserving the alpha channels
         Graphics g1 = img.getGraphics();
+        g1.drawImage(img9, 0, 0, null);
         g1.drawImage(img1, 0, 0, null);
         g1.drawImage(img2, 0, 0, null);
         g1.drawImage(img3, 0, 0, null);
         g1.drawImage(img4, 0, 0, null);
         g1.drawImage(img5, 0, 0, null);
         g1.drawImage(img6, 0, 0, null);
+        g1.drawImage(img7, 0, 0, null);
+        g1.drawImage(img8, 0, 0, null);
+
 
         int filecount=2;
 
@@ -421,7 +514,7 @@ public class backgroundGenerator2 {
 
         width = 6;
         height = 6;
-        BufferedImage img7 = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
 
         //create random image pixel by pixel
         for (int y = 0; y < height; y++) {
@@ -454,7 +547,7 @@ public class backgroundGenerator2 {
                 int p = (a << 24) | (r << 16) | (g << 8) | b; //pixel
                 //System.out.println("p is now "+p);
 
-                img7.setRGB(x, y, p);
+                img9.setRGB(x, y, p);
             }
         }
 

@@ -1,5 +1,6 @@
 package com.mygdx.game.Screens.systemScreen.Tools;
 
+import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.Perlin.AlteredPerlin;
 import com.mygdx.game.Perlin.Perlin;
 
@@ -11,6 +12,8 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class backgroundGenerator3 {
+
+    MyGdxGame game;
 
     public backgroundGenerator3() {
 
@@ -48,13 +51,13 @@ public class backgroundGenerator3 {
         float a4Array[][] = new float[width][height];
 
         // first array for something
-        aArray = perlin.perlinFun(perlin,galWidth,galHeight, 1, 1, 1, 1, 3, 1, 7);
+        aArray = perlin.perlinFun(perlin,game,galWidth,galHeight, 1, 1, 1, 1, 3, 1, 7);
         // for entire galactic arm
-        a2Array = perlin.perlinFun(perlin,galWidth,galHeight, 1, 1, 1, 1, 3, 1, 7);
+        a2Array = perlin.perlinFun(perlin,game,galWidth,galHeight, 1, 1, 1, 1, 3, 1, 7);
         // for galactic core
-        a3Array = perlin.perlinFun(perlin,galWidth,galHeight, 1, 1, 1, 1, 3, 1, 7);
+        a3Array = perlin.perlinFun(perlin,game,galWidth,galHeight, 1, 1, 1, 1, 3, 1, 7);
         // for general all square fade at end
-        a4Array = perlin.perlinFun(perlin,galWidth,galHeight, 1, 1, 1, 1, 1, 1, 10);
+        a4Array = perlin.perlinFun(perlin,game,galWidth,galHeight, 1, 1, 1, 1, 1, 1, 10);
 
         int r;
         int g;

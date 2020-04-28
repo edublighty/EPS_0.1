@@ -62,7 +62,7 @@ public class systemScreenShipGroup extends Group {
     public int roomCount;
     private int roomsX = 12;
     private int roomsY = 12;
-    private enum roomTypes {oTwo,surveillance,engine,armory,reactor,cockpit,airlock,shields,medbay};
+    private enum roomTypes {oTwo,surveillance,engine,armory,reactor,cockpit,airlock,shields,medbay,cargobay};
     private enum roomSizes {corridor1x1,corridor2x1,corridor3x1,corridor2x2,corridor3x2};
     private roomSizes[][] shipLayout = new roomSizes[roomsX][roomsY];      // room layout for player ship
     private roomTypes[][] systemLayout = new roomTypes[roomsX][roomsY];      // room layout for player ship
@@ -1485,7 +1485,7 @@ public class systemScreenShipGroup extends Group {
         backdrop.setY(0);
         Color color = backdrop.getColor();
         backdrop.setColor(color.r,color.g,color.b,0);
-        this.addActor(backdrop);
+        //this.addActor(backdrop);
         playerRoomsShield = new shipRoomButton(game, this,"shipShield", false,0);
         this.addActor(playerRoomsShield);
 
@@ -1674,8 +1674,8 @@ public class systemScreenShipGroup extends Group {
         backdrop.setY(0+this.getHeight()/2-backdrop.getHeight()/2);
         //System.out.println("box should be transparent");
 
-        playerRoomsShield.setHeight(backdrop.getHeight()*0.5f);
-        playerRoomsShield.setWidth(backdrop.getWidth()*0.5f);
+        playerRoomsShield.setHeight(backdropHeight*0.5f);
+        playerRoomsShield.setWidth(backdropHeight*aspect*0.5f);
         playerRoomsShield.setX(0+this.getWidth()/2-playerRoomsShield.getWidth()/2);
         playerRoomsShield.setY(0+this.getHeight()/2-playerRoomsShield.getHeight()/2);
 
@@ -1778,6 +1778,8 @@ public class systemScreenShipGroup extends Group {
                 float newX = 0 + this.getWidth()/2 - shipWidth/2 + playerRoomsAirOver[i].getiRoom()*curTileWidth;
                 float newY = playerRoomsShield.getY() + playerRoomsShield.getHeight()/2  - shipHeight/2 + playerRoomsAirOver[i].getjRoom()*curTileWidth;
                 playerRoomsAirOver[i].setPosition(newX,newY);
+                Color color2 = playerRoomsAirOver[i].getColor();
+                playerRoomsAirOver[i].setColor(color2.r,color2.g,color2.b,255);
 
             }
         }
@@ -1810,8 +1812,12 @@ public class systemScreenShipGroup extends Group {
 
         int layerCount = 1;
 
+        playerRoomsShield.setZIndex(0);
+
+/*
         backdrop.setZIndex(layerCount);
-        layerCount++;
+        layerCount++;*/
+/*
 
         System.out.println("playerRoomsSystemsName length "+playerRoomsSystemsName.length);
 
@@ -1864,6 +1870,7 @@ public class systemScreenShipGroup extends Group {
         }
 
         System.out.println("ship shown children "+this.getChildren().size+" vs "+layerCount);
+*/
 
 
     }

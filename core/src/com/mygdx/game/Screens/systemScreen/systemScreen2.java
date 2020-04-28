@@ -8,7 +8,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -27,7 +27,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.HUDs.sideHUD;
 import com.mygdx.game.MyGdxGame;
-import com.mygdx.game.Screens.galScreen.Tools.shieldGenerator;
 import com.mygdx.game.Screens.systemScreen.Sprites.backImage;
 import com.mygdx.game.Screens.systemScreen.Sprites.systemScreenShipGroup;
 import com.mygdx.game.Screens.systemScreen.Sprites.traceImage;
@@ -41,13 +40,16 @@ import com.mygdx.game.Screens.systemScreen.Stage.systemScreenActors;
 import com.mygdx.game.Screens.systemScreen.Stage.systemScreenHUD;
 import com.mygdx.game.Screens.systemScreen.Stage.worldStage;
 import com.mygdx.game.Screens.systemScreen.Tools.Vertex;
-import com.mygdx.game.Screens.systemScreen.Tools.backgroundGenerator3;
+import com.mygdx.game.Screens.systemScreen.Tools.backgroundGenerator2;
+import com.mygdx.game.Screens.systemScreen.Tools.backgroundGenerator4;
+import com.mygdx.game.Screens.systemScreen.Tools.backgroundGenerator5;
+import com.mygdx.game.Screens.systemScreen.Tools.backgroundGenerator6;
+import com.mygdx.game.Screens.systemScreen.Tools.backgroundGenerator6_Pixmap;
 import com.mygdx.game.Screens.systemScreen.Tools.systemGenerator;
-import com.mygdx.game.Screens.systemScreen.Tools.testPlanetCreator;
+import com.mygdx.game.Tools.Managers.randoManager;
 import com.mygdx.game.Tools.WorldContactListener;
 import com.mygdx.game.Tools.b2dWorldCreator;
-
-import java.awt.Image;
+import com.mygdx.game.Tools.Managers.shipManager;
 
 public class systemScreen2 implements Screen {
 
@@ -105,6 +107,7 @@ public class systemScreen2 implements Screen {
     public playerImage player;
     public playerImage playerLevelsInterm;
     public systemScreenShipGroup playerShipShown;
+    public shipManager shipManager;
     private traceImage dummy;
 
     // booleans
@@ -174,14 +177,19 @@ public class systemScreen2 implements Screen {
     private float burnX;       // mouse click X
     private float burnY;       // mouse click Y
     private float burnR;       // distance between ship and mouse click
-    private float shipRadDef;
-    private float shipTempDef;
+
 
     // system-specific variables
     public int starRad;
-    private int radMultiplier;
+    private float radMultiplier;
     public int starTemp;
-    private int tempMultiplier;
+    private float tempMultiplier;
+    private float radSqr;
+    private int tempSqr;
+    private float shipRadDef;
+    private float shipTempDef;
+    private float shipRadLevel;
+    private float shipTempLevel;
 
     // Timing variables for render loop
     // last second
@@ -194,6 +202,8 @@ public class systemScreen2 implements Screen {
     public enum TimeStep { FIXED, FIXED_INTERPOLATION, VARIABLE }
     private boolean doPhysics;
     private boolean engBurn;
+    private float engBurnX;
+    private float engBurnY;
 
     // allstop variables
     private boolean allStop;
@@ -251,12 +261,16 @@ public class systemScreen2 implements Screen {
 
     public systemScreen2(MyGdxGame game){
 
-        //bgGenerator starGen = new bgGenerator();
-        //backgroundGenerator3 bg = new backgroundGenerator3();
+        backgroundGenerator6_Pixmap bg = new backgroundGenerator6_Pixmap(game);
         //barsGenerator barsGen = new barsGenerator();
         //new shieldGenerator();
+        //new starGenerator2();
 
         // update variables
+        int starSystNo = 1+1;
+        game.randManager.setBaseCounts(starSystNo);
+        shipRadLevel = 4f;      // current level of ship to deal with rads - to be contribution from hull and shields
+        shipTempLevel = 4f;     // current level of ship to deal with temp - to be contribution from hull and shields
         allStop = false;
         startingAllStop = false;
         velError = game.V_WIDTH/10000;
@@ -295,14 +309,10 @@ public class systemScreen2 implements Screen {
         System.out.println("maxBurnThrust "+maxBurnThrust);
         burnThrust = maxBurnThrust;
         burnPer = 50f;
-        shipRadDef = 4f/1500;           // Radiation Deflection constant - defined by score of 4 at radius 1500
-        shipTempDef = 4f/1500;          // Temperature Deflection constant - defined by score of 4 at radius 1500
 
-        // system-specific variables
-        radMultiplier = 500000;
-        tempMultiplier = 13000;
 
-        new testPlanetCreator();
+
+        //new testPlanetCreator();
 
         // initial player conditions
         float startVx = 0.2f;
@@ -312,7 +322,8 @@ public class systemScreen2 implements Screen {
         atlas = new TextureAtlas("PNGsPacked/Pointers.atlas");
         Platlas = new TextureAtlas("PNGsPacked/allPlanets.atlas");
         Statlas = new TextureAtlas("PNGsPacked/Stars.atlas");
-        starAnim = new TextureAtlas("systemScreen/starPNGs/Randomised/starsAnim.atlas");//conwaysGOL/starsConway.atlas");
+        starAnim = new TextureAtlas("PNGsPacked/stars/starsPack.atlas");
+        //starAnim = new TextureAtlas("systemScreen/starPNGs/Randomised/starsAnim.atlas");
         tilesAt = new TextureAtlas("PNGsPacked/biomespack50px.atlas");
         rect = tilesAt.findRegion("pDTTile50Orange");
         thrustAt = new TextureAtlas("systemScreen/ui/thrustControl.atlas");
@@ -437,6 +448,8 @@ public class systemScreen2 implements Screen {
         stellarAccMap = new double[200][2];
         sGen.starGen();
         starData = sGen.getStarData();
+        starTemp = (int) starData[2];
+        starRad = (int) starData[3];
         nP = planetData[0].length;
         gravData = new double[nP+1][4];
         gravData[0][0] = sGen.getStarData()[3];
@@ -489,7 +502,10 @@ public class systemScreen2 implements Screen {
         float backY = (float) (gravData[0][2] - backH/2);
         backImage backImage = new backImage(this,backX,backY,backW,backH);
         Color color = backImage.getColor();
-        backImage.setColor(color.r,color.g,color.b,0.5f*color.a);
+        System.out.println("background red is "+color.r);
+        System.out.println("background alpha is "+color.a);
+        //backImage.setColor(color.r,color.g,color.b,0.5f*color.a);
+        backImage.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(bg.getPixmap()))));
         wStage.stage.addActor(backImage);
 
         // set star data
@@ -546,6 +562,15 @@ public class systemScreen2 implements Screen {
             orbline[i] = new orbLinesSprite(world,this,Math.round(planetData[8][i])/MyGdxGame.PPM,toteSize,toteSize);
             planetLines[i] = new orbLinesSprite(world,this,planetOrbDia,(float) planetData[2][i],(float) planetData[3][i]);
 
+            radSqr = 2;     // define whether intensity is proportional to inverse or inverse square of distance from star
+            tempSqr = 2;    // define whether intensity is proportional to inverse or inverse square of distance from star
+
+            shipRadDef = (float) (shipRadLevel/(Math.pow(planSpace*4,radSqr)));           // Radiation Deflection constant - defined by score of 4 at radius 1500
+            shipTempDef = (float) (shipTempLevel/(Math.pow(planSpace*3,tempSqr)));          // Temperature Deflection constant - defined by score of 4 at radius 1500
+            // system-specific variables
+            radMultiplier = (float) (200/(2*(shipRadLevel/Math.pow(planSpace,radSqr)-shipRadDef))); // based on starRad of 4, powRad of 20 degC/dt, shipTempDef over 1 dt at one orbital spacing
+            tempMultiplier = (float) (20/((shipTempLevel/Math.pow(planSpace,tempSqr)-shipTempDef))); // based on starTemp of 4, powHeat of 20 degC/dt, shipTempDef over 1 dt at one orbital spacing
+
             wWid = (int) gameport.getWorldWidth();
             wHei = (int) gameport.getWorldHeight();
 
@@ -572,6 +597,7 @@ public class systemScreen2 implements Screen {
         playerShipShown = new systemScreenShipGroup(game,world,this,game.batch,shipWidth);
         wStage.stage.addActor(playerShipShown);
         systemActors = new systemScreenActors(game,this,game.batch,gameport.getWorldWidth()*100, gameport.getWorldHeight()*100);
+        shipManager = new shipManager(this,systemActors);
         multiplexer.addProcessor(systemActors.stage);
         multiplexer.addProcessor(gd);
         multiplexer.addProcessor(new InputProcessor() {
@@ -924,6 +950,52 @@ public class systemScreen2 implements Screen {
             burnX = (float) (burnR*Math.cos(alpha));
             burnY = - (float) (burnR*Math.sin(alpha));
         }
+
+        // burnI is distance from ship to mouse click in x-direction relative to the rotating ship plane
+        // burnJ is distance from ship to mouse click in y-direction etc
+        // if burnI is positive, then are decelerating in the ships direction
+        // if burnJ is positive, then the vector is the normal to above
+        // both of these have a world x-y impact
+
+        burnR = (float) Math.sqrt(Math.pow(burnI,2)+Math.pow(burnJ,2));
+        double ratioI = burnI/burnR;
+        double ratioJ = burnJ/burnR;
+
+        double burnIx = playerVx;
+        double burnIy = playerVy;
+
+        double burnJx = -burnIx;
+        double burnJy = burnIy;
+
+        System.out.println("burnIx "+burnIx+" burnIy "+burnIy);
+        System.out.println("burnJx "+burnJx+" burnJy "+burnJy);
+
+        double hypotI = Math.sqrt((Math.pow(burnIx,2))+(Math.pow(burnIy,2)));
+        float xRatioI = (float) (burnIx/hypotI);
+        float yRatioI = (float) (burnIy/hypotI);
+
+        System.out.println("hypotI "+hypotI+" xRatioI "+xRatioI+" yRatioI "+yRatioI);
+
+        double hypotJ = Math.sqrt(Math.pow(burnJx,2)+Math.pow(burnJy,2));
+        float xRatioJ = (float) (burnIx/hypotI);
+        float yRatioJ = (float) (burnIy/hypotI);
+
+        System.out.println("hypotJ "+hypotJ+" xRatioJ "+xRatioJ+" yratioJ "+yRatioJ);
+
+        float AxI = (float) ((playerThrust * maxBurnThrust * xRatioI * ratioI) / 100);
+        float AyI = (float) ((playerThrust * maxBurnThrust * yRatioI * ratioI) / 100);
+
+        System.out.println("AxI "+AxI+" AyI "+AyI);
+
+        float AxJ = (float) ((playerThrust * maxBurnThrust * xRatioJ * ratioJ) / 100);
+        float AyJ = (float) ((playerThrust * maxBurnThrust * yRatioJ * ratioJ) / 100);
+
+        System.out.println("AxJ "+AxJ+" AyJ "+AyJ);
+
+        engBurnX = AxI + AxJ;
+        engBurnY = AyI + AyJ;
+
+        System.out.println("engBurnX "+engBurnX+" engburny "+engBurnY);
 
     }
 
@@ -1613,14 +1685,41 @@ public class systemScreen2 implements Screen {
                                 // room is under vacuum or linked to a room under vacuum
                                 if (vertices[i].o2 > 0) {
                                     //System.out.println(vertices[i].getLabel() + " is venting. At " + vertices[i].o2 + "%");
-                                    vertices[i].o2 -= dt * 1;
+                                    System.out.println("dt "+dt);
+                                    vertices[i].o2 -= dt * 5;
                                 }
+                                System.out.println("vacuuming "+vertices[i].o2);
+
+                                double a = 0.5-(0.5*vertices[i].o2/100);
+                                if(a<0){ a=0; }
+                                if(a>1){ a=1; }
+
+                                playerShipShown.updateAir( (float) a,i);
+
                             } else {
                                 if (vertices[i].o2 < 100) {
                                     //System.out.println(vertices[i].getLabel() + " is regenerating. At " + vertices[i].o2 + "%");
-                                    vertices[i].o2 += dt * 1;
+                                    vertices[i].o2 += dt * 5;
+
+                                    //System.out.println("unvacuuming "+vertices[i].o2);
+
+                                    double a = 1 - (vertices[i].o2 / 100);
+                                    if (a < 0) {
+                                        a = 0;
+                                    }
+                                    if (a > 1) {
+                                        a = 1;
+                                    }
+
+                                    //System.out.println("a is "+a);
+
+                                    playerShipShown.updateAir((float) a, i);
                                 }
+
                             }
+
+
+                            /*
                             if (vertices[i].o2 < 30) {
                                 playerShipShown.updateAir(0.56f,i);
                             } else if (vertices[i].o2 < 40) {
@@ -1636,6 +1735,7 @@ public class systemScreen2 implements Screen {
                             } else if (vertices[i].o2 < 90) {
                                 playerShipShown.updateAir(0.08f,i);
                             }
+                            */
                         }
                     }
                 }
@@ -1650,6 +1750,7 @@ public class systemScreen2 implements Screen {
                     } else {
                         if (vertices[i].thisRoom == Vertex.vertexRoom.room) {
                             if (vertices[i].vacuuming) {
+                                System.out.println("vacuuming");
                                 // room is under vacuum or linked to a room under vacuum
                                 if (vertices[i].o2 > 0) {
                                     //System.out.println(vertices[i].getLabel() + " is venting. At " + vertices[i].o2 + "%");
@@ -1661,6 +1762,7 @@ public class systemScreen2 implements Screen {
                                     vertices[i].o2 += dt * 1;
                                 }
                             }
+
                             if (vertices[i].o2 < 30) {
                                 playerShipShown.updateAir(0.56f,i);
                             } else if (vertices[i].o2 < 40) {
@@ -1768,22 +1870,6 @@ public class systemScreen2 implements Screen {
                 // applying burning to player and hud
             }
 
-        /*if(planetFlag) {
-            // player over planet
-            //System.out.println("trying to raise it: " + buttonoverlay.stage.getCamera().position.y);
-            if(buttonoverlay.stage.getCamera().position.y > 150) {
-                //buttonoverlay.stage.getCamera().position.y = buttonoverlay.stage.getCamera().position.y - 1;
-            } else {
-                // stage in position
-            }
-        } else {
-            // player not over planet
-            //System.out.println("trying to lower it: " + buttonoverlay.stage.getCamera().position.y);
-            if (buttonoverlay.stage.getCamera().position.y < 180) {
-                //buttonoverlay.stage.getCamera().position.y = buttonoverlay.stage.getCamera().position.y + 1;
-            }
-        }*/
-
             boolean tempBool = true;
             //doPhysics = false;
 
@@ -1868,8 +1954,8 @@ public class systemScreen2 implements Screen {
                         if (engBurn) {
                             // apply acceleration due to engine burn here
                             System.out.println("burn " + playerThrust);
-                            Ax = Ax + ((playerThrust * maxBurnThrust * burnX / burnR) / 100);
-                            Ay = Ay + ((playerThrust * maxBurnThrust * burnY / burnR) / 100);
+                            Ax = Ax + engBurnX;//((playerThrust * maxBurnThrust * burnX / burnR) / 100);
+                            Ay = Ay + engBurnY;//((playerThrust * maxBurnThrust * burnY / burnR) / 100);
                         }
                         if(allStop){
                             System.out.println("Stopping");
@@ -1955,23 +2041,32 @@ public class systemScreen2 implements Screen {
             if (statusCheck) {
                 double r = Math.sqrt(Math.pow(gravData[0][1] / MyGdxGame.PPM - playersX, 2) + Math.pow(gravData[0][2] / MyGdxGame.PPM - playersY, 2));
 
-                double powRad = (starRad / r - shipRadDef) * radMultiplier * dt;
+                double powRad = (starRad / Math.pow(r,radSqr) - shipRadDef) * radMultiplier * dt;
 
-                double powHeat = (starTemp / r - shipTempDef) * tempMultiplier * dt;
-                double newTemp = systemActors.getTempPer();
+                double powHeat = (starTemp / Math.pow(r,tempSqr) - shipTempDef) * tempMultiplier * dt;
+
+                double newTemp = shipManager.getShipTemp();
+                double newRad = shipManager.getShipRads();
+
                 if (powHeat > 0) {
                     // heating up
                     newTemp += powHeat;
                 } else {
                     // can cool down
-                    newTemp -= powHeat;
+                    powHeat = (0 - shipTempDef) * tempMultiplier * dt;
+                    newTemp += powHeat;
                     if (newTemp < 20) {
                         newTemp = 20;
                     }
                 }
 
-                systemActors.updateTemp(newTemp);
-                systemActors.updateRad(powRad);
+                if(powRad<0){
+                    powRad=0;
+                }
+                newRad += powRad;
+
+                shipManager.updateShipTemp(newTemp,dt);
+                shipManager.updateShipRad(newRad);
 
             }
 
@@ -1999,7 +2094,7 @@ public class systemScreen2 implements Screen {
     }
 
     public void checkPlayerGauge(){
-
+/*
         if((time1-time2)>1000000000) {
             //playerHealth--;
             systemActors.updateHealth(playerHealth);
@@ -2010,16 +2105,10 @@ public class systemScreen2 implements Screen {
             String health = "healthBar" + playerHealth;
             //System.out.println("string is:"+health+":");
 
-            TextureRegion textureReg = new TextureRegion(healthAt.findRegion(health));
-            TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(textureReg);
-            systemActors.hBars.setDrawable(textureRegionDrawable);
-
-            textureReg = new TextureRegion(shieldAt.findRegion("shieldBar" + playerHealth));
-            textureRegionDrawable = new TextureRegionDrawable(textureReg);
-            systemActors.sBars.setDrawable(textureRegionDrawable);
             time1=System.nanoTime();
             time2=System.nanoTime();
         }
+        */
     }
 
     public void setPlayerAngle(){

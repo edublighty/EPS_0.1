@@ -13,7 +13,7 @@ public class DesktopLauncher {
 		// set resolution to default and set full-screen to true
 		config.height = 720;
 		config.width = 1280;
-		config.fullscreen = true;
+		//config.fullscreen = true;
 		new LwjglApplication(new MyGdxGame(), config);
 	}
 }

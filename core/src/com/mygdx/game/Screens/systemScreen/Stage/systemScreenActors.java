@@ -3,10 +3,9 @@ package com.mygdx.game.Screens.systemScreen.Stage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -18,11 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.Value;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FillViewport;
@@ -44,6 +40,8 @@ import com.mygdx.game.Screens.systemScreen.Sprites.alarmButtons;
 import com.mygdx.game.Screens.systemScreen.Sprites.shipRoomButton;
 import com.mygdx.game.Screens.systemScreen.Sprites.shipRoomSprite;
 import com.mygdx.game.Screens.systemScreen.systemScreen2;
+import com.mygdx.game.Tools.Managers.alarmManagers.alarmManager_Attributes;
+import com.mygdx.game.Tools.Managers.alarmManagers.alarmManager_Systems;
 
 public class  systemScreenActors implements Disposable {
 
@@ -96,6 +94,11 @@ public class  systemScreenActors implements Disposable {
     private shipRoomButton[] playerRoomsSystemsName;
     private shipRoomButton[] playerRoomsSystemsDamage;
     private Group shipDetailPanel;
+    private Table scrollTableINFO;
+    private BitmapFont fontAlarms;
+    private float fontAlarmHeight;
+    private float alarmButtonsAsp2;
+    private float alarmButtonsAsp3;
 
     public systemScreenActors(MyGdxGame game, systemScreen2 screen, SpriteBatch sb, float viewportWidth, float viewportHeight){
 
@@ -544,7 +547,7 @@ public class  systemScreenActors implements Disposable {
 
         o2Var = new Label(o2PerS+"%",new Label.LabelStyle(fontO2, fontO2.getColor()));
         tempVar = new Label(tempPerS+"*C",new Label.LabelStyle(fontTemp,fontTemp.getColor()));
-        radVar = new Label(radPerS+" rad/s",new Label.LabelStyle(fontRad,fontRad.getColor()));
+        radVar = new Label(radPerS+" mSv",new Label.LabelStyle(fontRad,fontRad.getColor()));
         thrustVar = new Label(thrustPerS+"%",new Label.LabelStyle(fontThrust,fontThrust.getColor()));
         shieldsVar = new Label(shieldsPerS+"%",new Label.LabelStyle(fontShields,fontShields.getColor()));
         healthVar = new Label(healthPerS+"%",new Label.LabelStyle(fontHealth,fontHealth.getColor()));
@@ -709,13 +712,14 @@ public class  systemScreenActors implements Disposable {
         // ///////////////////////////////////////////////////////////
         // ALARMS AND SHIP INFO PANEL
 
-        Table scrollTableINFO = new Table();
+        scrollTableINFO = new Table();
 
         fontParameter.size = (int) Math.ceil(commH);
         fontParameter.color = Color.WHITE;
         fontParameter.borderColor = Color.WHITE;
         fontParameter.borderWidth = fontParameter.size/borderDiv;
         fontTest = fontGenerator.generateFont(fontParameter); // font size 12 pixels
+        fontAlarms = fontTest;
 
         alarmButtons acceptAll = new alarmButtons(game,"acceptAll",0);
         alarmButtons clearAll = new alarmButtons(game,"clearAll",0);
@@ -729,15 +733,26 @@ public class  systemScreenActors implements Disposable {
         scrollerWidth = systemsTabHeight*4/3;
         commH = scrollerWidth/(asp1+asp2+asp3);
 
-        for(int i = 0; i < 30; i++){
-            temp = new Label("ALARM "+i, new Label.LabelStyle(fontTest, fontTest.getColor()));
-            scrollTableINFO.add(temp);
-            acceptAlarm = new alarmButtons(game,"acceptAlarm",0);
-            clearAlarm = new alarmButtons(game,"clearAlarm",0);
-            scrollTableINFO.add(acceptAlarm).height(commH).width(asp2*commH);//.width(Value.percentWidth(.15f,scrollTable));
-            scrollTableINFO.add(clearAlarm).height(commH).width(asp3*commH);
-            scrollTableINFO.row();
-        }
+        fontAlarmHeight = commH;
+        alarmButtonsAsp2 = asp2;
+        alarmButtonsAsp3 = asp3;
+
+       /* alarmManager_Systems[] alarms = screen.shipManager.getAlarmManagers_sys();
+
+        for(int i = 0; i < alarms.length; i++){
+            if(alarms[i]==null){
+                //
+            } else {
+                temp = new Label(alarms[i].getAlarmName(), new Label.LabelStyle(fontTest, fontTest.getColor()));
+                scrollTableINFO.add(temp);
+                acceptAlarm = new alarmButtons(game, "acceptAlarm", 0);
+                clearAlarm = new alarmButtons(game, "clearAlarm", 0);
+                scrollTableINFO.add(acceptAlarm).height(commH).width(asp2 * commH);//.width(Value.percentWidth(.15f,scrollTable));
+                scrollTableINFO.add(clearAlarm).height(commH).width(asp3 * commH);
+                scrollTableINFO.row();
+            }
+        }*/
+
         scrollTableINFO.pack();
 
         ScrollPane scrollerINFO = new ScrollPane(scrollTableINFO,skin);
@@ -850,6 +865,22 @@ public class  systemScreenActors implements Disposable {
         shipDetailPanel.setZIndex(0);       // SET TO BACK OF ALL UIs
 
         //stage.setDebugAll(true);
+    }
+
+    public void clearAlarmTable(){
+        scrollTableINFO.clear();
+    }
+
+    public void addAlarm(String alarmName){
+
+        Label temp = new Label(alarmName, new Label.LabelStyle(fontAlarms, fontAlarms.getColor()));
+        scrollTableINFO.add(temp);
+        alarmButtons acceptAlarm = new alarmButtons(game, "acceptAlarm", 0);
+        alarmButtons clearAlarm = new alarmButtons(game, "clearAlarm", 0);
+        scrollTableINFO.add(acceptAlarm).height(fontAlarmHeight).width(alarmButtonsAsp2 * fontAlarmHeight);//.width(Value.percentWidth(.15f,scrollTable));
+        scrollTableINFO.add(clearAlarm).height(fontAlarmHeight).width(alarmButtonsAsp3 * fontAlarmHeight);
+        scrollTableINFO.row();
+
     }
 
     public void toggleTextOverlay(boolean showText,float x,float y,String setText){
@@ -971,10 +1002,16 @@ public class  systemScreenActors implements Disposable {
 
     public void updateShields(int shieldPer){
         shieldsVar.setText(shieldPer+"%");
+        TextureRegion textureReg = new TextureRegion(game.getShieldAt().findRegion("shieldBar" + shieldPer));
+        TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(textureReg);
+        sBars.setDrawable(textureRegionDrawable);
     }
 
     public void updateHealth(int healthPer){
         healthVar.setText(healthPer+"%");
+        TextureRegion textureReg = new TextureRegion(game.getHealthAt().findRegion("healthBar"+healthPer));
+        TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(textureReg);
+        hBars.setDrawable(textureRegionDrawable);
     }
 
     public void updateTemp(double newTemp){
@@ -982,12 +1019,14 @@ public class  systemScreenActors implements Disposable {
         int tempTemp = (int) (tempPer);
         tempVar.setText(tempTemp+"*C");
     }
+
     public double getTempPer(){return tempPer;}
 
     public void updateRad(double newRad){
         radPer = newRad;
         int tempRad = (int) (radPer);
-        radVar.setText(tempRad+" rad/s");
+        //tempRad = (int) (Math.ceil(tempRad/10)*10);
+        radVar.setText(tempRad+" mSv");
     }
     public double getRadPer(){
         return radPer;

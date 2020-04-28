@@ -1,5 +1,6 @@
 package com.mygdx.game.Screens.systemScreen.Tools;
 
+import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.Perlin.Perlin;
 
 import java.awt.Graphics;
@@ -10,6 +11,8 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class backgroundGenerator {
+
+    private static MyGdxGame game;
 
     public backgroundGenerator() {
 
@@ -44,10 +47,10 @@ public class backgroundGenerator {
         int oct7 = 8;
 
         Perlin perlin = new Perlin();
-        rArray = perlin.perlinFun(perlin,width,height, oct1, oct2, oct3, oct4, oct5, oct6, oct7);
-        gArray = perlin.perlinFun(perlin,width,height, oct1, oct2, oct3, oct4, oct5, oct6, oct7);
-        bArray = perlin.perlinFun(perlin,width,height, oct1, oct2, oct3, oct4, oct5, oct6, oct7);
-        aArray = perlin.perlinFun(perlin,width,height, aoct1, aoct2, aoct3, aoct4, aoct5, aoct6, aoct7);
+        rArray = perlin.perlinFun(perlin,game,width,height, oct1, oct2, oct3, oct4, oct5, oct6, oct7);
+        gArray = perlin.perlinFun(perlin,game,width,height, oct1, oct2, oct3, oct4, oct5, oct6, oct7);
+        bArray = perlin.perlinFun(perlin,game,width,height, oct1, oct2, oct3, oct4, oct5, oct6, oct7);
+        aArray = perlin.perlinFun(perlin,game,width,height, aoct1, aoct2, aoct3, aoct4, aoct5, aoct6, aoct7);
 
         //create buffered image object img
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);

@@ -1,5 +1,6 @@
 package com.mygdx.game.Screens.systemScreen.Sprites;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -27,45 +28,37 @@ public class starImage extends Image {
 
     public starImage(World world, systemScreen2 screen, String sType, int nP, int wWid, int wHei, int size) {
 
-        super(screen.getStAnim().findRegion(Integer.toString(1)));
+        super(screen.getStAnim().findRegion(""+1));
 
         stateTimer = 0;
         currentState = State.SHINING;
         previousState = State.SHINING;
-        frameCount = 10;
-        frameDuration = 0.1f;
+        frameCount = 13;
+        frameDuration = 0.15f;
 
         Array<TextureRegion> frames = new Array<TextureRegion>();
+        //TextureRegion[] frames = new TextureRegion[frameCount-1];
+        TextureRegion frame1 = new TextureRegion();
+        TextureRegion frame2 = new TextureRegion();
+        TextureRegion frame3 = new TextureRegion();
+        TextureRegion frame4 = new TextureRegion();
+
+        frame1 = new TextureRegion(screen.getStAnim().findRegion(""+1));
+        frame2 = new TextureRegion(screen.getStAnim().findRegion(""+2));
+        frame3 = new TextureRegion(screen.getStAnim().findRegion(""+3));
+        frame4 = new TextureRegion(screen.getStAnim().findRegion(""+4));
+
         for(int i = 1; i < frameCount; i++){
-            System.out.println("sprite i "+i);
-            frames.add(new TextureRegion(screen.getStAnim().findRegion(Integer.toString(i))));
+            //System.out.println("star image i "+i);
+            frames.add(new TextureRegion(screen.getStAnim().findRegion(""+i)));
+            //frames[i-1] = new TextureRegion(screen.getStAnim().findRegion("s"+i));
         }
 
         starShine = new Animation(frameDuration,frames);
 
-        //this.loc = loc;
-        //size = (int) planetData[4][i];
-        int locX = (size*(nP+1)+500) / 2 - size / 2;
-        int locY = (size*(nP+1)+500) / 2 - size / 2;
-/*
-        switch(stelObj){
-            case "terrs":
-                // terrestrial
-                size = 100;
-            case "gasTerrs":
-                // gaseous terrestrial
-                size = 200;
-            case "gasGis":
-                // gas giant
-                size = 300;
-        }*/
-
         // get texture from atlas by coordinates
-        stObj = new TextureRegion(screen.getStAnim().findRegion(Integer.toString(1)));
-        //stObj = new TextureRegion(getTexture(),0,0,300,300);
         this.world = world;
-        //defineSprite();       // not necessary for stationary object sprite
-        //setBounds((float) locX / MyGdxGame.PPM, (float) locY / MyGdxGame.PPM, (float) size / MyGdxGame.PPM, (float) size / MyGdxGame.PPM);
+
     }
 
     public TextureRegion getFrame(float dt) {
@@ -79,14 +72,16 @@ public class starImage extends Image {
         stateTimer = currentState == previousState ? stateTimer + dt : 0;
         previousState = currentState;
 
-
         return region;
+
     }
 
     public void update(float dt) {
         //setPosition(b2body.getPosition().x-getWidth()/2,b2body.getPosition().y-getHeight()/2);
         //setRegion(getFrame(dt));
-        setDrawable(new TextureRegionDrawable(getFrame(dt)));
+        //System.out.println("update star animation dt "+dt);
+        setDrawable(new TextureRegionDrawable(new TextureRegion(getFrame(dt))));
+        //System.out.println("updated star animation ");
     }
 
 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.mygdx.game.Screens.mainMenu.mainScreen;
+import com.mygdx.game.Tools.Managers.randoManager;
 
 public class MyGdxGame extends Game {
 
@@ -43,8 +44,11 @@ public class MyGdxGame extends Game {
 	TextureAtlas shipObjsAt;
 	TextureAtlas iconsAt;
 	TextureAtlas barsAt;
+	TextureAtlas healthAt;
+	TextureAtlas shieldAt;
 	private TextureAtlas starSelsAt;
 	private TextureAtlas doorsAt;
+	public randoManager randManager;
 	
 	@Override
 	public void create () {
@@ -61,6 +65,9 @@ public class MyGdxGame extends Game {
 		barsAt = new TextureAtlas("batScreen/status_bars/bars.atlas");
 		starSelsAt = new TextureAtlas("galaxyScreen/starSels3.atlas");
 		doorsAt = new TextureAtlas("shipRooms/Doors/doorPack.atlas");
+		shieldAt = new TextureAtlas("systemScreen/ui/shieldBars.atlas");
+		healthAt = new TextureAtlas("systemScreen/ui/healthBars.atlas");
+		randManager = new randoManager();
 		setScreen(new mainScreen(this));
 	}
 
@@ -91,6 +98,10 @@ public class MyGdxGame extends Game {
 	}
 
 	public TextureAtlas getDoorsAt() { return doorsAt; }
+
+	public TextureAtlas getHealthAt() { return healthAt; }
+
+	public TextureAtlas getShieldAt() { return shieldAt; }
 
 	@Override
 	public void render () {
