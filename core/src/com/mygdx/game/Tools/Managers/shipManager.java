@@ -1,6 +1,8 @@
 package com.mygdx.game.Tools.Managers;
 
+import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.Screens.systemScreen.Sprites.shipRoomSprite;
+import com.mygdx.game.Screens.systemScreen.Sprites.systemSprite;
 import com.mygdx.game.Screens.systemScreen.Stage.systemScreenActors;
 import com.mygdx.game.Screens.systemScreen.systemScreen2;
 import com.mygdx.game.Tools.Managers.alarmManagers.alarmManager_Attributes;
@@ -10,17 +12,27 @@ public class shipManager {
 
     private systemScreen2 screen;
     private systemScreenActors systemActors;
-    private shipRoomSprite[] playerRoomsSystems;
+    private systemSprite[] playerRoomsSystems;
     private enum systemTypes {oTwo,surveillance,engine,armory,reactor,cockpit,airlock,shields,medbay,cargobay}
     private systemManager systems[];
     private alarmManager_Systems alarms_sys[];
     private alarmManager_Attributes alarms_atts[];
     private enum alarmSuperType {system,attribute,enemy};
     private enum alarmTypes {system_unavailable,system_damaged,system_off,attribute_low,attribute_high,enemy_detected,enemy_engaging,temp_low,temp_high,temp_critical,rads_high,rads_critical,shields_low,o2_low,power_low,health_low};
+    private float shipO2;
     private double shipTemp;
     private double shipRads;
     private float shipShields;
+    private int shipShieldsMod;
     private float shipHealth;
+    private float shipRadDef;
+    private int radSqr;
+    private float shipTempDef;
+    private int tempSqr;
+    private float shipRadLevel;
+    private float shipTempLevel;
+    private float radMultiplier;
+    private float tempMultiplier;
 
     public shipManager(systemScreen2 screen, systemScreenActors systemActors) {
 
@@ -29,10 +41,21 @@ public class shipManager {
         this.screen = screen;
 
         // initialise ship attributes
+        shipO2 = 99f;
+        tempSqr = 2;
         shipTemp = 20f;
+        radSqr = 2;
         shipRads = 0f;
         shipShields = 99f;
+        shipShieldsMod = 1;
         shipHealth = 99f;
+        shipRadLevel = 4f;      // current level of ship to deal with rads - to be contribution from hull and shields
+        shipTempLevel = 4f;     // current level of ship to deal with temp - to be contribution from hull and shields
+        shipRadDef = (float) (shipRadLevel/(Math.pow(screen.getPlanSpace()*4,2)));           // Radiation Deflection constant - defined by score of 4 at radius 2000
+        shipTempDef = (float) (shipTempLevel/(Math.pow(screen.getPlanSpace()*3,2)));          // Temperature Deflection constant - defined by score of 4 at radius 1500
+        // system-specific variables
+        radMultiplier = (float) (200/(2*(shipRadLevel/Math.pow(screen.getPlanSpace(),2)-shipRadDef))); // based on starRad of 4, powRad of 20 degC/dt, shipTempDef over 1 dt at one orbital spacing
+        tempMultiplier = (float) (20/((shipTempLevel/Math.pow(screen.getPlanSpace(),2)-shipTempDef))); // based on starTemp of 4, powHeat of 20 degC/dt, shipTempDef over 1 dt at one orbital spacing
 
         // initialise system type counters
         int numO2 = 0;
@@ -108,9 +131,10 @@ public class shipManager {
 
             String systemType = tempSystem;
             String systemName = tempSystem+" "+tempNum;
+            playerRoomsSystems[i].setSystemTypeID(tempNum);
             int systemID = i;
             // new system manager
-            systems[i] = new systemManager(screen,systemName,systemType,systemID);
+            systems[i] = new systemManager(screen,this,systemName,systemType,systemID);
             // new alarm - damaged
             String alarmDamaged = systemName+" damaged";
             String alarmSuperType = ""+shipManager.alarmSuperType.system;
@@ -228,13 +252,47 @@ public class shipManager {
 
     }
 
+    public float getShipO2(){ return shipO2; };
+
     public double getShipTemp(){ return shipTemp; }
 
     public double getShipRads(){ return shipRads; }
 
-    public float getShipShields(){ return 0; }
+    public float getShipShields(){ return shipShields; }
 
-    public float getShipHealth(){ return 0; }
+    public float getShipHealth(){ return shipHealth; }
+
+    public void updateShipTempRad(double r,float starTemp,float starRad,float dt){
+
+
+        double powRad = (starRad / Math.pow(r,radSqr) - shipRadDef) * radMultiplier * dt;
+
+        double powHeat = (starTemp / Math.pow(r,tempSqr) - shipTempDef) * tempMultiplier * dt;
+
+        double newTemp = getShipTemp();
+        double newRad = getShipRads();
+
+        if (powHeat > 0) {
+            // heating up
+            newTemp += powHeat;
+        } else {
+            // can cool down
+            powHeat = (0 - shipTempDef) * tempMultiplier * dt;
+            newTemp += powHeat;
+            if (newTemp < 20) {
+                newTemp = 20;
+            }
+        }
+
+        if(powRad<0){
+            powRad=0;
+        }
+        newRad += powRad;
+
+        updateShipTemp(newTemp,dt);
+        updateShipRad(newRad);
+
+    }
 
     public void updateShipTemp(double newTemp,float dt){
         shipTemp = newTemp;
@@ -305,6 +363,13 @@ public class shipManager {
             // shields take double damage above MAX2 threshold
             // if shields down, hull takes damage
             float totalDamage = (float) ((newTemp-tempMAX2)*2+tempMAX1)*(1/tempMAX1)*dt;
+            double rand = Math.random();
+            if(rand>0.5){
+                // damage random system
+                int randSyst = (int) Math.floor(Math.random()*systems.length);
+                System.out.println("random system is number "+randSyst);
+                systems[randSyst].damageSystem(1);
+            }
             if(checkShieldsUp()){
                 shieldDamage = totalDamage/2;
                 hullDamage = shieldDamage;
@@ -318,6 +383,13 @@ public class shipManager {
             if(checkShieldsUp()) {
                 shieldDamage = totalDamage;
             } else {
+                double rand = Math.random();
+                if(rand>0.5){
+                    // damage random system
+                    int randSyst = (int) Math.floor(Math.random()*systems.length);
+                    System.out.println("random system is number "+randSyst);
+                    systems[randSyst].damageSystem(1);
+                }
                 hullDamage = totalDamage;
             }
         } else {
@@ -328,7 +400,7 @@ public class shipManager {
             // update shields
             shipShields -= shieldDamage;
             System.out.println("sheilds ship manager "+shipShields);
-            systemActors.updateShields(( (int) Math.floor(shipShields) ));
+            systemActors.updateShields(( (int) Math.floor(shipShields*shipShieldsMod) ));
         }
 
         if(hullDamage>0){
@@ -338,6 +410,27 @@ public class shipManager {
             systemActors.updateHealth( (int) Math.floor(shipHealth) );
         }
 
+    }
+
+    public void incomingEnemyDamage(int damage){
+
+    }
+
+
+    public void toggleEngines(boolean bool){
+        if(bool) {
+            screen.setBurnMultiplier(1);
+        } else {
+            screen.setBurnMultiplier(0);
+        }
+    }
+
+    public void toggleShields(boolean bool){
+        if(bool){
+            shipShieldsMod = 1;
+        } else {
+            shipShieldsMod = 0;
+        }
     }
 
     public boolean checkShieldsUp(){
@@ -357,6 +450,24 @@ public class shipManager {
         }
 
         return shieldsUp;
+    }
+
+    public boolean checkO2Working(){
+        boolean O2working = false;
+
+        for(int i=0; i<systems.length; i++){
+            if(systems[i].getSystemType().equals(""+systemTypes.oTwo)){
+                if(systems[i].getIsSystemOn()){
+                    if(systems[i].getIsAvail()){
+                        if(!systems[i].getIsDamaged()){
+                            O2working = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return O2working;
     }
 
     public void updateShipRad(double newRad){
@@ -455,5 +566,8 @@ public class shipManager {
         }
     }
 
+    public void damageSystem(int row,int damage){
+        systems[row].damageSystem(damage);
+    }
 
 }

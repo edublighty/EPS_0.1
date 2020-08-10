@@ -15,11 +15,12 @@ import com.mygdx.game.Screens.systemScreen.systemScreen2;
 
 public class playerImage extends Image {
 
+
     public World world;
     public Body b2body;
 
     public playerImage(MyGdxGame game, World world, systemScreen2 screen, float toteSize,String level,float startX,float startY){
-        super(game.getStarSelsAt().findRegion(level));
+        super(screen.getShipIconsAt().findRegion(level));
         this.world = world;
         defineSprite(toteSize,startX,startY);
         setBounds(0,0,toteSize/(MyGdxGame.PPM*100),toteSize/(MyGdxGame.PPM*100));

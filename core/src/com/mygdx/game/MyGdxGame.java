@@ -8,8 +8,8 @@ import com.mygdx.game.Tools.Managers.randoManager;
 
 public class MyGdxGame extends Game {
 
-	public static float V_WIDTH=30;//1280;
-	public static float V_HEIGHT=30;//(1280/720);
+	public static float V_WIDTH=3000;//1280;
+	public static float V_HEIGHT=3000;//(1280/720);
 	public float aspect;
 	public float galX;
 	public float galY;
@@ -46,6 +46,7 @@ public class MyGdxGame extends Game {
 	TextureAtlas barsAt;
 	TextureAtlas healthAt;
 	TextureAtlas shieldAt;
+	TextureAtlas systemsAt;
 	private TextureAtlas starSelsAt;
 	private TextureAtlas doorsAt;
 	public randoManager randManager;
@@ -67,6 +68,7 @@ public class MyGdxGame extends Game {
 		doorsAt = new TextureAtlas("shipRooms/Doors/doorPack.atlas");
 		shieldAt = new TextureAtlas("systemScreen/ui/shieldBars.atlas");
 		healthAt = new TextureAtlas("systemScreen/ui/healthBars.atlas");
+		systemsAt = new TextureAtlas("systemPNGs/systemPNGs.atlas");
 		randManager = new randoManager();
 		setScreen(new mainScreen(this));
 	}
@@ -102,6 +104,8 @@ public class MyGdxGame extends Game {
 	public TextureAtlas getHealthAt() { return healthAt; }
 
 	public TextureAtlas getShieldAt() { return shieldAt; }
+
+	public TextureAtlas getSystemsAt() { return systemsAt; }
 
 	@Override
 	public void render () {

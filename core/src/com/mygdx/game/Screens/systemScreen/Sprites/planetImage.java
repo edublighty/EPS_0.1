@@ -16,6 +16,10 @@ public class planetImage extends Image {
     public World world;
     public Body b2body;
     private TextureRegion stObj;
+    public double theta;
+    public double posX;
+    public double posY;
+    public double dt;
     //public int loc;
 
     public planetImage(World world, systemScreen2 screen, String stelObj, double planetData[][], int i, int wWid, int wHei) {
@@ -25,6 +29,8 @@ public class planetImage extends Image {
         // get texture from atlas by coordinates
         //stObj = new TextureRegion(getTexture(),0,0,300,300);
         //stObj = new TextureRegion(getTexture(),0,0,300,300);
+        theta = 0;
+        dt = 0;
         this.world = world;
         setBounds((float) (planetData[2][i] - planetData[1][i]/2) / MyGdxGame.PPM, (float) (planetData[3][i] - planetData[1][i]/2) / MyGdxGame.PPM, (float) planetData[1][i] / MyGdxGame.PPM, (float) planetData[1][i] / MyGdxGame.PPM);
     }

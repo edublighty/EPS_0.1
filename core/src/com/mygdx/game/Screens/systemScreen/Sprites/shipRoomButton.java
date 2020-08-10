@@ -28,7 +28,8 @@ public class shipRoomButton extends Image {
     private int airGroupNum;
     private String roomType;
     private boolean roomTxt;
-    private int arrayNum;
+    private int arrayNum;       // number of array for button images
+    private int systemTypeID;
     private boolean systemON;
     private systemScreenShipGroup shipGroup;
     MyGdxGame game;

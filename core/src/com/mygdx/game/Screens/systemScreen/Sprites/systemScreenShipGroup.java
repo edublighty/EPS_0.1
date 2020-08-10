@@ -77,7 +77,7 @@ public class systemScreenShipGroup extends Group {
     private shipRoomSprite[] playerRooms;
     private shipRoomSprite[] playerExternals;
     public shipRoomSprite[] playerRoomsAirOver;
-    public shipRoomSprite[] playerRoomsSystems;
+    public systemSprite[] playerRoomsSystems;
     private shipRoomButton[] playerRoomsSystemsEdge;
     private shipRoomButton[] playerRoomsSystemsName;
     private shipRoomButton[] playerRoomsSystemsDamage;
@@ -133,7 +133,7 @@ public class systemScreenShipGroup extends Group {
         //setUpShip();
     }
 
-    public shipRoomSprite[] getSystems(){
+    public systemSprite[] getSystems(){
         return playerRoomsSystems;
     }
 
@@ -156,6 +156,12 @@ public class systemScreenShipGroup extends Group {
             if(playerDoors[i] == null){
             } else {
                 playerDoors[i].update(dt);
+            }
+        }
+        for(int i=0;i<playerRoomsSystems.length;i++){
+            if(playerRoomsSystems[i] == null){
+            } else {
+                playerRoomsSystems[i].update(dt);
             }
         }
     }
@@ -414,7 +420,7 @@ public class systemScreenShipGroup extends Group {
         float sGrphcRatio = 100;//sideSqr/sideGrphc;
         playerRooms = new shipRoomSprite[numROoms];
         playerExternals = new shipRoomSprite[numROoms];
-        playerRoomsSystems = new shipRoomSprite[numROoms];
+        playerRoomsSystems = new systemSprite[numROoms];
         playerRoomsAirOver = new shipRoomSprite[numROoms];
         playerDoors = new doorImage[numROoms*8];       // maximum of 8 doors per room
         fireTiles = new shipRoomSprite[numROoms*4];
@@ -446,7 +452,7 @@ public class systemScreenShipGroup extends Group {
                     tempSize3.add(1f);
                     tempSize3.add(1f);
                     tempSize3.add(1f);
-                    playerRoomsSystems[systemCount] = new shipRoomSprite(game,systemLayout[i][j].name(),tempSize3,sGrphcRatio,i,j,xRoom,yRoom,systemCount);
+                    playerRoomsSystems[systemCount] = new systemSprite(game,screen,systemLayout[i][j].name(),tempSize3,sGrphcRatio,i,j,xRoom,yRoom,systemCount);
                     System.out.println("system count "+systemCount+" roomType "+systemLayout[i][j].name());
                     systemCount++;
                     tempSize3 = new ArrayList<Float>();;

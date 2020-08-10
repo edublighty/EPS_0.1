@@ -57,7 +57,7 @@ public class systemGenerator {
         //int primeChoice = (new BigDecimal((Rgal / nP) % 1)).intValueExact();
         String inter = Double.toString(Math.pow(Rgal, 1 / nP));                      // number to choose prime for star gen
         String num = ""+inter.charAt(2);
-        int primeChoice = Integer.parseInt(num);//(new BigDecimal(temp3 % 1).intValueExact());
+        int primeChoice = Integer.parseInt(num);
         double prime = primes1[primeChoice];
         prime = (new BigDecimal(Math.sqrt(prime) % 2)).doubleValue();
         starData = new double[4];
@@ -215,7 +215,7 @@ public class systemGenerator {
         // 6    - Radiation double
 
         double orbRad;
-        planSpace=toteSize/3;
+        planSpace=toteSize*2/3;
         firstOrbRad = planSpace*2;
 
         while(i<nP){
@@ -243,8 +243,8 @@ public class systemGenerator {
                     planetData[0][i] = j;                                                           // Type
                     planetData[1][i] = (j+1)*10;                                                   // size
                     orbRad = firstOrbRad+planSpace*i;
-                    planetData[2][i] = toteSize + orbRad* MathUtils.sin(theta);// - ((j+1)*100/2);     // xPosition
-                    planetData[3][i] = toteSize + orbRad*MathUtils.cos(theta);// - ((j+1)*100/2);      // yPosition - OLD CODE: (Math.pow(-1,i))*((i)*375+750))
+                    planetData[2][i] = /*toteSize*/ 0 + orbRad* MathUtils.sin(theta);// - ((j+1)*100/2);     // xPosition
+                    planetData[3][i] = /*toteSize*/ 0 + orbRad*MathUtils.cos(theta);// - ((j+1)*100/2);      // yPosition - OLD CODE: (Math.pow(-1,i))*((i)*375+750))
                     System.out.println("xPos "+orbRad* MathUtils.sin(theta)+" and yPos "+orbRad*MathUtils.cos(theta));
                     planetData[4][i] = atmChoice;
                     planetData[5][i] = tChoice*(5/(Math.pow(nPd,0.3)));                             // 5 at 1 and tends to 2

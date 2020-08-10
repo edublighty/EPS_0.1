@@ -20,56 +20,56 @@ acceptAlarm
   index: -1
 acceptAlarmAccepted
   rotate: false
-  xy: 2, 1142
+  xy: 1106, 1644
   size: 400, 200
   orig: 400, 200
   offset: 0, 0
   index: -1
 acceptAll
   rotate: false
-  xy: 504, 1846
+  xy: 504, 1644
   size: 600, 200
   orig: 600, 200
   offset: 0, 0
   index: -1
 airlock
   rotate: false
-  xy: 1508, 534
+  xy: 1508, 498
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 airlockDown
   rotate: false
-  xy: 1508, 430
+  xy: 1508, 290
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 airlockTxt
   rotate: false
-  xy: 1508, 681
+  xy: 1610, 725
   size: 200, 44
   orig: 200, 44
   offset: 0, 0
   index: -1
 armory
   rotate: false
-  xy: 1910, 1894
+  xy: 1862, 808
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 armoryDown
   rotate: false
-  xy: 404, 1234
+  xy: 1508, 82
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 armoryTxt
   rotate: false
-  xy: 1508, 638
+  xy: 1610, 682
   size: 200, 41
   orig: 200, 41
   offset: 0, 0
@@ -83,21 +83,21 @@ clearAlarm
   index: -1
 clearAll
   rotate: false
-  xy: 504, 1644
+  xy: 504, 1846
   size: 600, 200
   orig: 600, 200
   offset: 0, 0
   index: -1
 cockpit
   rotate: false
-  xy: 404, 1442
+  xy: 1508, 602
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 cockpitDown
   rotate: false
-  xy: 404, 1338
+  xy: 1508, 394
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
@@ -111,21 +111,21 @@ cockpitTxt
   index: -1
 corridor1x1
   rotate: false
-  xy: 1560, 586
+  xy: 404, 1286
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 corridor2x1
   rotate: false
-  xy: 1862, 910
+  xy: 1508, 654
   size: 100, 50
   orig: 100, 50
   offset: 0, 0
   index: -1
 corridor2x2
   rotate: false
-  xy: 1910, 1946
+  xy: 1862, 860
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
@@ -153,42 +153,42 @@ damage0
   index: -1
 damage1
   rotate: false
-  xy: 1006, 1280
+  xy: 504, 1228
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage10
   rotate: false
-  xy: 1006, 32
+  xy: 1006, 136
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage11
   rotate: false
-  xy: 1508, 1794
+  xy: 1006, 32
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage12
   rotate: false
-  xy: 1508, 1742
+  xy: 1508, 1794
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage13
   rotate: false
-  xy: 1508, 1690
+  xy: 1508, 1742
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage14
   rotate: false
-  xy: 1508, 1638
+  xy: 1508, 1690
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
@@ -202,28 +202,28 @@ damage15
   index: -1
 damage16
   rotate: false
-  xy: 1508, 1586
+  xy: 1508, 1638
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage17
   rotate: false
-  xy: 1508, 1534
+  xy: 1508, 1586
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage18
   rotate: false
-  xy: 1508, 1482
+  xy: 1508, 1534
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage19
   rotate: false
-  xy: 504, 604
+  xy: 1508, 1482
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
@@ -258,7 +258,7 @@ damage22
   index: -1
 damage23
   rotate: false
-  xy: 1508, 1170
+  xy: 1006, 1124
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
@@ -272,35 +272,35 @@ damage24
   index: -1
 damage25
   rotate: false
-  xy: 1508, 1118
+  xy: 1508, 1170
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage26
   rotate: false
-  xy: 1508, 1066
+  xy: 1508, 1118
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage27
   rotate: false
-  xy: 1508, 1014
+  xy: 1508, 1066
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage28
   rotate: false
-  xy: 1508, 962
+  xy: 1508, 1014
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage29
   rotate: false
-  xy: 504, 1332
+  xy: 1508, 962
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
@@ -342,42 +342,42 @@ damage33
   index: -1
 damage34
   rotate: false
-  xy: 2, 1038
+  xy: 1508, 1430
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage35
   rotate: false
-  xy: 2, 986
+  xy: 2, 1038
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage36
   rotate: false
-  xy: 2, 934
+  xy: 2, 986
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage37
   rotate: false
-  xy: 2, 882
+  xy: 2, 934
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage38
   rotate: false
-  xy: 2, 830
+  xy: 2, 882
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage39
   rotate: false
-  xy: 2, 778
+  xy: 2, 830
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
@@ -468,7 +468,7 @@ damage5
   index: -1
 damage50
   rotate: false
-  xy: 2, 102
+  xy: 2, 674
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
@@ -503,35 +503,35 @@ damage54
   index: -1
 damage55
   rotate: false
-  xy: 504, 396
+  xy: 1006, 1436
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage56
   rotate: false
-  xy: 1006, 1436
+  xy: 504, 1384
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage57
   rotate: false
-  xy: 504, 1384
+  xy: 1006, 1384
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage58
   rotate: false
-  xy: 1006, 1384
+  xy: 504, 1332
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage59
   rotate: false
-  xy: 1006, 1020
+  xy: 1006, 1332
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
@@ -545,7 +545,7 @@ damage6
   index: -1
 damage60
   rotate: false
-  xy: 504, 1176
+  xy: 1006, 1176
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
@@ -559,21 +559,21 @@ damage61
   index: -1
 damage62
   rotate: false
-  xy: 504, 1124
+  xy: 504, 1072
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage63
   rotate: false
-  xy: 504, 1072
+  xy: 2, 778
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage64
   rotate: false
-  xy: 1006, 1124
+  xy: 504, 1020
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
@@ -587,35 +587,35 @@ damage65
   index: -1
 damage66
   rotate: false
-  xy: 504, 1020
+  xy: 1006, 1072
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage67
   rotate: false
-  xy: 1006, 1072
+  xy: 504, 968
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage68
   rotate: false
-  xy: 504, 1280
+  xy: 1006, 1280
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage69
   rotate: false
-  xy: 504, 968
+  xy: 1006, 1020
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage7
   rotate: false
-  xy: 504, 916
+  xy: 1006, 500
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
@@ -629,7 +629,7 @@ damage70
   index: -1
 damage71
   rotate: false
-  xy: 504, 1228
+  xy: 1006, 1228
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
@@ -678,14 +678,14 @@ damage77
   index: -1
 damage78
   rotate: false
-  xy: 1006, 1176
+  xy: 1006, 708
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage79
   rotate: false
-  xy: 1006, 708
+  xy: 504, 604
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
@@ -699,14 +699,14 @@ damage8
   index: -1
 damage80
   rotate: false
-  xy: 1006, 1332
+  xy: 504, 1280
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
   index: -1
 damage81
   rotate: false
-  xy: 1006, 500
+  xy: 504, 1124
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
@@ -720,7 +720,7 @@ damage82
   index: -1
 damage83
   rotate: false
-  xy: 1508, 1430
+  xy: 504, 396
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
@@ -769,7 +769,7 @@ damage89
   index: -1
 damage9
   rotate: false
-  xy: 2, 674
+  xy: 2, 102
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
@@ -811,7 +811,7 @@ damage94
   index: -1
 damage95
   rotate: false
-  xy: 1006, 136
+  xy: 504, 916
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
@@ -832,7 +832,7 @@ damage97
   index: -1
 damage98
   rotate: false
-  xy: 1006, 1228
+  xy: 504, 1176
   size: 500, 50
   orig: 500, 50
   offset: 0, 0
@@ -846,14 +846,28 @@ damage99
   index: -1
 engine
   rotate: false
-  xy: 1508, 756
+  xy: 404, 1494
   size: 58, 50
   orig: 58, 50
   offset: 0, 0
   index: -1
+engineConeBottom
+  rotate: false
+  xy: 1910, 1946
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+engineConeTop
+  rotate: false
+  xy: 1508, 706
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
 engineDown
   rotate: false
-  xy: 404, 1494
+  xy: 1910, 1894
   size: 58, 50
   orig: 58, 50
   offset: 0, 0
@@ -867,21 +881,21 @@ engineTxt
   index: -1
 flame
   rotate: false
-  xy: 1560, 482
+  xy: 1508, 238
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 medbay
   rotate: false
-  xy: 1710, 675
+  xy: 1508, 186
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 medbayDown
   rotate: false
-  xy: 1508, 482
+  xy: 404, 1338
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
@@ -895,14 +909,14 @@ medbayTxt
   index: -1
 oTwo
   rotate: false
-  xy: 1508, 586
+  xy: 404, 1442
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 oTwoDown
   rotate: false
-  xy: 1612, 586
+  xy: 1508, 342
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
@@ -916,7 +930,7 @@ oTwoTxt
   index: -1
 offButton
   rotate: false
-  xy: 1106, 1644
+  xy: 2, 1142
   size: 400, 200
   orig: 400, 200
   offset: 0, 0
@@ -930,35 +944,35 @@ onButton
   index: -1
 reactor
   rotate: false
-  xy: 404, 1286
+  xy: 404, 1182
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 reactorDown
   rotate: false
-  xy: 1862, 806
+  xy: 1508, 550
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 reactorTxt
   rotate: false
-  xy: 1568, 727
+  xy: 1610, 638
   size: 200, 42
   orig: 200, 42
   offset: 0, 0
   index: -1
 shields
   rotate: false
-  xy: 1862, 858
+  xy: 1508, 446
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 shieldsDown
   rotate: false
-  xy: 1508, 378
+  xy: 1812, 719
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
@@ -979,14 +993,14 @@ shipShield
   index: -1
 surveillance
   rotate: false
-  xy: 1560, 534
+  xy: 404, 1234
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 surveillanceDown
   rotate: false
-  xy: 1612, 534
+  xy: 1508, 134
   size: 50, 50
   orig: 50, 50
   offset: 0, 0

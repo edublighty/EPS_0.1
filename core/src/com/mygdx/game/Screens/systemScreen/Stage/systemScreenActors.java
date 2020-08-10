@@ -39,6 +39,7 @@ import com.mygdx.game.Screens.systemScreen.Actors.systemThrustUp;
 import com.mygdx.game.Screens.systemScreen.Sprites.alarmButtons;
 import com.mygdx.game.Screens.systemScreen.Sprites.shipRoomButton;
 import com.mygdx.game.Screens.systemScreen.Sprites.shipRoomSprite;
+import com.mygdx.game.Screens.systemScreen.Sprites.systemSprite;
 import com.mygdx.game.Screens.systemScreen.systemScreen2;
 import com.mygdx.game.Tools.Managers.alarmManagers.alarmManager_Attributes;
 import com.mygdx.game.Tools.Managers.alarmManagers.alarmManager_Systems;
@@ -89,7 +90,7 @@ public class  systemScreenActors implements Disposable {
     private float paneShowing;
     private float paneHidden;
     private Label mouseLabel;
-    private shipRoomSprite[] playerRoomsSystems;
+    private systemSprite[] playerRoomsSystems;
     private shipRoomButton[] playerRoomsSystemsEdge;
     private shipRoomButton[] playerRoomsSystemsName;
     private shipRoomButton[] playerRoomsSystemsDamage;
@@ -410,7 +411,7 @@ public class  systemScreenActors implements Disposable {
             }
 
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                screen.orbitStar();
+                screen.orbitStar(false);
             }
 
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
@@ -447,6 +448,7 @@ public class  systemScreenActors implements Disposable {
             }
 
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                screen.orbitNearestPlanet();
             }
 
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
@@ -471,6 +473,47 @@ public class  systemScreenActors implements Disposable {
             }
         });
         orbitPanel.addActor(orbitPlanet);
+
+        buttonX = 0;
+        buttonY = viewportHeight - buttonHeight;
+        systemTiles pauseButton = new systemTiles(screen,buttonHeight,buttonHeight,buttonX,buttonY,"zoomsPause");
+        pauseButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event,x,y);
+            }
+
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                screen.toggleRender();
+                return true;
+            }
+
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            }
+
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                // Ignore if mouse was already over
+                if(isOver()) return;
+
+                super.enter(event, x, y, pointer, fromActor);
+
+                // Ignore if mouse is not over
+                if(!isOver()) return;
+
+                toggleTextOverlay(true,pauseButton.getX()+pauseButton.getWidth()/2-mouseLabel.getWidth()/2,pauseButton.getY()+pauseButton.getHeight()/2 + pauseButton.getHeight()*0.6f,"Pause");
+
+            }
+
+            public void exit(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+
+                super.exit(event, x, y, pointer, fromActor);
+
+                toggleTextOverlay(false,0,0,null);
+
+            }
+        });
+        stage.addActor(pauseButton);
+
+
 
         // ----------------------------------------------------------------------------------------------------------------------------------
         // ----------------------------------------------------------------------------------------------------------------------------------
@@ -1000,14 +1043,26 @@ public class  systemScreenActors implements Disposable {
         thrustVar.setText(thrustPer+"%");
     }
 
+    public void updateSystemDamage(int count, int damage){
+        if(damage<0){damage=0;}
+        if(damage>99){damage=99;}
+        playerRoomsSystemsDamage[count].setDrawable(new TextureRegionDrawable(game.getRoomsAt().findRegion("damage"+damage)));
+    }
+
     public void updateShields(int shieldPer){
         shieldsVar.setText(shieldPer+"%");
+        if(shieldPer<1){
+            shieldPer=1;
+        }
         TextureRegion textureReg = new TextureRegion(game.getShieldAt().findRegion("shieldBar" + shieldPer));
         TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(textureReg);
         sBars.setDrawable(textureRegionDrawable);
     }
 
     public void updateHealth(int healthPer){
+        if(healthPer<1){
+            healthPer=1;
+        }
         healthVar.setText(healthPer+"%");
         TextureRegion textureReg = new TextureRegion(game.getHealthAt().findRegion("healthBar"+healthPer));
         TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(textureReg);
