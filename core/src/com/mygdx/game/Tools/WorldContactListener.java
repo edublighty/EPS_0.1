@@ -24,6 +24,10 @@ public class WorldContactListener implements ContactListener {
         Fixture fixB = contact.getFixtureB();
         System.out.println(fixA.getBody()+" has hit "+ fixB.getBody());
 
+        if(fixA.getBody().getUserData()=="STATION_PROX" || fixB.getBody().getUserData()=="PLAYER_PROX"){
+            System.out.println("collision proximity");
+        }
+
         if(fixA.getBody().getUserData() == "star"){
             // fixture A is star
             System.out.println("Star!");

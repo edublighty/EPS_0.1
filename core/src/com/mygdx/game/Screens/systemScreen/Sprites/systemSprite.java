@@ -47,7 +47,7 @@ public class systemSprite extends Image {
     private String baseString;
 
     public systemSprite(MyGdxGame game, systemScreen2 screen, String roomType, List<Float> tempSize, float ratio, int i, int j, int iNum, int jNum, int systemCount) {
-        super(game.getSystemsAt().findRegion("reactor0"));
+        super(game.getSystemsAt().findRegion("engCone0"));
         systemON = true;
         this.game = game;
         this.screen = screen;
@@ -121,6 +121,11 @@ public class systemSprite extends Image {
                 frameCount = 0;
                 baseString = "cargoBay";
                 break;
+            case "engCone":
+                // cargo bay
+                frameCount = 0;
+                baseString = "engCone";
+                break;
         }
 
 
@@ -158,6 +163,9 @@ public class systemSprite extends Image {
     }
 
     public TextureRegion getFrame(float dt) {
+        if (baseString == "engCone") {
+            System.out.println("");
+        }
         TextureRegion region;
         region = starShine.getKeyFrame(stateTimer);
         if(stateTimer > frameDuration*frameCount ){

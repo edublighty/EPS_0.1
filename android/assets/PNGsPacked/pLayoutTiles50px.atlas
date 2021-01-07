@@ -4,9 +4,16 @@ size: 1024,64
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+pDTTile50Black
+  rotate: false
+  xy: 158, 2
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
 pDTTile50Blue
   rotate: false
-  xy: 210, 2
+  xy: 262, 2
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
@@ -20,14 +27,14 @@ pDTTile50Brown
   index: -1
 pDTTile50Green
   rotate: false
-  xy: 158, 2
+  xy: 210, 2
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 pDTTile50Grey
   rotate: false
-  xy: 262, 2
+  xy: 314, 2
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
@@ -41,14 +48,14 @@ pDTTile50LILACMAYBE
   index: -1
 pDTTile50Orange
   rotate: false
-  xy: 418, 2
+  xy: 470, 2
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 pDTTile50Pink
   rotate: false
-  xy: 522, 2
+  xy: 626, 2
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
@@ -62,21 +69,28 @@ pDTTile50Purple
   index: -1
 pDTTile50Red
   rotate: false
-  xy: 314, 2
+  xy: 366, 2
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+pDTTile50SeaGreen
+  rotate: false
+  xy: 522, 2
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 pDTTile50White
   rotate: false
-  xy: 366, 2
+  xy: 418, 2
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
 pDTTile50Yellow
   rotate: false
-  xy: 470, 2
+  xy: 574, 2
   size: 50, 50
   orig: 50, 50
   offset: 0, 0

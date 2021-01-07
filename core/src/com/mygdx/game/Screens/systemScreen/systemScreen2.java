@@ -8,15 +8,19 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -24,12 +28,14 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.HUDs.sideHUD;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.Screens.systemScreen.Sprites.backImage;
+import com.mygdx.game.Screens.systemScreen.Sprites.polygonImage;
 import com.mygdx.game.Screens.systemScreen.Sprites.systemScreenShipGroup;
 import com.mygdx.game.Screens.systemScreen.Sprites.traceImage;
 import com.mygdx.game.Screens.systemScreen.Sprites.orbLinesSprite;
 import com.mygdx.game.Screens.systemScreen.Sprites.planetImage;
 import com.mygdx.game.Screens.systemScreen.Sprites.playerImage;
 import com.mygdx.game.Screens.systemScreen.Sprites.starImage;
+import com.mygdx.game.Screens.systemScreen.Stage.nearProxStage;
 import com.mygdx.game.Screens.systemScreen.Stage.systemScreenActors;
 import com.mygdx.game.Screens.systemScreen.Stage.worldStage;
 import com.mygdx.game.Screens.systemScreen.Tools.Vertex;
@@ -39,6 +45,9 @@ import com.mygdx.game.Screens.systemScreen.Tools.systemGenerator;
 import com.mygdx.game.Tools.WorldContactListener;
 import com.mygdx.game.Tools.b2dWorldCreator;
 import com.mygdx.game.Tools.Managers.shipManager;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
 
 public class systemScreen2 implements Screen {
 
@@ -64,9 +73,11 @@ public class systemScreen2 implements Screen {
     private TextureAtlas healthAt;
     private TextureAtlas shieldAt;
     private TextureAtlas shipIconsAt;
+    private TextureAtlas shipPointersAt;
 
     // Box2D variables
     private World world;
+    private World worldProx;
     private Box2DDebugRenderer b2dr;
 
     // sprites
@@ -81,6 +92,8 @@ public class systemScreen2 implements Screen {
     public orbLinesSprite[] orbline = new orbLinesSprite[9];
     private orbLinesSprite[] planetLines = new orbLinesSprite[9];
     public playerImage player;
+    private polygonImage playerProx;
+    private Array<polygonImage> proxObjects;
     public playerImage playerOver;
     public playerImage playerLevelsInterm;
     public systemScreenShipGroup playerShipShown;
@@ -93,6 +106,10 @@ public class systemScreen2 implements Screen {
     private int targetI;
     private boolean orbitingStar;
     private boolean orbitingPlanet;
+    private boolean syncStation;
+    private boolean stationSynced;
+    private boolean changedProx;
+    private boolean prefDirAC;
     private boolean targeting;
     private boolean tracing;
     private boolean collision;
@@ -144,6 +161,7 @@ public class systemScreen2 implements Screen {
     // ship-specific variables
     private float maxBurnThrust;    // maximum thrust at open throttle
     private float burnMultiplier;  // 0 if engines off, 1 if they are on
+    private double stationOmega;
 
 
     // system-specific variables
@@ -186,11 +204,14 @@ public class systemScreen2 implements Screen {
 
     // HUD variables
     private worldStage wStage;
+    private nearProxStage proxStage;
     public sideHUD pauseHUD;
     public systemScreenActors systemActors;
     public Vector2 deltas;
     public boolean handling;
     private InputMultiplexer multiplexer;
+    private float playerCamOffX;
+    private float playerCamOffY;
 
     // sprite variables
     private float playerVx;
@@ -201,6 +222,14 @@ public class systemScreen2 implements Screen {
     private double dummyVy;
     private double dummysX;
     private double dummysY;
+    // Proximity variables
+    private float proxVx;
+    private float proxVy;
+    private int proxAxInt;
+    private int proxAyInt;
+    private float proxOmega;
+    private int proxAomega;
+    private float colTime;
 
     public Vertex vertices[];
     private int playerHealth;
@@ -224,6 +253,7 @@ public class systemScreen2 implements Screen {
         //greebleGenerator greebGen = new greebleGenerator(game);
 
         // update variables
+        stationOmega = Math.PI/20;
         int starSystNo = 1+1;
         game.randManager.setBaseCounts(starSystNo);
         shipRadLevel = 4f;      // current level of ship to deal with rads - to be contribution from hull and shields
@@ -251,6 +281,10 @@ public class systemScreen2 implements Screen {
         orbitPlanet = false;
         orbitingStar = false;
         orbitingPlanet = false;
+        syncStation = false;
+        stationSynced = false;
+        changedProx = false;
+        prefDirAC = false;
         planetDeburn = false;
         planetOrbDia = game.V_WIDTH/30;
         solarM = 1000;
@@ -262,10 +296,23 @@ public class systemScreen2 implements Screen {
         previousGrad = 0;
         angle1=0;
         angle2=0;
+        proxAomega = 0;
+        proxAxInt = 0;
+        proxAyInt = 0;
+        proxOmega = 0;
+        proxVx = 0;
+        proxVy = 0;
+        colTime = 6;
 
         // ship-specific variables
         maxBurnThrust = (float) (250f/50*Math.pow(game.V_WIDTH,1)/Math.pow(30,1));
         burnMultiplier = 1;
+
+        // test array function
+        Array<Integer> testIntegers = new Array<>();
+        for(int z=0;z<100;z++){
+            testIntegers.add(z);
+        }
 
         // initial player conditions
         float startVx = 0f*game.V_WIDTH/30;
@@ -280,6 +327,7 @@ public class systemScreen2 implements Screen {
         shieldAt = new TextureAtlas("systemScreen/ui/shieldBars.atlas");
         healthAt = new TextureAtlas("systemScreen/ui/healthBars.atlas");
         shipIconsAt = new TextureAtlas("shipIcons/shipIcons.atlas");
+        shipPointersAt = new TextureAtlas("shipIcons/shipTypePointers.atlas");
 
         // set game variable
         this.game=game;
@@ -296,10 +344,12 @@ public class systemScreen2 implements Screen {
 
         // world variables
         world = new World(new Vector2(0,0), true); // 0,0 transpires as no gravity
+        worldProx = new World(new Vector2(0,0), true); // 0,0 transpires as no gravity
         b2dr = new Box2DDebugRenderer();
 
         // create game overlays
         wStage = new worldStage(game,this,game.batch,gameport.getWorldWidth(),gameport.getWorldHeight());
+        proxStage = new nearProxStage(game,this,game.batch,gameport.getWorldWidth(),gameport.getWorldHeight());
 
         pauseHUD = new sideHUD(game,gameport.getWorldWidth(),gameport.getWorldHeight());
         //systemShipImage = new systemScreenShipStage(game,this,game.batch,gameport.getWorldWidth()*MyGdxGame.PPM, gameport.getWorldHeight()*MyGdxGame.PPM);
@@ -424,6 +474,8 @@ public class systemScreen2 implements Screen {
         int sType = 1; //(int) starData[0];
         String sObj = "star"+Integer.toString(sType);
 
+        playerCamOffX=0;
+        playerCamOffY=0;
         // set background image
         float backW = gameport.getWorldWidth()*1.5f;
         float backH = backW;
@@ -492,7 +544,6 @@ public class systemScreen2 implements Screen {
             wells[i].setColor(wells[i].getColor().r,wells[i].getColor().g,wells[i].getColor().b,wells[i].getColor().a/3);
             wStage.stage.addActor(wells[i]);
 
-
             planets[i] = new planetImage(world,this,"planetShine",planetData,i,wWid,wHei);//new planetSpriteGRAVY(world,this,stelObj,planetData,i,wWid,wHei);
             planets[i].setWidth(starr.getWidth()/4);
             planets[i].setHeight(starr.getWidth()/4);
@@ -539,17 +590,24 @@ public class systemScreen2 implements Screen {
         float startY = starr.getY() + planSpace*6f;
         System.out.println("startX "+startX+" startY "+startY);
         player = new playerImage(game, world,this,toteSize,"baseFreighter1",startX,startY);
-        playerOver = new playerImage(game, world,this,toteSize,"baseFreighter1",startX,startY);
-        float aspect = getShipIconsAt().findRegion("baseFreighter1").getRegionHeight()/getShipIconsAt().findRegion("baseFreighter1").getRegionWidth();
-        playerOver.setHeight(wStage.foreStage.getHeight()/20);
+        playerOver = new playerImage(game, world,this,toteSize,"C_1_Player",startX,startY);
+        float temp1 = getShipPointersAt().findRegion("C_1_Player").getRegionWidth();
+        float temp2 = getShipPointersAt().findRegion("C_1_Player").getRegionHeight();
+        float aspect = temp2/temp1;//getShipPointersAt().findRegion("C_1_Player").getRegionHeight()/getShipPointersAt().findRegion("C_1_Player").getRegionWidth();
+        //playerOver.rotateBy(-90);
+        playerOver.setHeight(wStage.foreStage.getHeight()/50);
         playerOver.setWidth(playerOver.getHeight()/aspect);
         playerOver.setX(wStage.foreStage.getWidth()/2 - playerOver.getWidth()/2);
         playerOver.setY(wStage.foreStage.getHeight()/2 - playerOver.getHeight()/2);
         wStage.foreStage.addActor(playerOver);
         wStage.wStageCam3.rotate(-90);
+
         //wStage.stage.addActor(player);
         //playerLevelsInterm = new playerImage(game, world,this,toteSize,"Level2SHIP",startX,startY);
         //wStage.stage.addActor(playerLevelsInterm);
+
+
+
 
         // set up ship graphic
         float shipWidth = starr.getWidth();
@@ -1085,12 +1143,1087 @@ public class systemScreen2 implements Screen {
 
         System.out.println("body chosen "+targetBody);
 
-        targetRad = 50;// Math.sqrt(Math.pow((playersX-gravData[iPlanet][1]),2)+Math.pow((playersY-gravData[iPlanet][2]),2));
+        targetRad = wells[targetBody].getWidth()*1.5/2;// Math.sqrt(Math.pow((playersX-gravData[iPlanet][1]),2)+Math.pow((playersY-gravData[iPlanet][2]),2));
 
         orbitingPlanet = true;
         targeting = true;
 
     }
+
+    public void syncStation(){
+        // first match orbital radius
+        syncStation = true;
+        prefDirAC = true;
+        targetRad = wells[targetBody].getWidth()/2;
+    }
+
+    public traceImage setUpAngledRect(Vector2 p1,Vector2 p2,float thickness){
+        // set up short section between two points at an angle
+        float dx = p2.x - p1.x;
+        float dy = p2.y - p1.y;
+        float cenX = p1.x + dx/2;
+        float cenY = p1.y + dy/2;
+        Vector2 centre = new Vector2(cenX,cenY);
+        float theta = (float) ((180/Math.PI)*Math.atan(dy/dx));
+        traceImage temp = new traceImage(game, this, centre.x - dx/2, centre.y - thickness/2, dx, thickness);
+        temp.setOrigin(temp.getWidth()/2,temp.getHeight()/2);
+        temp.rotateBy(theta);
+        //temp.setColor(0,255,0,255);
+        return temp;
+    }
+
+    public void setupProximity(){
+        // transparent backdrop
+        float backW = gameport.getWorldWidth()*1.5f;
+        float backH = backW;
+        float backX = (float) (proxStage.stage.getWidth()/2-backW/2);
+        float backY = (float) (proxStage.stage.getHeight()/2-backH/2);
+        backImage backImage = new backImage(this,backX,backY,backW,backH);
+        backImage.setDrawable(new TextureRegionDrawable(new TextureRegion(game.getTilesAt().findRegion("pDTTile50Black"))));
+        Color color = backImage.getColor();
+        backImage.setColor(color.r,color.g,color.b,color.a*5/6);
+        proxStage.backstage.addActor(backImage);
+
+        // station added
+        // create internal first
+        float stationH = proxStage.stage.getWidth()/10;
+        String stationInt = "domsWankStationInt";
+        String stationExt = "domsWankStationCen";
+        double aspect = getShipIconsAt().findRegion(stationExt).getRegionHeight()/getShipIconsAt().findRegion(stationExt).getRegionWidth();
+        float stationW = stationH*25;
+        float stationX = proxStage.stage.getWidth()/2 - backW/2;
+        float stationY = proxStage.stage.getHeight()/2 - backH/2;
+        proxObjects = new Array<polygonImage>();
+        // internal station floor
+        float offsetX = 0;
+        float offsetY = 0;
+        proxObjects.add(new polygonImage(game,worldProx,this,1,"floorCeil",stationX+offsetX,stationY+offsetY));
+        proxObjects.get(0).setPosition(stationX+offsetX,stationY+offsetY);
+        proxObjects.get(0).setSize(stationW,stationH);
+        proxObjects.get(0).setCentre(proxObjects.get(0).getX()+proxObjects.get(0).getWidth()/2,proxObjects.get(0).getY()+proxObjects.get(0).getHeight()/2);
+        proxObjects.get(0).setCollision(true);
+        BufferedImage bImage = null;
+        try {
+            bImage = javax.imageio.ImageIO.read(new File("shipIcons/shipIcons/FREIGHTER/floorCeil.png"));//new BufferedImage(tex2.getRegionWidth(), tex2.getRegionHeight(), BufferedImage.TYPE_INT_ARGB);
+        } catch(Exception e) {
+            //  Block of code to handle errors
+        }
+        Array<Vector2> vertices = returnBorder2(bImage,0);
+        proxObjects.get(0).setVertices(vertices);
+        Array<Vector3> shapes = returnShapes(vertices);
+        proxObjects.get(0).setShapes(shapes);
+
+        // internal station ceiling
+        proxObjects.add(new polygonImage(game,worldProx,this,1,"floorCeil",stationX+offsetX,stationY+offsetY));
+        offsetY = 4*stationH;
+        proxObjects.get(1).setPosition(stationX+offsetX,stationY+offsetY);
+        proxObjects.get(1).setSize(stationW,stationH);
+        proxObjects.get(1).setCentre(proxObjects.get(1).getX()+proxObjects.get(1).getWidth()/2,proxObjects.get(1).getY()+proxObjects.get(1).getHeight()/2);
+        proxObjects.get(1).setCollision(true);
+        bImage = null;
+        try {
+            bImage = javax.imageio.ImageIO.read(new File("shipIcons/shipIcons/FREIGHTER/floorCeil.png"));//new BufferedImage(tex2.getRegionWidth(), tex2.getRegionHeight(), BufferedImage.TYPE_INT_ARGB);
+        } catch(Exception e) {
+            //  Block of code to handle errors
+        }
+        vertices = returnBorder2(bImage,1);
+        proxObjects.get(1).setVertices(vertices);
+        shapes = returnShapes(vertices);
+        proxObjects.get(1).setShapes(shapes);
+
+        // internal left shield door
+        proxObjects.add(new polygonImage(game,worldProx,this,1,"Laser_Blue",stationX+offsetX,stationY+offsetY));
+        offsetY = stationH;
+        offsetX = stationH;
+        proxObjects.get(2).setSize(stationW/250,stationH*3);
+        proxObjects.get(2).setPosition(stationX+offsetX,stationY+offsetY);
+        proxObjects.get(2).setCentre(stationX+offsetX+proxObjects.get(2).getWidth()/2,stationY+offsetY+proxObjects.get(2).getHeight()/2);
+        proxObjects.get(2).setCollision(false);
+
+        // landing pad 1
+        proxObjects.add(new polygonImage(game,worldProx,this,1,"dockingPoint",stationX+offsetX,stationY+offsetY));
+        proxObjects.get(3).setSize(stationH*7,stationH/3);
+        offsetY = stationH - proxObjects.get(3).getHeight()/2;
+        offsetX = stationH;
+        proxObjects.get(3).setPosition(stationX+offsetX,stationY+offsetY);
+        proxObjects.get(3).setCentre(stationX+offsetX+proxObjects.get(3).getWidth()/2,stationY+offsetY+proxObjects.get(3).getHeight()/2);
+        proxObjects.get(3).setCollision(true);
+        bImage = null;
+        try {
+            bImage = javax.imageio.ImageIO.read(new File("shipIcons/shipIcons/FREIGHTER/dockingPoint.png"));//new BufferedImage(tex2.getRegionWidth(), tex2.getRegionHeight(), BufferedImage.TYPE_INT_ARGB);
+        } catch(Exception e) {
+            //  Block of code to handle errors
+        }
+        vertices = returnBorder2(bImage,3);
+        proxObjects.get(3).setVertices(vertices);
+        shapes = returnShapes(vertices);
+        proxObjects.get(3).setShapes(shapes);
+
+        // landing pad 2
+        proxObjects.add(new polygonImage(game,worldProx,this,1,"dockingPoint",stationX+offsetX,stationY+offsetY));
+        proxObjects.get(4).setSize(stationH*7,stationH/3);
+        offsetY = stationH - proxObjects.get(4).getHeight()/2;
+        offsetX = stationH*9;
+        proxObjects.get(4).setPosition(stationX+offsetX,stationY+offsetY);
+        proxObjects.get(4).setCentre(stationX+offsetX+proxObjects.get(4).getWidth()/2,stationY+offsetY+proxObjects.get(4).getHeight()/2);
+        proxObjects.get(4).setCollision(true);
+        bImage = null;
+        try {
+            bImage = javax.imageio.ImageIO.read(new File("shipIcons/shipIcons/FREIGHTER/dockingPoint.png"));//new BufferedImage(tex2.getRegionWidth(), tex2.getRegionHeight(), BufferedImage.TYPE_INT_ARGB);
+        } catch(Exception e) {
+            //  Block of code to handle errors
+        }
+        vertices = returnBorder2(bImage,4);
+        proxObjects.get(4).setVertices(vertices);
+        shapes = returnShapes(vertices);
+        proxObjects.get(4).setShapes(shapes);
+
+        // landing pad 3
+        proxObjects.add(new polygonImage(game,worldProx,this,1,"dockingPoint",stationX+offsetX,stationY+offsetY));
+        proxObjects.get(5).setSize(stationH*7,stationH/3);
+        offsetY = stationH - proxObjects.get(5).getHeight()/2;
+        offsetX = stationH*17;
+        proxObjects.get(5).setPosition(stationX+offsetX,stationY+offsetY);
+        proxObjects.get(5).setCentre(stationX+offsetX+proxObjects.get(5).getWidth()/2,stationY+offsetY+proxObjects.get(5).getHeight()/2);
+        proxObjects.get(5).setCollision(true);
+        bImage = null;
+        try {
+            bImage = javax.imageio.ImageIO.read(new File("shipIcons/shipIcons/FREIGHTER/dockingPoint.png"));//new BufferedImage(tex2.getRegionWidth(), tex2.getRegionHeight(), BufferedImage.TYPE_INT_ARGB);
+        } catch(Exception e) {
+            //  Block of code to handle errors
+        }
+        vertices = returnBorder2(bImage,5);
+        proxObjects.get(5).setVertices(vertices);
+        shapes = returnShapes(vertices);
+        proxObjects.get(5).setShapes(shapes);
+
+        // add all actors to stage
+        for(int i=0;i<proxObjects.size;i++){
+            proxStage.stage.addActor(proxObjects.get(i));
+        }
+
+        // Create debug lines if required of all shapes in polygon
+        boolean debug1 = true;
+        if(debug1) {
+            for (int i = 0; i < proxObjects.size; i++) {
+                // stationW/250
+                Array<Vector3> tempShapes = proxObjects.get(i).getShapes();
+                if(tempShapes==null) {
+                    // do nothing
+                } else {
+                    Array<Vector2> tempVerts = proxObjects.get(i).getVertices();
+                    float t = stationW / 2500;
+                    ; // thickness for bar
+                    for (int j = 0; j < tempShapes.size; j++) {
+                        int nodeX = (int) tempShapes.get(j).x;
+                        int nodeY = (int) tempShapes.get(j).y;
+                        int nodeZ = (int) tempShapes.get(j).z;
+                        Vector2 node1 = tempVerts.get(nodeX);
+                        Vector2 node2 = tempVerts.get(nodeY);
+                        Vector2 node3 = tempVerts.get(nodeZ);
+                        proxStage.stage.addActor(setUpAngledRect(node1, node2, t));
+                        proxStage.stage.addActor(setUpAngledRect(node2, node3, t));
+                        proxStage.stage.addActor(setUpAngledRect(node3, node1, t));
+                    }
+                }
+            }
+        }
+
+        // create debug lines of outline of polygon only
+        boolean debug2 = false;
+        if(debug2) {
+            for (int i = 0; i < proxObjects.size; i++) {
+                // stationW/250
+                Array<Vector2> tempShapes = proxObjects.get(i).getOutsideEdges();
+                if(tempShapes==null) {
+                    // do nothing
+                } else {
+                    Array<Vector2> tempVerts = proxObjects.get(i).getVertices();
+                    float t = stationW / 1250;
+                    ; // thickness for bar
+                    for (int j = 0; j < tempShapes.size; j++) {
+                        int nodeX = (int) tempShapes.get(j).x;
+                        int nodeY = (int) tempShapes.get(j).y;
+                        Vector2 node1 = tempVerts.get(nodeX);
+                        Vector2 node2 = tempVerts.get(nodeY);
+                        proxStage.stage.addActor(setUpAngledRect(node1, node2, t));
+                    }
+                }
+            }
+        }
+
+        TextureRegion tex = getShipIconsAt().findRegion("baseFreighter1");
+
+        // player added
+        float playerH = proxObjects.get(2).getHeight()/12;
+        double tempH = getShipIconsAt().findRegion("baseFreighterSideCut").getRegionHeight();
+        double tempW = getShipIconsAt().findRegion("baseFreighterSideCut").getRegionWidth();
+        aspect = (tempH/tempW);
+        float playerW = (float) (playerH/aspect);
+        float playerX = proxObjects.get(0).getX()+stationW/2;
+        float playerY = proxObjects.get(0).getY()+stationH*2;
+        playerProx = new polygonImage(game,worldProx,this,1,"baseFreighterSideCut",playerX,playerY);
+
+        try {
+            bImage = javax.imageio.ImageIO.read(new File("shipIcons/shipIcons/FREIGHTER/baseFreighter1.png"));//new BufferedImage(tex2.getRegionWidth(), tex2.getRegionHeight(), BufferedImage.TYPE_INT_ARGB);
+        } catch(Exception e) {
+            //  Block of code to handle errors
+        }
+          returnBorder2(bImage,0);
+        playerProx.setVertices(vertices);
+
+        //playerProx.b2body.setTransform(playerX,playerY,0);
+        //playerProx.defineSprite(1,playerProx.b2body.getPosition().x,playerProx.b2body.getPosition().y,false,"PLAYER_PROX");
+        playerProx.setCentre(playerX,playerY);
+        playerProx.setSize(playerW,playerH);
+        playerProx.setPosition(playerX - playerProx.getWidth()/2,playerY - playerProx.getHeight()/2);
+        playerProx.setColor(0,0,0,0);
+        proxStage.stage.addActor(playerProx);
+        playerShipShown.setSize(playerW,playerH);
+        playerProx.setPosition(playerX - playerProx.getWidth()/2,playerY - playerProx.getHeight()/2);
+        proxStage.stage.addActor(playerShipShown);
+
+        proxStage.wStageCam.position.x = playerProx.getX() + playerProx.getWidth()/2;
+        proxStage.wStageCam.position.y = playerProx.getY() + playerProx.getHeight()/2;
+
+        proxStage.stage.setDebugAll(false);
+
+        changedProx = true;
+    }
+
+    public Array<Vector2> returnBorder(BufferedImage image,int proxN){
+
+        int pixX = image.getWidth();
+        int pixY = image.getHeight();
+        int incX = 10;
+        int incY = 1;
+
+        int pixels[][] = new int[pixX][pixY];
+        Array<Vector2> border = new Array<Vector2>();
+        //Vector2 border = new Vector2();
+
+        for(int i=0;i<pixX;i+=incX){
+            for(int j=0;j<pixY;j+=incY){
+                pixels[i][j] = image.getRGB(i,j);
+                int alpha = (pixels[i][j] >> 24) & 0xff;
+                boolean bordPix = false;
+                if(alpha>0){
+                    // its a station pixel - check for a pixel around that is a border
+                    if(i>0 && j>0) {
+                        for (int i1=-1;i1<2;i1++) {
+                            for (int j1=-1;j1<2;j1++){
+                                int tempC = image.getRGB(i+i1,j+j1);
+                                int tempA = (tempC >> 24) & 0xff;
+                                if(tempA<10){
+                                    bordPix = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                if(bordPix){
+                    border.add(new Vector2(i,pixY-j));
+                }
+            }
+        }
+
+        System.out.println("border size "+border.size);
+
+        int tempIndex = 0;
+        double tempDist = 999999999;
+        int currentInd = 0;
+        double currentX = border.get(0).x;
+        double currentY = border.get(0).y;
+        Array<Vector2> ordered = new Array<Vector2>();
+        ordered.add(border.get(0));
+        border.removeIndex(0);
+
+        while(border.size>1) {
+            for (int i = 0; i < border.size; i++) {
+                double tempR = Math.sqrt(Math.pow((currentX - ((double) (border.get(i).x))), 2) + Math.pow((currentY - ((double) (border.get(i).y))), 2));
+                if (tempR < tempDist) {
+                    tempDist = tempR;
+                    tempIndex = i;
+                }
+            }
+            //System.out.println("tempIndex "+tempIndex);
+            ordered.add(border.get(tempIndex));
+            border.removeIndex(tempIndex);
+            tempIndex=0;
+            tempDist = 999999999;
+        }
+
+        Array<Vector2> ordered2 = new Array<Vector2>();
+
+        int tempI=1;
+        while (tempI < ordered.size-1){
+            //ordered2.add(ordered.get(tempI));
+            tempI += 2;
+            System.out.println("ordered size "+ordered.size+" tempI "+tempI);
+        }
+
+        while(ordered.size>1000) {
+            tempI=ordered.size-1;
+            while (tempI > 3) {
+                ordered.removeIndex(tempI);
+                tempI -= 2;
+            }
+        }
+
+        boolean angleMethod = false;
+
+        if(angleMethod) {
+            for (int i = 0; i < ordered.size; i++) {
+                double modX1;
+                double modY1;
+                double modX2;
+                double modY2;
+                if (i == 0) {
+                    modX1 = Math.abs(ordered.get(ordered.size - 1).x - ordered.get(0).x);
+                    modY1 = Math.abs(ordered.get(ordered.size - 1).y - ordered.get(0).y);
+                    modX2 = Math.abs(ordered.get(i).x - ordered.get(i + 1).x);
+                    modY2 = Math.abs(ordered.get(i).y - ordered.get(i + 1).y);
+                } else if (i == ordered.size - 1) {
+                    modX1 = Math.abs(ordered.get(i).x - ordered.get(i - 1).x);
+                    modY1 = Math.abs(ordered.get(i).y - ordered.get(i - 1).y);
+                    modX2 = Math.abs(ordered.get(ordered.size - 1).x - ordered.get(0).x);
+                    modY2 = Math.abs(ordered.get(ordered.size - 1).y - ordered.get(0).y);
+                } else {
+                    modX1 = Math.abs(ordered.get(i).x - ordered.get(i - 1).x);
+                    modY1 = Math.abs(ordered.get(i).y - ordered.get(i - 1).y);
+                    modX2 = Math.abs(ordered.get(i).x - ordered.get(i + 1).x);
+                    modY2 = Math.abs(ordered.get(i).y - ordered.get(i + 1).y);
+                }
+                double phi1 = Math.tan(modY1 / modX1);
+                double phi2 = Math.tan(modY2 / modX2);
+                double phi = phi1 + phi2;
+                if (phi > (5 * Math.PI / 180)) {
+                    // enough angle on this point to count it
+                    ordered2.add(ordered.get(i));
+                }
+            }
+        } else {
+            tempI = 0;
+            ordered2.add(ordered.get(0));
+            for (int i = 1; i < ordered.size; i++) {
+                tempDist = Math.sqrt(Math.pow((((double) (ordered.get(i).x - ordered.get(tempI).x))), 2) + Math.pow((((double) (ordered.get(i).y - ordered.get(tempI).y))), 2));
+                if(tempDist>10){
+                    // far enough away to add to list
+                    ordered2.add(ordered.get(i));
+                    tempI=i;
+                }
+            }
+        }
+
+        //ordered2 = new Array<Vector2>();
+        for(int i=0;i<ordered.size;i++){
+            //ordered2.add(ordered.get(i));
+        }
+
+        System.out.println("ordered size "+ordered.size);
+
+        Array<Vector2> ordered3 = new Array<Vector2>();
+        while(ordered2.size>1) {
+            for (int i = 0; i < border.size; i++) {
+                double tempR = Math.sqrt(Math.pow((currentX - ((double) (border.get(i).x))), 2) + Math.pow((currentY - ((double) (border.get(i).y))), 2));
+                if (tempR < tempDist) {
+                    tempDist = tempR;
+                    tempIndex = i;
+                }
+            }
+            //System.out.println("tempIndex "+tempIndex);
+            ordered3.add(ordered2.get(tempIndex));
+            ordered2.removeIndex(tempIndex);
+            tempIndex=0;
+            tempDist = 999999999;
+        }
+
+        Array<Vector2> ordered4 = new Array<Vector2>();
+        // convert from image coordinates to world coordinates
+        for(int i=0;i<ordered3.size;i++){
+            Vector2 tempVec = new Vector2();
+            tempVec.x = ordered3.get(i).x*proxObjects.get(proxN).getWidth()/image.getWidth()+proxObjects.get(proxN).getX();
+            tempVec.y = ordered3.get(i).y*proxObjects.get(proxN).getHeight()/image.getHeight()+proxObjects.get(proxN).getY();
+            ordered4.add(tempVec);
+        }
+
+
+        float[] formatted = new float[ordered.size*2];
+
+        for(int i=0;i<ordered.size;i+=2){
+            formatted[i] = ordered.get(i/2).x;
+            formatted[i+1] = ordered.get(i/2).y;
+        }
+
+        return ordered4;
+
+    }
+
+    public Array<Vector2> returnBorder2(BufferedImage image,int proxN){
+
+        int pixX = image.getWidth();
+        int pixY = image.getHeight();
+        int incX = 10;
+        int incY = 1;
+
+        int pixels[][] = new int[pixX][pixY];
+        Array<Vector2> border = new Array<Vector2>();
+        Array<Vector2> initialBorder = new Array<Vector2>();
+        //Vector2 border = new Vector2();
+
+        boolean useRadMethod = true;
+        boolean useRadMethod2 = false;
+
+        if(useRadMethod2){
+
+        } else {
+            if (useRadMethod) {
+                boolean searchingPix = true;
+                Vector2 point1 = new Vector2(0, pixY / 2);
+                int iX = 0;
+                int jY = 0;
+                int pixel;
+                while (searchingPix) {
+                    // find left most pixel
+                    System.out.println("ix " + iX + " jY " + jY);
+                    System.out.println("pixX " + pixX + " pixY " + pixY);
+                    pixel = image.getRGB(iX, jY);
+                    int alpha = (pixel >> 24) & 0xff;
+                    if (alpha > 10) {
+                        searchingPix = false;
+                        point1 = new Vector2(iX, jY);
+                        initialBorder.add(point1);
+                    }
+                    jY++;
+                    if (jY >= pixY) {
+                        iX++;
+                        jY = 0;
+                    }
+                }
+                // found most left pixel
+                Vector2 point2 = point1;
+                float searchRad = 1;
+                float searchRadMin = 1;
+                int j2 = pixY - 1;
+                iX = 0;
+                searchingPix = true;
+                while (searchingPix) {
+                    // find next pixel that should be above and right for initial direction
+                    if(iX>=pixX){
+                        iX = 0;
+                        j2--;
+                    }
+                    pixel = image.getRGB(iX, j2);
+                    int alpha = (pixel >> 24) & 0xff;
+                    if (alpha > 10) {
+                        searchingPix = false;
+                        point2 = new Vector2(iX, j2);
+                        initialBorder.add(point2);
+                    }
+                    iX++;
+                }
+                Vector2 initPoint = point1;
+                double distPoint1 = 25;//Math.sqrt(Math.pow((point2.x-point1.x),2)+Math.pow((point2.y-point1.y),2));
+                int buffer = 0;
+                while (distPoint1 > (15 * searchRadMin)) {
+                    // found next pixel - now use these two for initial direction around shape
+                    searchRad = searchRadMin;
+                    Vector2 dirVec = new Vector2((point2.x - point1.x), (point2.y - point1.y));
+                    float magDir = (float) Math.sqrt(Math.pow((point2.x - point1.x), 2) + Math.pow((point2.y - point1.y), 2));
+                    Vector2 unitDir = new Vector2((dirVec.x / magDir), (dirVec.y / magDir));
+                    Vector2 newPoint = new Vector2(0, 0);
+                    /*
+                    if(unitDir.x == 0){
+                        // moving vertically
+                        if(unitDir.y>0){
+                            // moving up
+                            newPoint = new Vector2((point2.x + unitDir.x * searchRad * 2), (point2.y + unitDir.y * searchRad * 2));
+                        } else {
+                            // moving down
+                            newPoint = new Vector2((point2.x + unitDir.x * searchRad * 2), (point2.y - unitDir.y * searchRad * 2));
+                        }
+                    } else if (unitDir.x > 0) {
+                        // moving left to right
+                        newPoint = new Vector2((point2.x + unitDir.x * searchRad * 2), (point2.y + unitDir.y * searchRad * 2));
+                    } else {
+                        newPoint = new Vector2((point2.x - unitDir.x * searchRad * 2), (point2.y - unitDir.y * searchRad * 2));
+                    }
+                    */
+                    newPoint = new Vector2((point2.x + unitDir.x * searchRad * 3), (point2.y + unitDir.y * searchRad * 3));
+                    if(newPoint.x<0){
+                        newPoint.x=0;
+                    }
+                    if(newPoint.y<0){
+                        newPoint.y=0;
+                    }
+                    if(newPoint.x>pixX){
+                        newPoint.x=pixX;
+                    }
+                    if(newPoint.y>pixY){
+                        newPoint.y=pixY;
+                    }
+                    // now we have new point and need to establish if it is within the image
+                    boolean pixelInside = false;
+                    pixel = image.getRGB(((int) newPoint.x), ((int) newPoint.y));
+                    int alpha = (pixel >> 24) & 0xff;
+                    if (alpha > 10) {
+                        pixelInside = true;
+                    } else {
+                        pixelInside = false;
+                    }
+                    // so now we know if pixel inside/outside boundary
+                    // find location where this changes
+                    // search in 3x3 grid around current pixel
+                    boolean foundDifference = false;
+                    Vector2 point3 = new Vector2(0, 0);  // to contain potential new boundary point
+                    while (!foundDifference) {
+                        // keep searching and increasing radius until difference is found
+                        if(searchRad>5){
+                            System.out.println("");
+                        }
+                        Array<Boolean> searchPixInside = new Array<>();
+                        Array<Vector2> searchPixCoords = new Array<>();
+                        for (int theta = 0; theta<360;theta+=36) {
+                            float tempX = (float) (newPoint.x + searchRad*Math.cos(theta));
+                            float tempY = (float) (newPoint.y + searchRad*Math.sin(theta));
+                            searchPixCoords.add( new Vector2(tempX,tempY));
+                        }
+                        for(int i=0;i<searchPixCoords.size;i++){
+                            if (searchPixCoords.get(i).x < 0 || searchPixCoords.get(i).y < 0 || searchPixCoords.get(i).x >= pixX || searchPixCoords.get(i).y >= pixY) {
+                                // out of bounds
+                                searchPixInside.add(null);
+                            } else {
+                                //System.out.println("searchCoords X "+(searchPixCoords[1 + i1][1 + j1].x));
+                                //System.out.println("searchCoords Y "+(searchPixCoords[1 + i1][1 + j1].y));
+                                int tempC = image.getRGB((int) (searchPixCoords.get(i).x), (int) searchPixCoords.get(i).y);
+                                int tempA = (tempC >> 24) & 0xff;
+                                if (tempA > 10) {
+                                    searchPixInside.add(true);
+                                } else {
+                                    searchPixInside.add(false);
+                                }
+                            }
+                        }
+                        double pointR = pixX * pixY;  // this will be distance between point2 and potential boundary condition
+                        for (int i = 0; i < searchPixInside.size; i++) {
+                                // search all to see if different to newPoint
+                                if (searchPixInside.get(i) == null) {
+                                    // do nothing as centre
+                                } else {
+                                    if (searchPixInside.get(i) != pixelInside) {
+                                        // found a boundary
+                                        double tempR = Math.sqrt(Math.pow((searchPixCoords.get(i).x - point2.x), 2) + Math.pow((searchPixCoords.get(i).y - point2.y), 2));
+                                        if (true){//tempR < pointR) {
+                                            // closer point potentially most likely one
+                                            // check how colinear the points are
+                                            boolean searchArray = true;
+                                            boolean colinear = false;
+                                            int aCount = 1;
+                                            while(searchArray){
+                                                Vector2 prevNode;
+                                                /*
+                                                if(aCount==0){
+                                                    prevNode = initialBorder.get(initialBorder.size-1);
+                                                } else {
+                                                    prevNode = initialBorder.get(aCount-1);
+                                                }
+                                                */
+                                                prevNode = initialBorder.get(aCount-1);
+                                                Vector2 nextNode = initialBorder.get(aCount);
+                                                if((nextNode.x-searchPixCoords.get(i).x)*(searchPixCoords.get(i).x - prevNode.x)>=0){
+                                                    // the x coordinates of the point in question is inbetween that of two connected previous points
+                                                    // check whether colinear and simply picking a point on a previous edge
+                                                    double colin = searchPixCoords.get(i).x*(prevNode.y - nextNode.y) + prevNode.x*(nextNode.y - searchPixCoords.get(i).y) + nextNode.x*(searchPixCoords.get(i).y - prevNode.y);
+                                                    double dR = Math.sqrt(Math.pow((prevNode.x - nextNode.x),2) + Math.pow((prevNode.y - nextNode.y),2));
+                                                    double colPerLen = Math.abs(colin / dR);
+                                                    if(colPerLen<4){
+                                                        colinear = true;
+                                                        searchArray = false;
+                                                    }
+                                                }
+                                                aCount++;
+                                                if(aCount>initialBorder.size-1){
+                                                    // reached the end
+                                                    searchArray = false;
+                                                }
+                                            }
+                                            if(!colinear) {
+                                                pointR = tempR;
+                                                point3 = new Vector2(searchPixCoords.get(i).x, searchPixCoords.get(i).y);
+                                                foundDifference = true;
+                                            }
+                                        }
+                                    }
+                                }
+
+                        }
+                        searchRad += searchRadMin;
+                    }
+                    buffer++;
+                    initialBorder.add(point3);
+                    point1 = point2;
+                    point2 = point3;
+                    if (buffer > 10) {
+                        distPoint1 = Math.sqrt(Math.pow((point2.x - initPoint.x), 2) + Math.pow((point2.y - initPoint.y), 2));
+                    }
+                }
+            }
+        }
+
+        System.out.println("INITIAL BORDER COMPLETE");
+
+        Array<Vector2> ordered2 = new Array<>();
+        ordered2.add(initialBorder.get(0));
+        int prevN = 0;
+        for(int i=1;i<initialBorder.size;i++){
+        double dR = Math.sqrt(Math.pow((initialBorder.get(i).x - initialBorder.get(prevN).x),2) + Math.pow((initialBorder.get(i).y - initialBorder.get(prevN).y),2));
+        if(dR>8){
+            // if spacing is less than 5 pixels, add to ordered2 array
+            ordered2.add(initialBorder.get(i));
+            prevN = i;
+        }
+        }
+
+        Array<Vector2> ordered3 = ordered2;
+        Array<Vector2> ordered4 = new Array<Vector2>();
+        // convert from image coordinates to world coordinates
+        for(int i=0;i<ordered3.size;i++){
+            Vector2 tempVec = new Vector2();
+            tempVec.x = ordered3.get(i).x*proxObjects.get(proxN).getWidth()/image.getWidth()+proxObjects.get(proxN).getX();
+            tempVec.y = (pixY-ordered3.get(i).y)*proxObjects.get(proxN).getHeight()/image.getHeight()+proxObjects.get(proxN).getY();
+            ordered4.add(tempVec);
+        }
+/*
+
+        Array<Vector2> ordered5 = new Array<>();
+        boolean xSearch = false;    // if looking at points close in x
+        boolean ySearch = false;    // if looking at points close in y
+        ordered5.add(ordered4.get(0));
+        prevN = 0;
+        int tempN = 1;
+        if((ordered4.get(tempN).y - ordered4.get(prevN).y)>0){
+            // assume inline vertically
+            xSearch = true;
+        } else {
+            ySearch = true;
+        }
+        for(int i=2;i<ordered4.size;i++){
+            // go through each point to separate vertices if in-line
+            double tempdX = ordered4.get(i).x - ordered4.get(prevN).x;
+            double tempdY = ordered4.get(i).y - ordered4.get(prevN).y;
+            if(xSearch){
+                // already have points close in x
+                if(tempdX>5){
+                    // no longer close in x
+                    ordered5.add(ordered4.get(tempN));
+                    prevN = tempN;
+                    tempN = i;
+                    xSearch = false;
+                }
+            } else if(ySearch){
+                // already have point close in y
+                if(tempdY>5){
+                    // no longer close in y
+                    ordered5.add(ordered4.get(tempN));
+                    prevN = tempN;
+                    tempN = i;
+                    ySearch = false;
+                }
+            } else {
+                ordered5.add(ordered4.get(tempN));
+                prevN = tempN;
+                tempN = i;
+                ySearch = false;
+            }
+            if(Math.abs(ordered4.get(tempN).x - ordered4.get(prevN).x)<5){
+                // gap in x is small
+                xSearch = true;
+            } else if(Math.abs(ordered4.get(tempN).y - ordered4.get(prevN).y)<5){
+                // gap in y is small
+                ySearch = true;
+            } else {
+                // gap is good in both directions
+            }
+        }
+*/
+
+        boolean searching = true;
+        int i = 1;
+
+        while(searching){
+            prevN = i - 1;
+            int nextN = i + 1;
+            if(prevN<0){
+                prevN = ordered4.size-1;
+            }
+            if(nextN>ordered4.size-1){
+                nextN = 0;
+            }
+            System.out.println("prevN "+prevN+" nextN "+nextN);
+            Vector2 prevNode = ordered4.get(prevN);
+            Vector2 nextNode = ordered4.get(nextN);
+            double colin = ordered4.get(i).x*(prevNode.y - nextNode.y) + prevNode.x*(nextNode.y - ordered4.get(i).y) + nextNode.x*(ordered4.get(i).y - prevNode.y);
+            double dR = Math.sqrt(Math.pow((prevNode.x - nextNode.x),2) + Math.pow((prevNode.y - nextNode.y),2));
+            double colPerLen = Math.abs(colin / dR);
+            if(colPerLen<4){
+                // too colinear so remove
+                ordered4.removeIndex(i);
+                // start again
+                i = 0;
+            }
+            i++;
+            if(i>ordered4.size-1){
+                searching = false;
+            }
+        }
+
+
+        return ordered4;
+
+    }
+
+    public Array<Vector2> returnBorder3(BufferedImage image,int proxN){
+
+        int pixX = image.getWidth();
+        int pixY = image.getHeight();
+        int incX = 5;
+        int incY = 1;
+
+        int pixels[][] = new int[pixX][pixY];
+        Array<Vector2> border = new Array<Vector2>();
+        //Vector2 border = new Vector2();
+
+        for(int i=0;i<pixX;i+=incX){
+            for(int j=0;j<pixY;j+=incY){
+                pixels[i][j] = image.getRGB(i,j);
+                int alpha = (pixels[i][j] >> 24) & 0xff;
+                boolean bordPix = false;
+                if(alpha>0){
+                    // its a station pixel - check for a pixel around that is a border
+                    if(i>0 && j>0) {
+                        for (int i1=-1;i1<2;i1++) {
+                            for (int j1=-1;j1<2;j1++){
+                                int tempC = image.getRGB(i+i1,j+j1);
+                                int tempA = (tempC >> 24) & 0xff;
+                                if(tempA<10){
+                                    bordPix = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                if(bordPix){
+                    border.add(new Vector2(i,pixY-j));
+                }
+            }
+        }
+
+        boolean searching = true;
+        Array<Vector2> ordered2 = new Array<Vector2>();
+        int tempN = 0;
+        double tempR = pixX*pixY;
+        for(int i=0;i<border.size;i++){
+            if(border.get(i).x<tempR){
+                // found a more left x coordinate
+                // make first node in array
+                tempR = border.get(i).x;
+                tempN = i;
+            }
+        }
+        ordered2.add(border.get(tempN));
+        border.removeIndex(tempN);
+        int prevN = 0;
+
+        while(searching){
+            // while there are still nodes left, add to ordered2 and remove from border next closest node
+            tempR = pixX*pixY;
+            for(int i=0;i<border.size;i++){
+                double minR = Math.sqrt(Math.pow((border.get(i).x - ordered2.get(prevN).x),2) + Math.pow((border.get(i).y - ordered2.get(prevN).y),2));
+                if(minR<tempR){
+                    tempN = i;
+                    tempR = minR;
+                }
+                ordered2.add(border.get(tempN));
+                border.removeIndex(tempN);
+                if(border.size<1){
+                    searching = false;
+                }
+            }
+        }
+
+        System.out.println("border size "+border.size);
+        Array<Vector2> ordered3 = new Array<Vector2>();
+        ordered3.add(ordered2.get(0));
+        prevN = 0;
+        for(int i=1;i<ordered2.size;i++){
+            double dR = Math.sqrt(Math.pow((ordered2.get(i).x - ordered2.get(prevN).x),2) + Math.pow((ordered2.get(i).y - ordered2.get(prevN).y),2));
+            if(dR>8){
+                // if spacing is less than 5 pixels, add to ordered2 array
+                ordered3.add(ordered2.get(i));
+                prevN = i;
+            }
+        }
+        Array<Vector2> ordered4 = new Array<Vector2>();
+        // convert from image coordinates to world coordinates
+        for(int i=0;i<ordered3.size;i++){
+            Vector2 tempVec = new Vector2();
+            tempVec.x = ordered3.get(i).x*proxObjects.get(proxN).getWidth()/image.getWidth()+proxObjects.get(proxN).getX();
+            tempVec.y = ordered3.get(i).y*proxObjects.get(proxN).getHeight()/image.getHeight()+proxObjects.get(proxN).getY();
+            ordered4.add(tempVec);
+        }
+
+        return ordered4;
+
+    }
+
+    public Array<Vector3> returnShapes(Array<Vector2> ordered4){
+        // add all connections between nodes as edges in order
+        Array<Vector2> edges = new Array<>();
+        for(int i=0;i<ordered4.size;i++){
+            int[] tempInt = new int[2];
+            if(i<ordered4.size-1){
+                tempInt[0]=i;
+                tempInt[1]=i+1;
+            } else {
+                tempInt[0] = i;
+                tempInt[1] = 0;
+            }
+            edges.add(new Vector2(tempInt[0],tempInt[1]));
+        }
+
+        for(int i=0;i<ordered4.size;i++){
+            int nMinus;
+            int nPlus;
+
+            // determine where current, previous and next nodes are
+            nMinus = i - 1;
+            nPlus = i + 1;
+            if(nMinus<0){
+                nMinus = ordered4.size - 1;
+            }
+            if(nPlus>ordered4.size-1){
+                nPlus = 0;
+            }
+
+            Vector2 A = new Vector2((ordered4.get(nPlus).x - ordered4.get(i).x),(ordered4.get(nPlus).y - ordered4.get(i).y)); // from point n to n-1
+            Vector2 C = new Vector2((ordered4.get(i).x - ordered4.get(nMinus).x),(ordered4.get(i).y - ordered4.get(nMinus).y)); // from point n to n+1
+
+            Array<Vector2> tempArray = new Array<>();
+
+            for(int j=0;j<ordered4.size;j++) {
+
+                Vector2 B = new Vector2((ordered4.get(j).x - ordered4.get(i).x), (ordered4.get(j).y - ordered4.get(i).y)); // from point n to potentially visible point
+
+                if(i==j){
+                    // do nothing as the same
+                } else {
+                    // determine if reflex angle or not
+                    boolean zerothCheck = true;
+                    double m1 = (ordered4.get(i).y - ordered4.get(nMinus).y) / (ordered4.get(i).x - ordered4.get(nMinus).x);
+                    double m2 = (ordered4.get(nPlus).y - ordered4.get(i).y) / (ordered4.get(nPlus).x - ordered4.get(i).x);
+                    double mJ = (ordered4.get(j).y - ordered4.get(i).y) / (ordered4.get(j).x - ordered4.get(i).x);
+                    double theta1 = Math.atan(m1);
+                    double theta2 = Math.atan(m2);
+                    double thetaJ = Math.atan(mJ);
+
+                    double dm13 = Math.abs(mJ - m1) / Math.abs(m1);
+                    double dm23 = Math.abs(m2 - mJ) / Math.abs(m2);
+                    if (dm13 > 0.95 && dm13 < 1.05) {
+                        // 5% of gradient so dont connect
+                        zerothCheck = false;
+                    }
+                    if (dm23 > 0.95 && dm23 < 1.05) {
+                        // within 5% of gradient so dont connect
+                        zerothCheck = false;
+                    }
+
+                    zerothCheck = true;
+
+                    if (zerothCheck) {
+
+                        double AxB = A.x * B.y - A.y * B.x;
+                        double AxC = A.x * C.y - A.y * C.x;
+                        double CxB = C.x * B.y - C.y * B.x;
+                        double CxA = C.x * A.y - C.y * B.x;
+
+                        boolean firstCheck = false;
+
+                        if (m1 > m2) {
+                            // angle is not reflex
+                            // use normal cross product to see if point is within angle of sight
+                            if ((AxB * AxC >= 0) && (CxB * CxA >= 0)) {
+                                // first check complete that destination is within angle
+                                firstCheck = true;
+                            }
+
+                        } else {
+                            // angle is reflex
+                            // use opposite of normal cross product
+                            if ((AxB * AxC >= 0) && (CxB * CxA >= 0)) {
+                                // not what we want
+                            } else {
+                                // first check complete that destination is within angle
+                                firstCheck = true;
+                            }
+                        }
+
+                        boolean secondCheck = true; // assume true initially
+
+
+                        if (firstCheck) {
+                            // check point in question is within sight - i.e. not obscured by another line including new lines made across the polygon
+                            double m3 = (ordered4.get(j).y - ordered4.get(i).y) / (ordered4.get(j).x - ordered4.get(i).x); // gradient from point n to point potentially in sight
+                            for (int k = 0; k < edges.size; k++) {
+                                // check each point pair
+                                boolean secondPrime = true;
+                                Vector2 start = ordered4.get(i);
+                                Vector2 end = ordered4.get(j);
+                                int k1 = (int) (edges.get(k).x);
+                                int k2 = (int) (edges.get(k).y);
+                                Vector vecK1 = ordered4.get(k1);
+                                Vector vecK2 = ordered4.get(k2);
+                                if (k1 == i || k2 == i) {
+                                    if (k1 == j || k2 == j) {
+                                        // both of these points are already linked
+                                        secondPrime = false;
+                                    }
+                                }
+                                if (secondPrime && secondCheck) {
+                                    double m4 = (ordered4.get(k2).y - ordered4.get(k1).y) / (ordered4.get(k2).x - ordered4.get(k1).x);
+                                    double c3 = ordered4.get(j).y - m3 * ordered4.get(j).x;
+                                    double c4 = ordered4.get(k2).y - m4 * ordered4.get(k2).x;
+                                    double xIntersect = (c3 - c4) / (m4 - m3);
+                                    double yIntersect = m3 * xIntersect + c3;
+                                    double xCross = (ordered4.get(k2).x - xIntersect) * (xIntersect - ordered4.get(k1).x);
+                                    double yCross = (ordered4.get(k2).y - yIntersect) * (yIntersect - ordered4.get(k1).y);
+                                    if (xCross > 0.01 && yCross > 0.01) {
+                                        // there is a line in the way of line of sight
+                                        secondCheck = false;
+                                    }
+                                }
+                            }
+
+                        }
+                        if (firstCheck && secondCheck) {
+                            // satisfies constraints, add node pair to edge array
+                            boolean addNode = true;
+                            for(int l=0;l<edges.size;l++){
+                                int l1 = (int) edges.get(l).x;
+                                int l2 = (int) edges.get(l).y;
+                                if(i==l1 || i==l2){
+                                    if(j==l1 || j==l2){
+                                        // this edge already exists
+                                        addNode = false;
+                                    }
+                                }
+                            }
+                            if(addNode) {
+                                edges.add(new Vector2(i, j));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // now we have an array of edges that defines the polygon split entirely into triangles with no overlapping lines
+        // next step is to follow these lines to form shapes
+        Array<Vector3> shapes = new Array<>();
+        for(int i=0;i<ordered4.size;i++){
+            // for each node i, search for connecting nodes in edge j
+            int node1 = i;
+            Array<Integer> tempNodes = new Array<>();
+            for(int j=0;j<edges.size;j++){
+                // for each edge, see which contain current node
+                if(edges.get(j).x == i){
+                    // edge contains node - check what other node is
+                    tempNodes.add((int) edges.get(j).y);
+                }
+                if(edges.get(j).y == i){
+                    // edge contains node - check what other node is
+                    tempNodes.add((int) edges.get(j).x);
+                }
+            }
+            // now have all nodes connected to current node
+            int node2;
+            for(int j=0;j<tempNodes.size;j++){
+                // for each tempNode, search edges for node that connects first and second
+                node2 = tempNodes.get(j);
+                for(int k=0;k<edges.size;k++){
+                    if(edges.get(k).x == node2 || edges.get(k).y == node2){
+                        // edge contains second node - check other node isnt first node
+                        if(edges.get(k).x == node1 || edges.get(k).y == node1){
+                            // edge contains first node - not the edge we want
+                        } else {
+                            // edge potentially contains the third node of the shape
+                            int potNode3=-1;
+                            boolean potenchShape = false;
+                            if(edges.get(k).x == node2){
+                                // this is the second node - we want the other one
+                                potNode3 = (int) (edges.get(k).y);
+                            }
+                            if(edges.get(k).y == node2){
+                                // this is the second node - we want the other one
+                                potNode3 = (int) (edges.get(k).x);
+                            }
+                            int node3 = -1;
+                            Array<Integer> thirdNodes = new Array<>();
+                            for(int n1=0;n1<edges.size;n1++){
+                                // for each edge, examine those containing the potential third node
+                                if(edges.get(n1).x == node1){
+                                    // edge contains node - check what other node is
+                                    if(edges.get(n1).y == potNode3){
+                                        // contains both edges
+                                        potenchShape = true;
+                                        thirdNodes.add(potNode3);
+                                    }
+                                }
+                                // if not then check other way around
+                                if(edges.get(n1).y == node1){
+                                    // edge contains node - check what other node is
+                                    if(edges.get(n1).x == potNode3){
+                                        // contains both edges
+                                        potenchShape = true;
+                                        thirdNodes.add(potNode3);
+                                    }
+                                }
+                            }
+                            boolean createShape = true;
+                            if(potenchShape){
+                                if(thirdNodes.size>0) {
+                                    for (int n2 = 0; n2 < thirdNodes.size; n2++) {
+                                        node3 = (thirdNodes.get(n2));
+                                        // check current shape list to see if shape already exists
+                                        for (int l = 0; l < shapes.size; l++) {
+                                            if (shapes.get(l).x == node1 || shapes.get(l).y == node1 || shapes.get(l).z == node1) {
+                                                if (shapes.get(l).x == node2 || shapes.get(l).y == node2 || shapes.get(l).z == node2) {
+                                                    if (shapes.get(l).x == node3 || shapes.get(l).y == node3 || shapes.get(l).z == node3) {
+                                                        // shape already exists
+                                                        createShape = false;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if(node1<0 || node2<0 || node3<0){
+                                System.out.println("bade node");
+                                createShape = false;
+                            }
+                            // otherwise free to create shape
+                            if(createShape){
+                                shapes.add(new Vector3(node1,node2,node3));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return shapes;
+    }
+
 
 
     public Vector2 calcEscapeVel(double dX, double dY, double r,boolean orbitStar){
@@ -1192,6 +2325,9 @@ public class systemScreen2 implements Screen {
     // atlas for ship icons
     public TextureAtlas getShipIconsAt() { return shipIconsAt; }
 
+    // atlas for pointers in system view (ship ranks etc)
+    public TextureAtlas getShipPointersAt() { return shipPointersAt; }
+
     @Override
     public void show () {
         System.out.println("play show");
@@ -1224,6 +2360,13 @@ public class systemScreen2 implements Screen {
 
         game.batch.setProjectionMatrix(wStage.foreStage.getCamera().combined);
         wStage.foreStage.draw();
+
+        if(stationSynced) {
+            game.batch.setProjectionMatrix(proxStage.stage.getCamera().combined);
+            proxStage.stage.draw();
+            game.batch.setProjectionMatrix(proxStage.backstage.getCamera().combined);
+            proxStage.backstage.draw();
+        }
 
         if(paused) {
             game.batch.setProjectionMatrix(pauseHUD.stage.getCamera().combined);
@@ -1295,17 +2438,21 @@ public class systemScreen2 implements Screen {
 
     public void handleInput(float dt){
         // THIS IS WHERE TOUCH DRAG WILL OCCUR (no its not)
-        if(Gdx.input.isKeyPressed(Input.Keys.Q)){                         // destination on screen Y
-            if(true){//gamecam.zoom<maxZoom) {
+        if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){                         // destination on screen Y
+            if(!changedProx){//gamecam.zoom<maxZoom) {
                 gamecam.zoom *= 1.02f;
                 wStage.wStageCam.zoom*=1.02f;
+            } else {
+                proxStage.wStageCam.zoom*=1.02f;
             }
         }
 
-        if(Gdx.input.isKeyPressed(Input.Keys.E)){
-            if(true){//gamecam.viewportWidth>minZoomX && gamecam.viewportHeight>minZoomY) {
+        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+            if(!changedProx){//gamecam.viewportWidth>minZoomX && gamecam.viewportHeight>minZoomY) {
                 gamecam.zoom *= 0.98f;
                 wStage.wStageCam.zoom *= 0.98f;
+            } else {
+                proxStage.wStageCam.zoom*=0.98f;
             }
         }
 
@@ -1327,15 +2474,69 @@ public class systemScreen2 implements Screen {
             }
         }
 
-        if(Gdx.input.isKeyPressed(Input.Keys.W)){
-            double inlineVx = playerVx;
-            double inlineVy = playerVy;
-            double perpVx;
-            double perpVy;
-
-
-
+        if(Gdx.input.isKeyPressed(Input.Keys.E)){
+            if(!changedProx) {
+            } else {
+                proxAomega = 1;
+            }
         }
+        if(Gdx.input.isKeyPressed(Input.Keys.Q)){
+            if(!changedProx) {
+            } else {
+                proxAomega = -1;
+            }
+        }
+
+
+        if(Gdx.input.isKeyPressed(Input.Keys.W)){
+            if(!changedProx) {
+                playerCamOffY--;
+            } else {
+                proxAyInt = 1;
+            }
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.S)){
+            if(!changedProx) {
+                playerCamOffY++;
+            } else {
+                proxAyInt = -1;
+            }
+        }
+        if(!Gdx.input.isKeyPressed(Input.Keys.W)) {
+            if (!Gdx.input.isKeyPressed(Input.Keys.S)) {
+                proxAyInt = 0;
+            }
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.A)){
+            if(!changedProx){
+                playerCamOffX--;
+            } else {
+                proxAxInt = -1;
+            }
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.D)){
+            if(!changedProx) {
+                playerCamOffX++;
+            } else {
+                proxAxInt = 1;
+            }
+        }
+        if(!Gdx.input.isKeyPressed(Input.Keys.A)) {
+            if (!Gdx.input.isKeyPressed(Input.Keys.D)) {
+                proxAxInt = 0;
+            }
+        }
+        if(!Gdx.input.isKeyPressed(Input.Keys.Q)) {
+            if (!Gdx.input.isKeyPressed(Input.Keys.E)) {
+                proxAomega = 0;
+            }
+        }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.Z)){
+            playerCamOffX=0;
+            playerCamOffY=0;
+        }
+
 
         if(Gdx.input.isKeyPressed(Input.Keys.H)){
             float aspectWoH = gamecam.viewportWidth / gamecam.viewportHeight;
@@ -1688,11 +2889,13 @@ public class systemScreen2 implements Screen {
 
             int i;
 
-            for(int k=0;k<nP;k++){
-                double distR = getPlayerPositionR(k+1);
-                if(distR<wellsOuter[k].getWidth()/2){
-                    // in gravity well
-                    orbitNearestPlanet();
+            if(!syncStation) {
+                for (int k = 0; k < nP; k++) {
+                    double distR = getPlayerPositionR(k + 1);
+                    if (distR < wellsOuter[k].getWidth() / 2) {
+                        // in gravity well
+                        orbitNearestPlanet();
+                    }
                 }
             }
 
@@ -1810,11 +3013,22 @@ public class systemScreen2 implements Screen {
 
                             if(orbitingPlanet || orbitingStar){
 
+                                float targetZoom = windowHeight/(wellsOuter[targetBody].getWidth()*1.5f);
+                                if(wStage.wStageCam.zoom>targetZoom){
+                                    wStage.wStageCam.zoom*=0.98f;
+                                }
+
                                 tracing = false;
 
                                 float margin = game.V_WIDTH/100;
                                 double currentRad = getPlayerPositionR(targetBody);
                                 double currentMargin = Math.abs(currentRad-targetRad);
+                                if(!syncStation) {
+                                    if (currentMargin / targetRad < 0.01) {
+                                        // within 1% of target radius
+                                        syncStation();
+                                    }
+                                }
 
                                 boolean newMethod = true;
 
@@ -1844,14 +3058,20 @@ public class systemScreen2 implements Screen {
                                         }
                                     }
                                     double targetAngle3 = 0;
-                                    if(targetAngle1>targetAngle2){
-                                        // going clockwise
-                                        targetDir = 1;
-                                        targetAngle3 = targetAngle2 - 5*Math.PI/180;
-                                    } else {
+                                    if(prefDirAC){
                                         // going anticlockwise
                                         targetDir = -1;
-                                        targetAngle3 = targetAngle2 + 5*Math.PI/180;
+                                        targetAngle3 = targetAngle2 + 5 * Math.PI / 180;
+                                    } else {
+                                        if (targetAngle1 > targetAngle2) {
+                                            // going clockwise
+                                            targetDir = 1;
+                                            targetAngle3 = targetAngle2 - 5 * Math.PI / 180;
+                                        } else {
+                                            // going anticlockwise
+                                            targetDir = -1;
+                                            targetAngle3 = targetAngle2 + 5 * Math.PI / 180;
+                                        }
                                     }
                                     if(targetAngle3>(360*Math.PI/180)){
                                         targetAngle3 -= (360*Math.PI/180);
@@ -1890,7 +3110,27 @@ public class systemScreen2 implements Screen {
                                         orbitStar = true;
                                     }
                                     Vector2 tangV = calcEscapeVel((tangX - gravData[targetBody][1]), (tangY - gravData[targetBody][2]), targetRad, orbitStar);
-                                    double tangVr = targetRad*2*Math.PI/30;// Math.sqrt( Math.pow(tangV.x,2) + Math.pow(tangV.y,2) );
+                                    double targetOmega = Math.PI/30;
+                                    if(syncStation){
+                                        double maxOmega = Math.PI/10;
+                                        double stationX = stations[targetBody-1].getX() + stations[targetBody-1].getWidth()/2;
+                                        double stationY = stations[targetBody-1].getY() + stations[targetBody-1].getHeight()/2;
+                                        double stationR = Math.sqrt( Math.pow((stationX - playersX),2) + Math.pow((stationY - playersY),2) );
+                                        double maxR = wells[targetBody].getWidth();
+                                        // interpolate to decrease speed as catching up to station
+                                        targetOmega = ( (maxOmega - 0.99*stationOmega) / maxR )*stationR + 0.99*stationOmega;
+                                        double perR = stationR/maxR;
+                                        if(perR<0.05){
+                                            System.out.println("STATION STNCED");
+                                            targetOmega = stationOmega;
+                                            stationSynced = true;
+                                            // need to set up station first time
+                                            if(!changedProx){
+                                                setupProximity();
+                                            }
+                                        }
+                                    }
+                                    double tangVr = targetRad*targetOmega;// Math.sqrt( Math.pow(tangV.x,2) + Math.pow(tangV.y,2) );
                                     double tangVx = Math.signum(playerVx)*Math.sqrt( Math.pow(tangVr,2) / (1+Math.pow(tangM,2)) );
                                     double tangVy = tangVx * (tangM);
                                     //System.out.println("tangX "+tangX+" tangY "+tangY+" tangM "+tangM);
@@ -1962,82 +3202,6 @@ public class systemScreen2 implements Screen {
 
                                     double targetVx;
                                     double targetVy;
-/*
-
-                                    double targetVx;
-                                    double targetVy;
-                                    if(false){//(Math.abs(sX)-Math.abs(sY))>0){
-                                        // use x as directional marker
-                                        System.out.println("left right");
-                                        double signX;
-                                        double signY;
-                                        double signR;
-                                        if(playerVy>0){
-                                            signY = -1;
-                                        } else {
-                                            signY = 1;
-                                        }
-                                        if(sX>0){
-                                            // go left ie negative Vx
-                                            signX = 1;
-                                        } else {
-                                            signX = -1;
-                                        }
-                                        if((currentRad-targetRad)>0){
-                                            signR = 1;
-                                        } else {
-                                            signR = -1;
-                                        }
-                                        if((signX*signR)>0){
-                                            // increase m
-                                            targetM = tangM - turnM;
-                                        } else {
-                                            targetM = tangM - turnM;
-                                        }
-                                        double diff = currentMargin;
-                                        if(diff>(3*targetRad)){
-                                            diff = 3*targetRad;
-                                        }
-                                        targetM = gravM*diff/(3*targetRad) + tangM*(1 - diff/(3*targetRad));
-                                        targetVx = (-1)*signX*Math.sqrt( Math.pow(tangVr,2) / (1+Math.pow(targetM,2)) );
-                                        targetVy = targetVx * (targetM);
-                                    } else {
-                                        System.out.println("above below");
-                                        // use y as directional marker
-                                        double signX;
-                                        double signY;
-                                        double signR;
-                                        if(playerVx>0){
-                                            signY = 1;
-                                        } else {
-                                            signY = -1;
-                                        }
-                                        if(sY>0){
-                                            // go down ie negative Vy
-                                            signX = 1;
-                                        } else {
-                                            signX = -1;
-                                        }
-                                        if((currentRad-targetRad)>0){
-                                            signR = 1;
-                                        } else {
-                                            signR = -1;
-                                        }
-                                        if((signX*signY*signR)>0){
-                                            // increase m
-                                            targetM = tangM + turnM;
-                                        } else {
-                                            targetM = tangM - turnM;
-                                        }
-                                        double diff = currentMargin;
-                                        if(diff>(3*targetRad)){
-                                            diff = 3*targetRad;
-                                        }
-                                        targetM = gravM*diff/(3*targetRad) + tangM*(1 - diff/(3*targetRad));
-                                        targetVy = (-1)*signX*Math.sqrt( Math.pow(tangVr,2) / (1+1/Math.pow(targetM,2)) );
-                                        targetVx = targetVy / (targetM);
-                                    }
-*/
 
                                     if(sY>0){
                                         // go down
@@ -2053,15 +3217,18 @@ public class systemScreen2 implements Screen {
 
                                     targetVx = tangVr*xRatio1;
                                     targetVy = tangVr*xRatio2;
-                                    double tempA = maxBurnThrust;
+                                    double tempA = maxBurnThrust/800;
+                                    if(orbitingPlanet) {
+                                        tempA = maxBurnThrust/800;
+                                    }
                                     double tempAx = Math.sqrt( Math.pow(tempA,2) / (1 + Math.pow(targetM,2)) );
                                     double tempAy = tempAx*targetM;
-                                    System.out.println("targetVx "+targetVx+" targetVy "+targetVy);//+" targetM "+targetM);
-                                    System.out.println("playerVx "+playerVx+" playerVy "+playerVy);
+                                    //System.out.println("targetVx "+targetVx+" targetVy "+targetVy);//+" targetM "+targetM);
+                                    //System.out.println("playerVx "+playerVx+" playerVy "+playerVy);
 
                                     double aXm = (targetVx - playerVx) / dt;
                                     double aYm = (targetVy - playerVy) / dt;
-                                    System.out.println("aX "+aXm+" aY "+aYm);
+                                    //System.out.println("aX "+aXm+" aY "+aYm);
                                     double aRm = Math.sqrt(Math.pow(aXm, 2) + Math.pow(aYm, 2));
                                     double tanXratio = aXm / aRm;
                                     double tanYratio = aYm / aRm;
@@ -2073,7 +3240,7 @@ public class systemScreen2 implements Screen {
                                     Ax = (float) (0 + aXm);
                                     Ay = (float) (0 + aYm);
 
-                                    System.out.println("-------------------------------------------------------------------------");
+                                    //System.out.println("-------------------------------------------------------------------------");
 
 
                                 } else {
@@ -2291,7 +3458,6 @@ public class systemScreen2 implements Screen {
                                 Ax = A.x;
                                 Ay = A.y;
                             }
-
                         }
 
                         playerVx = (playerVx + Ax * dt);                    // new velocity at end of timestep
@@ -2307,7 +3473,7 @@ public class systemScreen2 implements Screen {
                 setPlayerAngle();
                 player.update((float) physTime);
                 //playerLevelsInterm.b2body.setTransform(player.b2body.getPosition().x, player.b2body.getPosition().y, 0);
-                playerShipShown.setPosition(player.b2body.getPosition().x - playerShipShown.getWidth() / 2, player.b2body.getPosition().y - playerShipShown.getHeight() / 2);
+                //playerShipShown.setPosition(player.b2body.getPosition().x - playerShipShown.getWidth() / 2, player.b2body.getPosition().y - playerShipShown.getHeight() / 2);
                 //playerLevelsInterm.update(physTime);
 
                 if (tracing) {
@@ -2378,12 +3544,15 @@ public class systemScreen2 implements Screen {
             }
 
             updateStations(dt);
+            if(changedProx) {
+                updateProximity(dt);
+            }
 
             doPhysics = false;
 
             // Get camera to follow sprite x and y movements
-            wStage.wStageCam.position.x = player.b2body.getPosition().x;//playerShipShown.getX()+playerShipShown.getWidth()/2;
-            wStage.wStageCam.position.y = player.b2body.getPosition().y;//playerShipShown.getY()+playerShipShown.getHeight()/2;
+            wStage.wStageCam.position.x = player.b2body.getPosition().x + playerCamOffX;//playerShipShown.getX()+playerShipShown.getWidth()/2;
+            wStage.wStageCam.position.y = player.b2body.getPosition().y + playerCamOffY;//playerShipShown.getY()+playerShipShown.getHeight()/2;
             wStage.wStageCam.update();
 
             // update the star graphic
@@ -2398,8 +3567,159 @@ public class systemScreen2 implements Screen {
         }
     }
 
+    public void updateProximity(float dt){
+
+        double A = 25; // px/s
+
+        double Ax = A*proxAxInt;
+        double Ay = A*proxAyInt;
+        double Aomega = A*proxAomega/100;
+
+        proxVx = (float) (proxVx + Ax*dt);
+        proxVy = (float) (proxVy + Ay*dt);
+        proxOmega = (float) (proxOmega + Aomega*dt);
+
+        float proxSx = proxVx*dt;
+        float proxSy = proxVy*dt;
+        System.out.println("proxOmega "+proxOmega);
+        //playerProx.rotateBody(proxOmega);
+        proxStage.wStageCam.rotate(proxOmega);
+
+        //playerProx.b2body.setTransform(playerProx.b2body.getPosition().x+proxSx,playerProx.b2body.getPosition().y+proxSy,0);
+        //playerProx.update(0);
+
+        playerProx.setCentre(playerProx.getCentre().x+proxSx,playerProx.getCentre().y+proxSy);
+        playerProx.setPosition(playerProx.getCentre().x-playerProx.getWidth()/2,playerProx.getCentre().y-playerProx.getHeight()/2);
+        playerShipShown.setPosition(playerProx.getX(),playerProx.getY());
+
+        proxStage.wStageCam.position.x = playerProx.getCentre().x;////playerProx.getX() + playerProx.getWidth()/2;
+        proxStage.wStageCam.position.y = playerProx.getCentre().y;//playerProx.getY() + playerProx.getHeight()/2;
+
+        // check within reasonable radius to see whether to check for collision
+        System.out.println("colTime "+colTime);
+        if(colTime>3) {
+            System.out.println("time high");
+            boolean colSearch = true;
+            int i = 0;
+            if(playerProx.getCentre().y<(proxObjects.get(3).getY()+proxObjects.get(3).getHeight())){
+                System.out.println("below top of dock point");
+            }
+            if(playerProx.getCentre().y<-1075){
+                System.out.println("in shape?");
+            }
+            while(colSearch){
+                if(proxObjects.get(i).getCollision()) {
+                    double dx = proxObjects.get(i).getCentre().x - playerProx.getCentre().x;
+                    double dy = proxObjects.get(i).getCentre().y - playerProx.getCentre().y;
+                    double dr = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+                    if (dr < proxObjects.get(i).getWidth()) {
+                        // check if corners in volume
+                        int colCount = 0;
+                        int chosenShape = proxObjects.get(i).checkInsidePoly(playerProx.getCentre());
+                        //for(int c=0;c<playerProx.getRectCorners().size;c++) {
+                            if (chosenShape>=0) {
+                                // point inside POLYGON
+                                System.out.println("yo inside the polygon " + i + " yo");
+                                colCount++;
+                                proxCollision(i,colCount,chosenShape);
+                                colSearch = false;
+                            }
+                        //}
+                    }
+                }
+                i++;
+                if(i>proxObjects.size-1){
+                    colSearch = false;
+                }
+            }
+        }
+        colTime += dt;
+
+    }
+
+    public void proxCollision(int n,int colCount,int chosenShape){
+        double d1 = 99999999;
+        double d2 = d1*2;
+        int p1 = 0;
+        int p2 = 0;
+        for(int i=0;i<3;i++){
+            int shapeVert1 = (int) proxObjects.get(n).getShapes().get(chosenShape).x;
+            int shapeVert2 = (int) proxObjects.get(n).getShapes().get(chosenShape).y;
+            int shapeVert3 = (int) proxObjects.get(n).getShapes().get(chosenShape).z;
+            double dx1 = proxObjects.get(n).getVertices().get(shapeVert1).x - playerProx.getCentre().x;
+            double dy1 = proxObjects.get(n).getVertices().get(shapeVert1).y - playerProx.getCentre().y;
+            double dx2 = proxObjects.get(n).getVertices().get(shapeVert2).x - playerProx.getCentre().x;
+            double dy2 = proxObjects.get(n).getVertices().get(shapeVert2).y - playerProx.getCentre().y;
+            double dx3 = proxObjects.get(n).getVertices().get(shapeVert3).x - playerProx.getCentre().x;
+            double dy3 = proxObjects.get(n).getVertices().get(shapeVert3).y - playerProx.getCentre().y;
+            double dr = Math.sqrt(Math.pow(dx1, 2) + Math.pow(dy1, 2));
+            p1 = shapeVert1;
+            d1 = dr;
+            dr = Math.sqrt(Math.pow(dx2, 2) + Math.pow(dy2, 2));
+            if(dr<d1){
+                // vert2 is closer than vert1
+                p2 = p1;
+                d2 = d1;
+                p1 = shapeVert2;
+                d1 = dr;
+            } else {
+                p2 = shapeVert2;
+                d2 = dr;
+            }
+            // now check final vert3
+            dr = Math.sqrt(Math.pow(dx3, 2) + Math.pow(dy3, 2));
+            if(dr<d2){
+                // vert3 is closer than p2
+                if(dr<d1){
+                    // vert3 is also closer than p1
+                    p2 = p1;
+                    d2 = d1;
+                    p1 = shapeVert3;
+                    d1 = dr;
+                } else {
+                    p2 = shapeVert3;
+                    d2 = dr;
+                }
+            } else {
+                // vert3 is furthest away
+            }
+        }
+        //Vector2 m = new Vector2((proxObjects.get(n).getVertices().get(p2).y - proxObjects.get(n).getVertices().get(p1).y),(proxObjects.get(n).getVertices().get(p2).x - proxObjects.get(n).getVertices().get(p1).x));
+        double grad = (proxObjects.get(n).getVertices().get(p2).y - proxObjects.get(n).getVertices().get(p1).y)/(proxObjects.get(n).getVertices().get(p2).x - proxObjects.get(n).getVertices().get(p1).x);
+        if(Double.isInfinite(grad)){
+            grad = 1000;
+        }
+        Vector2 B = new Vector2((proxObjects.get(n).getVertices().get(p1).x+proxObjects.get(n).getVertices().get(p2).x)/2,(proxObjects.get(n).getVertices().get(p1).y+proxObjects.get(n).getVertices().get(p2).y)/2);
+        Vector2 C = new Vector2(playerProx.getCentre().x,playerProx.getCentre().y);
+        double invG = -1/grad;
+        double c = B.y - invG*B.x;
+        Vector2 A = new Vector2(C.x,((float) (invG*C.x+c)));
+        double phi1 = Math.tan((B.x-A.x)/(B.y-A.y));
+        double phi2 = Math.tan((C.x-A.x)/(C.y-A.y));
+        double phi3 = 90 - phi1;
+        double phi4 = 90 - phi2;
+        double theta0 = 180 - phi1 - phi2;
+        double thetaReb = 180 - theta0 - phi3;  // rebound angle of collision
+
+
+        double b = 1;
+        double a = -grad;
+        float nx = (float) ( a /(Math.sqrt(Math.pow(a,2)+Math.pow(b,2))));
+        float ny = (float) ( b /(Math.sqrt(Math.pow(a,2)+Math.pow(b,2))));
+        Vector2 normal = new Vector2(nx,ny);
+        Vector2 vIn = new Vector2(proxVx,proxVy);
+        Vector2 vOut = new Vector2();
+        vOut.x = -(2*(normal.x*vIn.x + normal.y*vIn.y)*normal.x - vIn.x);
+        vOut.y = -(2*(normal.x*vIn.x + normal.y*vIn.y)*normal.y - vIn.y);
+
+        proxVx = vOut.x;
+        proxVy = vOut.y;
+        colTime = 0;
+
+    }
+
     public void updateStations(float dt){
-        System.out.println("dt is "+dt);
+        //System.out.println("dt is "+dt);
         for(int i=0;i<stations.length;i++){
             if(stations[i]!=null) {
                 double theta = stations[i].theta + 0.5;
@@ -2408,8 +3728,8 @@ public class systemScreen2 implements Screen {
                 }
                 stations[i].theta = theta;
                 stations[i].dt += dt;
-                float tempX = (float)  (stations[i].posX - stations[i].getWidth()/2 + wells[i].getWidth()*Math.cos(stations[i].dt*Math.PI/20) / 2);
-                float tempY = (float) (stations[i].posY - stations[i].getWidth()/2 + wells[i].getWidth()*Math.sin(stations[i].dt*Math.PI/20) / 2);
+                float tempX = (float)  (stations[i].posX - stations[i].getWidth()/2 + wells[i].getWidth()*Math.cos(stations[i].dt*stationOmega) / 2);
+                float tempY = (float) (stations[i].posY - stations[i].getWidth()/2 + wells[i].getWidth()*Math.sin(stations[i].dt*stationOmega) / 2);
                 stations[i].setX(tempX);
                 stations[i].setY(tempY);
             }
@@ -2456,12 +3776,14 @@ public class systemScreen2 implements Screen {
             //System.out.println("PlayerVx zero");
         }
         player.setRotation((float) playerAngle);
-        playerShipShown.setRotation((float) playerAngle);
+        //playerShipShown.setRotation((float) playerAngle);
         //playerLevelsInterm.setRotation((float) playerAngle);
         angle2 = (float) playerAngle;
         float cameraAngle = angle2 - angle1;
-        wStage.wStageCam.rotate((float) (cameraAngle),0,0,1);
-        wStage.wStageCam2.rotate((float) (cameraAngle),0,0,1);
+        if(playerCamOffY==0 && playerCamOffX==0) {
+            wStage.wStageCam.rotate((float) (cameraAngle), 0, 0, 1);
+            wStage.wStageCam2.rotate((float) (cameraAngle), 0, 0, 1);
+        }
         angle1 = angle2;
     }
 
